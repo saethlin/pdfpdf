@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 ///
 /// # Example
 /// ````
-/// use pdf_canvas::{BuiltinFont, FontSource};
+/// use pdfpdf::{BuiltinFont, FontSource};
 /// assert_eq!("WinAnsiEncoding",
 ///            BuiltinFont::Helvetica.get_encoding().get_name());
 /// assert_eq!("SymbolEncoding",
@@ -24,9 +24,7 @@ pub struct Encoding {
 
 impl Encoding {
     /// The name of the encoding, as used in the font object.
-    pub fn get_name(&self) -> String {
-        self.name.clone()
-    }
+    pub fn get_name(&self) -> String { self.name.clone() }
     /// Get the encoded code point from a type1 character name.
     /// Character names are case sensitive and contains only ascii letters.
     /// If the name is not available in the encoding, or is not a proper
@@ -34,7 +32,7 @@ impl Encoding {
     ///
     /// # Example
     /// ````
-    /// use pdf_canvas::{BuiltinFont, FontSource};
+    /// use pdfpdf::{BuiltinFont, FontSource};
     /// let enc = BuiltinFont::Helvetica.get_encoding();
     /// assert_eq!(Some(32),  enc.get_code("space"));
     /// assert_eq!(Some(65),  enc.get_code("A"));
@@ -53,7 +51,7 @@ impl Encoding {
     /// Convert a rust string to a vector of bytes in the encoding.
     /// # Example
     /// ````
-    /// use pdf_canvas::{BuiltinFont, FontSource};
+    /// use pdfpdf::{BuiltinFont, FontSource};
     /// let enc = BuiltinFont::Helvetica.get_encoding();
     /// let symb_enc = BuiltinFont::Symbol.get_encoding();
     /// assert_eq!(vec!(65, 66, 67), enc.encode_string("ABC"));
@@ -80,11 +78,7 @@ impl Encoding {
                     result.push('\\' as u8);
                     result.push(')' as u8)
                 }
-                ch => {
-                    result.push(*self.unicode_to_code
-                        .get(&ch)
-                        .unwrap_or(&('?' as u8)))
-                }
+                ch => result.push(*self.unicode_to_code.get(&ch).unwrap_or(&('?' as u8))),
             }
         }
         result

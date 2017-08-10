@@ -41,7 +41,7 @@ impl Color {
 
     /// # Example
     /// ````
-    /// # use pdf_canvas::graphicsstate::Color;
+    /// # use pdfpdf::graphicsstate::Color;
     /// let white  = Color::rgb(255, 255, 255);
     /// let black  = Color::rgb(0, 0, 0);
     /// let red    = Color::rgb(255, 0, 0);
@@ -59,13 +59,11 @@ impl Color {
 
     /// # Example
     /// ````
-    /// # use pdf_canvas::graphicsstate::Color;
+    /// # use pdfpdf::graphicsstate::Color;
     /// let white = Color::gray(255);
     /// let gray  = Color::gray(128);
     /// ````
-    pub fn gray(gray: u8) -> Self {
-        Color::Gray { gray: gray }
-    }
+    pub fn gray(gray: u8) -> Self { Color::Gray { gray: gray } }
 }
 
 /// A transformation matrix for the pdf graphics state.
@@ -76,8 +74,8 @@ impl Color {
 /// # Examples
 ///
 /// ```
-/// # use pdf_canvas::{Pdf, BuiltinFont, FontSource};
-/// # use pdf_canvas::graphicsstate::Matrix;
+/// # use pdfpdf::{Pdf, BuiltinFont, FontSource};
+/// # use pdfpdf::graphicsstate::Matrix;
 /// # let mut document = Pdf::create("foo.pdf").unwrap();
 /// # document.render_page(180.0, 240.0, |canvas| {
 /// canvas.concat(Matrix::translate(10.0, 24.0));
@@ -96,31 +94,19 @@ pub struct Matrix {
 
 impl Matrix {
     /// Construct a matrix for translation
-    pub fn translate(dx: f32, dy: f32) -> Self {
-        Matrix { v: [1., 0., 0., 1., dx, dy] }
-    }
+    pub fn translate(dx: f32, dy: f32) -> Self { Matrix { v: [1., 0., 0., 1., dx, dy] } }
     /// Construct a matrix for rotating by `a` radians.
-    pub fn rotate(a: f32) -> Self {
-        Matrix { v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.] }
-    }
+    pub fn rotate(a: f32) -> Self { Matrix { v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.] } }
     /// Construct a matrix for rotating by `a` degrees.
-    pub fn rotate_deg(a: f32) -> Self {
-        Self::rotate(a * PI / 180.)
-    }
+    pub fn rotate_deg(a: f32) -> Self { Self::rotate(a * PI / 180.) }
     /// Construct a matrix for scaling by factor `sx` in x-direction
     /// and by `sy` in y-direction.
-    pub fn scale(sx: f32, sy: f32) -> Self {
-        Matrix { v: [sx, 0., 0., sy, 0., 0.] }
-    }
+    pub fn scale(sx: f32, sy: f32) -> Self { Matrix { v: [sx, 0., 0., sy, 0., 0.] } }
     /// Construct a matrix for scaling by the same factor, `s` in both
     /// directions.
-    pub fn uniform_scale(s: f32) -> Self {
-        Self::scale(s, s)
-    }
+    pub fn uniform_scale(s: f32) -> Self { Self::scale(s, s) }
     /// Construct a matrix for skewing.
-    pub fn skew(a: f32, b: f32) -> Self {
-        Matrix { v: [1., a.tan(), b.tan(), 1., 0., 0.] }
-    }
+    pub fn skew(a: f32, b: f32) -> Self { Matrix { v: [1., a.tan(), b.tan(), 1., 0., 0.] } }
 }
 
 impl Display for Matrix {
@@ -149,21 +135,13 @@ impl Mul for Matrix {
 }
 
 #[test]
-fn test_matrix_mul_a() {
-    assert_unit(Matrix::rotate_deg(45.) * Matrix::rotate_deg(-45.));
-}
+fn test_matrix_mul_a() { assert_unit(Matrix::rotate_deg(45.) * Matrix::rotate_deg(-45.)); }
 #[test]
-fn test_matrix_mul_b() {
-    assert_unit(Matrix::uniform_scale(2.) * Matrix::uniform_scale(0.5));
-}
+fn test_matrix_mul_b() { assert_unit(Matrix::uniform_scale(2.) * Matrix::uniform_scale(0.5)); }
 #[test]
-fn test_matrix_mul_c() {
-    assert_unit(Matrix::rotate(2. * PI));
-}
+fn test_matrix_mul_c() { assert_unit(Matrix::rotate(2. * PI)); }
 #[test]
-fn test_matrix_mul_d() {
-    assert_unit(Matrix::rotate(PI) * Matrix::uniform_scale(-1.));
-}
+fn test_matrix_mul_d() { assert_unit(Matrix::rotate(PI) * Matrix::uniform_scale(-1.)); }
 
 #[allow(dead_code)]
 fn assert_unit(m: Matrix) {

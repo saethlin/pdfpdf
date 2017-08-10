@@ -1,8 +1,8 @@
 //! Example program drawing circles on a page.
-extern crate pdf_canvas;
+extern crate pdfpdf;
 
-use pdf_canvas::Pdf;
-use pdf_canvas::graphicsstate::Color;
+use pdfpdf::Pdf;
+use pdfpdf::graphicsstate::Color;
 use std::f32::consts::PI;
 
 /// Create a `circles.pdf` file, with a single page containg a circle

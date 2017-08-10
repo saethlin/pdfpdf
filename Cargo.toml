@@ -22,3 +22,7 @@ lazy_static = "0.2"
 lazy_static = "0.2"
 time = "0.1"
 deflate = "0.7"
+
+[profile.release]
+lto = true
+panic = 'abort'

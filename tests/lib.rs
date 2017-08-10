@@ -1,6 +1,6 @@
-extern crate pdf_canvas;
+extern crate pdfpdf;
 
-use pdf_canvas::{FontSource, BuiltinFont};
+use pdfpdf::{BuiltinFont, FontSource};
 
 
 fn is_close(a: f32, b: f32) -> bool {
@@ -21,5 +21,8 @@ fn metrics_for_long_string() {
     for _ in 0..n {
         long_text = long_text + some_text;
     }
-    assert!(is_close(n as f32 * some_len, font.get_width(size, &long_text)));
+    assert!(is_close(
+        n as f32 * some_len,
+        font.get_width(size, &long_text),
+    ));
 }

@@ -1,8 +1,8 @@
 //! Example program drawing some text on a page.
-extern crate pdf_canvas;
+extern crate pdfpdf;
 
-use pdf_canvas::{Pdf, BuiltinFont};
-use pdf_canvas::graphicsstate::Color;
+use pdfpdf::{BuiltinFont, Pdf};
+use pdfpdf::graphicsstate::Color;
 
 /// Create a `text.pdf` file, with a single page containg some
 /// text lines positioned in various ways on some helper lines.
@@ -31,9 +31,7 @@ fn main() {
             t.show_line("sit amet. Blahonga. ");
             t.show_adjusted(&[("W", 130), ("AN", -40), ("D", 0)]);
             t.pos(0., -30.);
-            t.show_adjusted(
-                &(-19..21).map(|i| ("o", 16 * i)).collect::<Vec<_>>(),
-            )
+            t.show_adjusted(&(-19..21).map(|i| ("o", 16 * i)).collect::<Vec<_>>())
         });
 
         // In Swedish, we use the letters å, ä, and ö

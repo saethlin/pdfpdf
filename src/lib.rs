@@ -8,8 +8,8 @@
 //! # Example
 //!
 //! ```
-//! use pdf_canvas::{Pdf, BuiltinFont, FontSource};
-//! use pdf_canvas::graphicsstate::Color;
+//! use pdfpdf::{Pdf, BuiltinFont, FontSource};
+//! use pdfpdf::graphicsstate::Color;
 //!
 //! let mut document = Pdf::create("example.pdf")
 //!     .expect("Create pdf file");
@@ -172,21 +172,15 @@ impl Pdf {
     }
 
     /// Return the current read/write position in the output file.
-    fn tell(&mut self) -> usize {
-        self.buffer.len()
-    }
+    fn tell(&mut self) -> usize { self.buffer.len() }
 
     /// Create a new page in the PDF document.
     ///
     /// The page will be `width` x `height` points large, and the
     /// actual content of the page will be created by the function
     /// `render_contents` by applying drawing methods on the Canvas.
-    pub fn render_page<F>(
-        &mut self,
-        width: f32,
-        height: f32,
-        render_contents: F,
-    ) where
+    pub fn render_page<F>(&mut self, width: f32, height: f32, render_contents: F)
+    where
         F: FnOnce(&mut Canvas),
     {
         let (contents_object_id, content_length, fonts, outline_items) =
@@ -202,9 +196,7 @@ impl Pdf {
                 );
                 let mut compression_buffer = Vec::new();
 
-                compression_buffer.extend(
-                    "/DeviceRGB cs /DeviceRGB CS\n".bytes(),
-                );
+                compression_buffer.extend("/DeviceRGB cs /DeviceRGB CS\n".bytes());
                 let mut fonts = HashMap::new();
                 let mut outline_items: Vec<OutlineItem> = Vec::new();
                 render_contents(&mut create_canvas(
@@ -213,8 +205,7 @@ impl Pdf {
                     &mut outline_items,
                 ));
 
-                let compressed =
-                    deflate::deflate_bytes_zlib(compression_buffer.as_slice());
+                let compressed = deflate::deflate_bytes_zlib(compression_buffer.as_slice());
                 pdf.buffer.extend(compressed.iter());
                 pdf.buffer.extend("\nendstream\n".bytes());
                 (contents_object_id, compressed.len(), fonts, outline_items)
@@ -234,8 +225,7 @@ impl Pdf {
                 self.all_font_object_ids.insert(*src, object_id);
             }
         }
-        let page_oid =
-            self.write_page_dict(contents_object_id, width, height, font_oids);
+        let page_oid = self.write_page_dict(contents_object_id, width, height, font_oids);
         // Take the outline_items from this page, mark them with the page ref,
         // and save them for the document outline.
         for i in &outline_items {
@@ -246,13 +236,8 @@ impl Pdf {
         self.page_objects_ids.push(page_oid);
     }
 
-    fn write_page_dict(
-        &mut self,
-        content_oid: usize,
-        width: f32,
-        height: f32,
-        font_oids: NamedRefs,
-    ) -> usize {
+    fn write_page_dict(&mut self, content_oid: usize, width: f32, height: f32, font_oids: NamedRefs)
+        -> usize {
         self.write_new_object(|page_oid, pdf| {
             pdf.buffer.extend(
                 format!(
@@ -278,8 +263,7 @@ impl Pdf {
         F: FnOnce(usize, &mut Pdf) -> T,
     {
         let id = self.object_offsets.len();
-        let (result, offset) =
-            self.write_object(id, |pdf| write_content(id, pdf));
+        let (result, offset) = self.write_object(id, |pdf| write_content(id, pdf));
         self.object_offsets.push(offset);
         result
     }
@@ -332,11 +316,7 @@ impl Pdf {
                 for (key, value) in info {
                     write!(pdf.buffer, " /{} ({})\n", key, value).unwrap();
                 }
-                if let Ok(now) = time::strftime(
-                    "%Y%m%d%H%M%S%z",
-                    &time::now(),
-                )
-                {
+                if let Ok(now) = time::strftime("%Y%m%d%H%M%S%z", &time::now()) {
                     write!(
                         pdf.buffer,
                         " /CreationDate (D:{now})\n \
@@ -455,12 +435,8 @@ struct NamedRefs {
 }
 
 impl NamedRefs {
-    fn new() -> Self {
-        NamedRefs { oids: HashMap::new() }
-    }
-    fn insert(&mut self, name: FontRef, oid: usize) -> Option<usize> {
-        self.oids.insert(name, oid)
-    }
+    fn new() -> Self { NamedRefs { oids: HashMap::new() } }
+    fn insert(&mut self, name: FontRef, oid: usize) -> Option<usize> { self.oids.insert(name, oid) }
 }
 
 
