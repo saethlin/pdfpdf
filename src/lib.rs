@@ -11,27 +11,26 @@
 //! use pdfpdf::{Pdf, BuiltinFont, FontSource};
 //! use pdfpdf::graphicsstate::Color;
 //!
-//! let mut document = Pdf::create("example.pdf")
-//!     .expect("Create pdf file");
 //! // The 14 builtin fonts are available
 //! let font = BuiltinFont::Times_Roman;
-//!
 //! // Add a page to the document.  This page will be 180 by 240 pt large.
-//! document.render_page(180.0, 240.0, |canvas| {
+//! Pdf::new()
+//!     .render_page(180.0, 240.0, |canvas| {
 //!     // This closure defines the content of the page
-//!     let hello = "Hello World!";
-//!     let w = font.get_width(24.0, hello) + 8.0;
+//!         let hello = "Hello World!";
+//!         let w = font.get_width(24.0, hello) + 8.0;
 //!
-//!     // Some simple graphics
-//!     canvas.set_stroke_color(Color::rgb(0, 0, 248));
-//!     canvas.rectangle(90.0 - w / 2.0, 194.0, w, 26.0);
-//!     canvas.stroke();
+//!         // Some simple graphics
+//!         canvas.set_stroke_color(Color::rgb(0, 0, 248));
+//!         canvas.rectangle(90.0 - w / 2.0, 194.0, w, 26.0);
+//!         canvas.stroke();
 //!
-//!     // Some text
-//!     canvas.center_text(90.0, 200.0, font, 24.0, hello)
-//! });
+//!         // Some text
+//!         canvas.center_text(90.0, 200.0, font, 24.0, hello)
+//!     })
+//!     .write_to("example.pdf")
+//!     .expect("Finish pdf document");
 //! // Write all pending content, including the trailer and index
-//! document.finish().expect("Finish pdf document");
 //! ```
 //!
 //! To use this library you need to add it as a dependency in your
@@ -39,11 +38,11 @@
 //!
 //! ```toml
 //! [dependencies]
-//! pdf-canvas = "*"
+//! pdfpdf = "*"
 //! ```
 //!
 //! Some more working usage examples exists in [the examples directory]
-//! (https://github.com/kaj/rust-pdf/tree/master/examples).
+//! (https://github.com/saethlin/pdfpdf/tree/master/examples).
 #![deny(missing_docs)]
 
 #[macro_use]
@@ -87,7 +86,6 @@ pub use textobject::TextObject;
 /// Don't forget to call `finish` when done, to write the document
 /// trailer, without it the written file won't be a proper PDF.
 pub struct Pdf {
-    output: File,
     buffer: Vec<u8>,
     object_offsets: Vec<i64>,
     page_objects_ids: Vec<usize>,
@@ -100,21 +98,14 @@ const ROOT_OBJECT_ID: usize = 1;
 const PAGES_OBJECT_ID: usize = 2;
 
 impl Pdf {
-    /// Create a new PDF document as a new file with given filename.
-    pub fn create(filename: &str) -> io::Result<Pdf> {
-        let file = File::create(filename)?;
-        Ok(Pdf::new(file))
-    }
-
     /// Create a new PDF document, writing to `output`.
-    pub fn new(output: File) -> Self {
+    pub fn new() -> Self {
         let mut this = Pdf {
-            output: output,
             buffer: Vec::new(),
             // Object ID 0 is special in PDF.
             // We reserve IDs 1 and 2 for the catalog and page tree.
             object_offsets: vec![-1, -1, -1],
-            page_objects_ids: vec![],
+            page_objects_ids: Vec::new(),
             all_font_object_ids: HashMap::new(),
             outline_items: Vec::new(),
             document_info: HashMap::new(),
@@ -126,67 +117,76 @@ impl Pdf {
         this
     }
     /// Set metadata: the document's title.
-    pub fn set_title(&mut self, title: &str) {
+    pub fn set_title(&mut self, title: &str) -> &mut Self {
         self.document_info.insert(
             "Title".to_string(),
             title.to_string(),
         );
+        self
     }
     /// Set metadata: the name of the person who created the document.
-    pub fn set_author(&mut self, author: &str) {
+    pub fn set_author(&mut self, author: &str) -> &mut Self {
         self.document_info.insert(
             "Author".to_string(),
             author.to_string(),
         );
+        self
     }
     /// Set metadata: the subject of the document.
-    pub fn set_subject(&mut self, subject: &str) {
+    pub fn set_subject(&mut self, subject: &str) -> &mut Self {
         self.document_info.insert(
             "Subject".to_string(),
             subject.to_string(),
         );
+        self
     }
     /// Set metadata: keywords associated with the document.
-    pub fn set_keywords(&mut self, keywords: &str) {
+    pub fn set_keywords(&mut self, keywords: &str) -> &mut Self {
         self.document_info.insert(
             "Subject".to_string(),
             keywords.to_string(),
         );
+        self
     }
     /// Set metadata: If the document was converted to PDF from another
     /// format, the name of the conforming product that created the original
     /// document from which it was converted.
-    pub fn set_creator(&mut self, creator: &str) {
+    pub fn set_creator(&mut self, creator: &str) -> &mut Self {
         self.document_info.insert(
             "Creator".to_string(),
             creator.to_string(),
         );
+        self
     }
     /// Set metadata: If the document was converted to PDF from another
     /// format, the name of the conforming product that converted it to PDF.
-    pub fn set_producer(&mut self, producer: &str) {
+    pub fn set_producer(&mut self, producer: &str) -> &mut Self {
         self.document_info.insert(
             "Producer".to_string(),
             producer.to_string(),
         );
+        self
     }
 
+    // TODO: Factor this out
     /// Return the current read/write position in the output file.
-    fn tell(&mut self) -> usize { self.buffer.len() }
+    fn tell(&mut self) -> usize {
+        self.buffer.len()
+    }
 
     /// Create a new page in the PDF document.
     ///
     /// The page will be `width` x `height` points large, and the
     /// actual content of the page will be created by the function
     /// `render_contents` by applying drawing methods on the Canvas.
-    pub fn render_page<F>(&mut self, width: f32, height: f32, render_contents: F)
+    pub fn render_page<F>(&mut self, width: f32, height: f32, render_contents: F) -> &mut Self
     where
         F: FnOnce(&mut Canvas),
     {
         let (contents_object_id, content_length, fonts, outline_items) =
             self.write_new_object(move |contents_object_id, pdf| {
                 use canvas::create_canvas;
-                // TODO This is stupid, we don't need to use a dictionary since we know the size
+                // TODO This is silly, we don't need to use a dictionary since we know the size
                 // Guess the ID of the next object. (We’ll assert it below.)
                 pdf.buffer.extend(
                     format!(
@@ -234,6 +234,7 @@ impl Pdf {
             self.outline_items.push(item);
         }
         self.page_objects_ids.push(page_oid);
+        self
     }
 
     fn write_page_dict(&mut self, content_oid: usize, width: f32, height: f32, font_oids: NamedRefs)
@@ -293,7 +294,9 @@ impl Pdf {
     /// Write out the document trailer.
     /// The trailer consists of the pages object, the root object,
     /// the xref list, the trailer object and the startxref position.
-    pub fn finish(mut self) -> io::Result<()> {
+    pub fn write_to(&mut self, filename: &str) -> io::Result<()> {
+        use std::io::Write;
+
         self.write_object_with_id(PAGES_OBJECT_ID, |pdf| {
             pdf.buffer.extend(
                 format!(
@@ -379,8 +382,8 @@ impl Pdf {
                      %%EOF\n",
             startxref
         ).unwrap();
-        use std::io::Write;
-        self.output.write_all(self.buffer.as_slice())
+
+        File::create(filename)?.write_all(self.buffer.as_slice())
     }
 
     fn write_outlines(&mut self) -> Option<usize> {
@@ -435,8 +438,12 @@ struct NamedRefs {
 }
 
 impl NamedRefs {
-    fn new() -> Self { NamedRefs { oids: HashMap::new() } }
-    fn insert(&mut self, name: FontRef, oid: usize) -> Option<usize> { self.oids.insert(name, oid) }
+    fn new() -> Self {
+        NamedRefs { oids: HashMap::new() }
+    }
+    fn insert(&mut self, name: FontRef, oid: usize) -> Option<usize> {
+        self.oids.insert(name, oid)
+    }
 }
 
 

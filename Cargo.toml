@@ -24,5 +24,4 @@ time = "0.1"
 deflate = "0.7"
 
 [profile.release]
-lto = true
 panic = 'abort'

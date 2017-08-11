@@ -15,8 +15,7 @@ use graphicsstate::Color;
 /// ```
 /// # use pdfpdf::{Pdf, BuiltinFont, FontSource};
 /// # use pdfpdf::graphicsstate::Matrix;
-/// # let mut document = Pdf::create("foo.pdf").unwrap();
-/// # document.render_page(180.0, 240.0, |canvas| {
+/// # Pdf::new().render_page(180.0, 240.0, |canvas| {
 /// let serif = canvas.get_font(BuiltinFont::Times_Roman);
 /// // t will be a TextObject
 /// canvas.text(|t| {
@@ -27,8 +26,7 @@ use graphicsstate::Color;
 ///     t.show_line("paragraph of three lines. Lorem ipsum dolor");
 ///     t.show_line("sit amet. Blahonga.");
 /// });
-/// # });
-/// # document.finish().unwrap();
+/// # }).write_to("foo.pdf").unwrap();
 /// ```
 pub struct TextObject<'a> {
     output: &'a mut Vec<u8>,
@@ -60,7 +58,9 @@ impl<'a> TextObject<'a> {
     /// Set the rise above the baseline for coming text.  Calling
     /// set_rise again with a zero argument will get back to the old
     /// baseline.
-    pub fn set_rise(&mut self, rise: f32) { self.output.extend(format!("{} Ts\n", rise).bytes()); }
+    pub fn set_rise(&mut self, rise: f32) {
+        self.output.extend(format!("{} Ts\n", rise).bytes());
+    }
     /// Set the amount of extra space between characters, in 1/1000
     /// text unit.
     pub fn set_char_spacing(&mut self, a_c: f32) {
@@ -112,7 +112,9 @@ impl<'a> TextObject<'a> {
     }
 
     /// Show a text.
-    pub fn show(&mut self, text: &str) { self.output.extend(format!("({}) Tj\n", text).bytes()); }
+    pub fn show(&mut self, text: &str) {
+        self.output.extend(format!("({}) Tj\n", text).bytes());
+    }
     /// Show one or more text strings, allowing individual glyph positioning.
     ///
     /// Each item in param should contain a string to show and a number
@@ -125,15 +127,13 @@ impl<'a> TextObject<'a> {
     /// ```
     /// # use pdfpdf::{Pdf, BuiltinFont, FontSource};
     /// # use pdfpdf::graphicsstate::Matrix;
-    /// # let mut document = Pdf::create("foo.pdf").unwrap();
-    /// # document.render_page(180.0, 240.0, |canvas| {
+    /// # Pdf::new().render_page(180.0, 240.0, |canvas| {
     /// # let serif = canvas.get_font(BuiltinFont::Times_Roman);
     /// # canvas.text(|t| {
     /// #    t.set_font(&serif, 14.0);
     /// t.show_adjusted(&[("W", 130), ("AN", -40), ("D", 0)])
     /// # })
-    /// # });
-    /// # document.finish().unwrap();
+    /// # }).write_to("foo.pdf").unwrap();
     /// ```
     pub fn show_adjusted(&mut self, param: &[(&str, i32)]) {
         self.output.extend("[".bytes());

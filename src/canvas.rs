@@ -21,9 +21,8 @@ pub struct Canvas<'a> {
 
 // Should not be called by user code.
 pub fn create_canvas<'a>(
-    output: &'a mut Vec<u8>,
-    fonts: &'a mut HashMap<BuiltinFont, FontRef>,
-    outline_items: &'a mut Vec<OutlineItem>,
+    output: &'a mut Vec<u8>, fonts: &'a mut HashMap<BuiltinFont, FontRef>,
+    outline_items: &'a mut Vec<OutlineItem>
 ) -> Canvas<'a> {
     Canvas {
         output: output,
@@ -37,8 +36,7 @@ impl<'a> Canvas<'a> {
     /// extending width × height to the to the current path.
     pub fn rectangle(&mut self, x: f32, y: f32, width: f32, height: f32) {
         self.output.extend(
-            format!("{:.2} {:.2} {:.2} {:.2} re\n", x, y, width, height)
-                .bytes(),
+            format!("{:.2} {:.2} {:.2} {:.2} re\n", x, y, width, height).bytes(),
         );
     }
     /// Set the line join style in the graphics state.
@@ -77,12 +75,7 @@ impl<'a> Canvas<'a> {
         match color {
             Color::RGB { red, green, blue } => {
                 self.output.extend(
-                    format!(
-                        "{} {} {} SC\n",
-                        norm(red),
-                        norm(green),
-                        norm(blue)
-                    ).bytes(),
+                    format!("{} {} {} SC\n", norm(red), norm(green), norm(blue)).bytes(),
                 );
             }
             Color::Gray { gray } => {
@@ -96,12 +89,7 @@ impl<'a> Canvas<'a> {
         match color {
             Color::RGB { red, green, blue } => {
                 self.output.extend(
-                    format!(
-                        "{} {} {} sc\n",
-                        norm(red),
-                        norm(green),
-                        norm(blue)
-                    ).bytes(),
+                    format!("{} {} {} sc\n", norm(red), norm(green), norm(blue)).bytes(),
                 );
             }
             Color::Gray { gray } => {
@@ -132,15 +120,7 @@ impl<'a> Canvas<'a> {
     }
     /// Add an Bézier curve from the current point to (x3, y3) with
     /// (x1, y1) and (x2, y2) as Bézier control points.
-    pub fn curve_to(
-        &mut self,
-        x1: f32,
-        y1: f32,
-        x2: f32,
-        y2: f32,
-        x3: f32,
-        y3: f32,
-    ) {
+    pub fn curve_to(&mut self, x1: f32, y1: f32, x2: f32, y2: f32, x3: f32, y3: f32) {
         self.output.extend(
             format!(
                 "{:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c\n",
@@ -191,11 +171,7 @@ impl<'a> Canvas<'a> {
         self.fonts
             .entry(font)
             .or_insert_with(|| {
-                create_font_ref(
-                    next_n,
-                    font.get_encoding(),
-                    Arc::new(font.get_metrics()),
-                )
+                create_font_ref(next_n, font.get_encoding(), Arc::new(font.get_metrics()))
             })
             .clone()
     }
@@ -217,14 +193,7 @@ impl<'a> Canvas<'a> {
         result
     }
     /// Utility method for placing a string of text.
-    pub fn left_text(
-        &mut self,
-        x: f32,
-        y: f32,
-        font: BuiltinFont,
-        size: f32,
-        text: &str,
-    ) {
+    pub fn left_text(&mut self, x: f32, y: f32, font: BuiltinFont, size: f32, text: &str) {
         let font = self.get_font(font);
         self.text(|t| {
             t.set_font(&font, size);
@@ -233,14 +202,7 @@ impl<'a> Canvas<'a> {
         })
     }
     /// Utility method for placing a string of text.
-    pub fn right_text(
-        &mut self,
-        x: f32,
-        y: f32,
-        font: BuiltinFont,
-        size: f32,
-        text: &str,
-    ) {
+    pub fn right_text(&mut self, x: f32, y: f32, font: BuiltinFont, size: f32, text: &str) {
         let font = self.get_font(font);
         self.text(|t| {
             let text_width = font.get_width(size, text);
@@ -250,14 +212,7 @@ impl<'a> Canvas<'a> {
         })
     }
     /// Utility method for placing a string of text.
-    pub fn center_text(
-        &mut self,
-        x: f32,
-        y: f32,
-        font: BuiltinFont,
-        size: f32,
-        text: &str,
-    ) {
+    pub fn center_text(&mut self, x: f32, y: f32, font: BuiltinFont, size: f32, text: &str) {
         let font = self.get_font(font);
         self.text(|t| {
             let text_width = font.get_width(size, text);
