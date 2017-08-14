@@ -1,9 +1,7 @@
 [package]
 name = "pdfpdf"
 version = "0.1.0"
-authors = ["Simon Sapin <simon.sapin@exyr.org>",
-	   "Rasmus Kaj <rasmus@krats.se>",
-	   "Benjamin Kimock <kimockb@gmail.com>"]
+authors = ["Benjamin Kimock <kimockb@gmail.com>"]
 license = "MIT"
 description = """
 Generate PDF files in pure Rust.

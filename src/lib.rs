@@ -28,7 +28,6 @@
 //! (https://github.com/saethlin/pdfpdf/tree/master/examples).
 #![deny(missing_docs)]
 
-//extern crate time;
 extern crate deflate;
 
 use std::fs::File;
@@ -201,7 +200,7 @@ impl Pdf {
         self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());
         self.buffer.extend(
             format!(
-                "<</Length {} /Filter /FlateDecode>>\nstream\n",
+                "<</Length {}\n/Filter /FlateDecode>>\nstream\n",
                 compressed.len()
             ).bytes(),
         );
@@ -262,10 +261,11 @@ impl Pdf {
                 self.objects.iter().filter(|o| o.is_page).count()
             ).bytes(),
         );
-        self.buffer.extend_from_slice(b"/Kids [ ");
-        for obj in self.objects.iter().skip(2).filter(|obj| obj.is_page) {
+        self.buffer.extend_from_slice(b"/Kids [");
+        for obj in self.objects.iter().filter(|obj| obj.is_page) {
             self.buffer.extend(format!("{} 0 R ", obj.id).bytes());
         }
+        self.buffer.pop();
         self.buffer.extend_from_slice(b"]>>\nendobj\n");
 
         // Write out the catalog dictionary object
