@@ -1,4 +1,4 @@
-//! A fast library for creating pdf files.
+//! A Pretty Darn Fast library for creating PDF files.
 //!
 //! Currently, only simple vector graphics are supported
 
@@ -196,12 +196,23 @@ impl Pdf {
             is_page: false,
         });
 
-        let compressed = deflate::deflate_bytes_zlib(self.page_buffer.as_slice());
+        let mut compressed = self.page_buffer.clone();
+        let mut rounds = 0;
+        loop {
+            let another = deflate::deflate_bytes_zlib(compressed.as_slice());
+            if another.len() < compressed.len() {
+                compressed = another;
+                rounds += 1;
+            } else {
+                break;
+            }
+        }
         self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());
         self.buffer.extend(
             format!(
-                "<</Length {}\n/Filter /FlateDecode>>\nstream\n",
-                compressed.len()
+                "<</Length {}\n/Filter [{}]>>\nstream\n",
+                compressed.len(),
+                "/FlateDecode ".repeat(rounds)
             ).bytes(),
         );
 

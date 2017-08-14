@@ -8,7 +8,7 @@ use std::f32::consts::PI;
 
 fn main() {
     let mut args = env::args().skip(1);
-    let n: u8 = args.next().map(|s| s.parse().expect("number")).unwrap_or(7);
+    let n: usize = args.next().map(|s| s.parse().expect("number")).unwrap_or(7);
 
     let angle = 2.0 * PI / n as f32;
     let r = 99.0;

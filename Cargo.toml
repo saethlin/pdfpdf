@@ -15,4 +15,4 @@ deflate = "0.7"
 
 [profile.release]
 lto = true
-panic = 'abort'
+panic = "abort"
