@@ -7,21 +7,14 @@ authors = ["Simon Sapin <simon.sapin@exyr.org>",
 license = "MIT"
 description = """
 Generate PDF files in pure Rust.
-Currently, simple vector graphics and text set in the 14 built-in \
-fonts are supported."""
+Currently, simple vector graphics are supported."""
 documentation = "https://docs.rs/pdfpdf"
 repository = "https://github.com/saethlin/pdfpdf"
 readme = "README.md"
 
-build = "src/build_metrics.rs"
-
-[build-dependencies]
-lazy_static = "0.2"
-
 [dependencies]
-lazy_static = "0.2"
-time = "0.1"
 deflate = "0.7"
 
 [profile.release]
+lto = true
 panic = 'abort'

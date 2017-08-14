@@ -9,14 +9,9 @@ fn main() {
         .collect();
 
     Pdf::new()
-        .render_page(600.0, 600.0, |c| {
-            c.set_stroke_color(Color::gray(100));
-            c.move_to(x[0], y[0]);
-            for (x, y) in x.iter().zip(y.iter()) {
-                c.line_to(*x, *y);
-            }
-            c.stroke();
-        })
-        .write_to("/tmp/spectrum.pdf")
+        .add_page(600.0, 600.0)
+        .set_stroke_color(Color::gray(100))
+        .draw_line(x.into_iter().zip(y.into_iter()))
+        .write_to("spectrum.pdf")
         .unwrap();
 }

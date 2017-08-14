@@ -70,24 +70,24 @@ impl Color {
 
 /// A transformation matrix for the pdf graphics state.
 ///
-/// Matrixes can be created with numerous named constructors and
+/// Matrices can be created with numerous named constructors and
 /// combined by multiplication.
 ///
 /// # Examples
 ///
 /// ```
-/// # use pdfpdf::{Pdf, BuiltinFont, FontSource};
+/// # use pdfpdf::Pdf;
 /// # use pdfpdf::graphicsstate::Matrix;
-/// # Pdf::new()
-/// # .render_page(180.0, 240.0, |canvas| {
-/// canvas.concat(Matrix::translate(10.0, 24.0));
+/// Pdf::new()
+///     .add_page(180.0, 240.0)
+///     .transform(Matrix::translate(10.0, 24.0))
 ///
 /// // Matrixes can be combined by multiplication:
-/// canvas.concat(Matrix::translate(7.0, 0.0) * Matrix::rotate_deg(45.0));
+///     .transform(Matrix::translate(7.0, 0.0) * Matrix::rotate_deg(45.0))
 /// // ... will be visualy identical to:
-/// canvas.concat(Matrix::translate(7.0, 0.0));
-/// canvas.concat(Matrix::rotate_deg(45.0));
-/// # }).write_to("foo.pdf").unwrap();
+///     .transform(Matrix::translate(7.0, 0.0))
+///     .transform(Matrix::rotate_deg(45.0))
+///     .write_to("foo.pdf").unwrap();
 /// ```
 pub struct Matrix {
     v: [f32; 6],

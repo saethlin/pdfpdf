@@ -1,36 +1,19 @@
-//! A library for creating pdf files.
+//! A fast library for creating pdf files.
 //!
-//! Currently, simple vector graphics and text set in the 14 built-in
-//! fonts are supported.
-//! The main entry point of the crate is the [struct Pdf](struct.Pdf.html),
-//! representing a PDF file being written.
+//! Currently, only simple vector graphics are supported
 
 //! # Example
 //!
 //! ```
-//! use pdfpdf::{Pdf, BuiltinFont, FontSource};
+//! use pdfpdf::Pdf;
 //! use pdfpdf::graphicsstate::Color;
 //!
-//! // The 14 builtin fonts are available
-//! let font = BuiltinFont::Times_Roman;
-//! // Add a page to the document.  This page will be 180 by 240 pt large.
 //! Pdf::new()
-//!     .render_page(180.0, 240.0, |canvas| {
-//!     // This closure defines the content of the page
-//!         let hello = "Hello World!";
-//!         let w = font.get_width(24.0, hello) + 8.0;
-//!
-//!         // Some simple graphics
-//!         canvas.set_stroke_color(Color::rgb(0, 0, 248));
-//!         canvas.rectangle(90.0 - w / 2.0, 194.0, w, 26.0);
-//!         canvas.stroke();
-//!
-//!         // Some text
-//!         canvas.center_text(90.0, 200.0, font, 24.0, hello)
-//!     })
+//!     .add_page(180.0, 240.0)
+//!     .set_stroke_color(Color::rgb(0, 0, 248))
+//!     .draw_circle(90.0, 120.0, 50.0)
 //!     .write_to("example.pdf")
-//!     .expect("Finish pdf document");
-//! // Write all pending content, including the trailer and index
+//!     .expect("Failed to write to file");
 //! ```
 //!
 //! To use this library you need to add it as a dependency in your
@@ -41,417 +24,287 @@
 //! pdfpdf = "*"
 //! ```
 //!
-//! Some more working usage examples exists in [the examples directory]
+//! More working examples can be found in [here]
 //! (https://github.com/saethlin/pdfpdf/tree/master/examples).
 #![deny(missing_docs)]
 
-#[macro_use]
-extern crate lazy_static;
-extern crate time;
+//extern crate time;
 extern crate deflate;
 
-use std::collections::HashMap;
-use std::fmt;
 use std::fs::File;
 use std::io;
 
-mod fontsource;
-pub use fontsource::{BuiltinFont, FontSource};
-
-mod fontref;
-pub use fontref::FontRef;
-
-mod fontmetrics;
-pub use fontmetrics::FontMetrics;
-
-mod encoding;
-pub use encoding::Encoding;
-
 pub mod graphicsstate;
+use graphicsstate::{Color, Matrix};
 
-mod outline;
-use outline::OutlineItem;
-
-mod canvas;
-pub use canvas::Canvas;
-
-mod textobject;
-pub use textobject::TextObject;
-
-/// The top-level object for writing a PDF.
-///
-/// A PDF file is created with the `create` or `new` methods.
-/// Some metadata can be stored with `set_foo` methods, and pages
-/// are appended with the `render_page` method.
-/// Don't forget to call `finish` when done, to write the document
-/// trailer, without it the written file won't be a proper PDF.
-pub struct Pdf {
-    buffer: Vec<u8>,
-    object_offsets: Vec<i64>,
-    page_objects_ids: Vec<usize>,
-    all_font_object_ids: HashMap<BuiltinFont, usize>,
-    outline_items: Vec<OutlineItem>,
-    document_info: HashMap<String, String>,
+// Represents a PDF internal object
+struct PdfObject {
+    offset: usize,
+    id: usize,
+    is_page: bool,
 }
 
-const ROOT_OBJECT_ID: usize = 1;
-const PAGES_OBJECT_ID: usize = 2;
+/// The top-level struct that represents an in-memory PDF file
+pub struct Pdf {
+    buffer: Vec<u8>,
+    page_buffer: Vec<u8>,
+    objects: Vec<PdfObject>,
+    width: f32,
+    height: f32,
+}
 
 impl Pdf {
-    /// Create a new PDF document, writing to `output`.
+    /// Create a new blank PDF document
     pub fn new() -> Self {
         let mut this = Pdf {
             buffer: Vec::new(),
-            // Object ID 0 is special in PDF.
-            // We reserve IDs 1 and 2 for the catalog and page tree.
-            object_offsets: vec![-1, -1, -1],
-            page_objects_ids: Vec::new(),
-            all_font_object_ids: HashMap::new(),
-            outline_items: Vec::new(),
-            document_info: HashMap::new(),
+            page_buffer: Vec::new(),
+            // Object Catalog and Page Tree
+            objects: vec![
+                PdfObject {
+                    offset: 0,
+                    id: 1,
+                    is_page: false,
+                },
+                PdfObject {
+                    offset: 0,
+                    id: 2,
+                    is_page: false,
+                },
+            ],
+            width: 400.0,
+            height: 400.0,
         };
-        // TODO Maybe use a lower version?  Possibly decide by features used?
+        // PDF magic header, should probably use a lower
         this.buffer.extend_from_slice(
             b"%PDF-1.7\n%\xB5\xED\xAE\xFB\n",
         );
         this
     }
-    /// Set metadata: the document's title.
-    pub fn set_title(&mut self, title: &str) -> &mut Self {
-        self.document_info.insert(
-            "Title".to_string(),
-            title.to_string(),
-        );
-        self
-    }
-    /// Set metadata: the name of the person who created the document.
-    pub fn set_author(&mut self, author: &str) -> &mut Self {
-        self.document_info.insert(
-            "Author".to_string(),
-            author.to_string(),
-        );
-        self
-    }
-    /// Set metadata: the subject of the document.
-    pub fn set_subject(&mut self, subject: &str) -> &mut Self {
-        self.document_info.insert(
-            "Subject".to_string(),
-            subject.to_string(),
-        );
-        self
-    }
-    /// Set metadata: keywords associated with the document.
-    pub fn set_keywords(&mut self, keywords: &str) -> &mut Self {
-        self.document_info.insert(
-            "Subject".to_string(),
-            keywords.to_string(),
-        );
-        self
-    }
-    /// Set metadata: If the document was converted to PDF from another
-    /// format, the name of the conforming product that created the original
-    /// document from which it was converted.
-    pub fn set_creator(&mut self, creator: &str) -> &mut Self {
-        self.document_info.insert(
-            "Creator".to_string(),
-            creator.to_string(),
-        );
-        self
-    }
-    /// Set metadata: If the document was converted to PDF from another
-    /// format, the name of the conforming product that converted it to PDF.
-    pub fn set_producer(&mut self, producer: &str) -> &mut Self {
-        self.document_info.insert(
-            "Producer".to_string(),
-            producer.to_string(),
+
+    /// Move then pen, starting a new path
+    fn move_to(&mut self, x: f32, y: f32) -> &mut Self {
+        self.page_buffer.extend(
+            format!("{:.2} {:.2} m ", x, y).bytes(),
         );
         self
     }
 
-    // TODO: Factor this out
-    /// Return the current read/write position in the output file.
-    fn tell(&mut self) -> usize {
-        self.buffer.len()
+    /// Draw a line from the current location
+    fn line_to(&mut self, x: f32, y: f32) -> &mut Self {
+        self.page_buffer.extend(
+            format!("{:.2} {:.2} l ", x, y).bytes(),
+        );
+        self
     }
 
-    /// Create a new page in the PDF document.
-    ///
-    /// The page will be `width` x `height` points large, and the
-    /// actual content of the page will be created by the function
-    /// `render_contents` by applying drawing methods on the Canvas.
-    pub fn render_page<F>(&mut self, width: f32, height: f32, render_contents: F) -> &mut Self
-    where
-        F: FnOnce(&mut Canvas),
-    {
-        let (contents_object_id, content_length, fonts, outline_items) =
-            self.write_new_object(move |contents_object_id, pdf| {
-                use canvas::create_canvas;
-                // TODO This is silly, we don't need to use a dictionary since we know the size
-                // Guess the ID of the next object. (We’ll assert it below.)
-                pdf.buffer.extend(
+    // Draw a cubic Bézier curve
+    fn curve_to(&mut self, (x1, y1): (f32, f32), (x2, y2): (f32, f32), (x3, y3): (f32, f32))
+        -> &mut Self {
+        self.page_buffer.extend(
+            format!(
+                "{:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c\n",
+                x1,
+                y1,
+                x2,
+                y2,
+                x3,
+                y3
+            ).bytes(),
+        );
+        self
+    }
+
+    /// Set the current line width
+    pub fn set_line_width(&mut self, width: f32) -> &mut Self {
+        self.page_buffer.extend(format!("{:.2} w\n", width).bytes());
+        self
+    }
+
+    /// Set the drawing color for the stroke operation,
+    /// does not affect fill calls
+    pub fn set_stroke_color(&mut self, color: Color) -> &mut Self {
+        let norm = |color| color as f32 / 255.0;
+        match color {
+            Color::RGB { red, green, blue } => {
+                self.page_buffer.extend(
                     format!(
-                        "<< /Length {} 0 R /Filter /FlateDecode >>\nstream\n",
-                        contents_object_id + 1
+                        "{:.2} {:.2} {:.2} SC\n",
+                        norm(red),
+                        norm(green),
+                        norm(blue)
                     ).bytes(),
-                );
-                let mut compression_buffer = Vec::new();
+                )
+            }
+            Color::Gray { gray } => {
+                self.page_buffer.extend(
+                    format!("{:.2} G\n", norm(gray)).bytes(),
+                )
+            }
+        };
+        self
+    }
 
-                compression_buffer.extend("/DeviceRGB cs /DeviceRGB CS\n".bytes());
-                let mut fonts = HashMap::new();
-                let mut outline_items: Vec<OutlineItem> = Vec::new();
-                render_contents(&mut create_canvas(
-                    &mut compression_buffer,
-                    &mut fonts,
-                    &mut outline_items,
-                ));
+    /// Apply a coordinate transformation to all subsequent drawing calls
+    pub fn transform(&mut self, m: Matrix) -> &mut Self {
+        self.page_buffer.extend(format!("{} cm\n", m).bytes());
+        self
+    }
 
-                let compressed = deflate::deflate_bytes_zlib(compression_buffer.as_slice());
-                pdf.buffer.extend(compressed.iter());
-                pdf.buffer.extend("\nendstream\n".bytes());
-                (contents_object_id, compressed.len(), fonts, outline_items)
-            });
-        self.write_new_object(|length_object_id, pdf| {
-            assert!(length_object_id == contents_object_id + 1);
-            pdf.buffer.extend(format!("{}\n", content_length).bytes());
-        });
+    /// Draw a circle with the current drawing configuration,
+    /// based on http://spencermortensen.com/articles/bezier-circle/
+    pub fn draw_circle(&mut self, x: f32, y: f32, radius: f32) -> &mut Self {
+        let top = y - radius;
+        let bottom = y + radius;
+        let left = x - radius;
+        let right = x + radius;
+        let c = 0.551915024494;
+        let leftp = x - (radius * c);
+        let rightp = x + (radius * c);
+        let topp = y - (radius * c);
+        let bottomp = y + (radius * c);
+        self.move_to(x, top);
+        self.curve_to((leftp, top), (left, topp), (left, y));
+        self.curve_to((left, bottomp), (leftp, bottom), (x, bottom));
+        self.curve_to((rightp, bottom), (right, bottomp), (right, y));
+        self.curve_to((right, topp), (rightp, top), (x, top));
+        self.page_buffer.extend_from_slice(b"S\n");
+        self
+    }
 
-        let mut font_oids = NamedRefs::new();
-        for (src, r) in &fonts {
-            if let Some(&object_id) = self.all_font_object_ids.get(&src) {
-                font_oids.insert(r.clone(), object_id);
-            } else {
-                let object_id = src.write_object(self);
-                font_oids.insert(r.clone(), object_id);
-                self.all_font_object_ids.insert(*src, object_id);
+    /// Draw a line between all these points in the order they appear
+    pub fn draw_line<I>(&mut self, mut points: I) -> &mut Self
+    where
+        I: Iterator<Item = (f32, f32)>,
+    {
+        if let Some((x, y)) = points.next() {
+            self.move_to(x, y);
+            for (x, y) in points {
+                self.line_to(x, y);
             }
         }
-        let page_oid = self.write_page_dict(contents_object_id, width, height, font_oids);
-        // Take the outline_items from this page, mark them with the page ref,
-        // and save them for the document outline.
-        for i in &outline_items {
-            let mut item = i.clone();
-            item.set_page(page_oid);
-            self.outline_items.push(item);
-        }
-        self.page_objects_ids.push(page_oid);
+        self.page_buffer.extend_from_slice(b"S\n");
         self
     }
 
-    fn write_page_dict(&mut self, content_oid: usize, width: f32, height: f32, font_oids: NamedRefs)
-        -> usize {
-        self.write_new_object(|page_oid, pdf| {
-            pdf.buffer.extend(
-                format!(
-                    "<< /Type /Page\n   \
-                       /Parent {parent} 0 R\n   \
-                       /Resources << /Font << {fonts}>> >>\n   \
-                       /MediaBox [ 0 0 {width} {height} ]\n   \
-                       /Contents {c_oid} 0 R\n\
-                    >>\n",
-                    parent = PAGES_OBJECT_ID,
-                    fonts = font_oids,
-                    width = width,
-                    height = height,
-                    c_oid = content_oid
-                ).bytes(),
-            );
-            page_oid
-        })
+    /// Dump a page out to disk
+    fn flush_page(&mut self) {
+        // Write out the data stream for this page
+        let obj_id = self.objects.iter().map(|o| o.id).max().unwrap() + 1;
+        self.objects.push(PdfObject {
+            offset: self.buffer.len(),
+            id: obj_id,
+            is_page: false,
+        });
+
+        let compressed = deflate::deflate_bytes_zlib(self.page_buffer.as_slice());
+        self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());
+        self.buffer.extend(
+            format!(
+                "<</Length {} /Filter /FlateDecode>>\nstream\n",
+                compressed.len()
+            ).bytes(),
+        );
+
+        self.buffer.extend(compressed.iter());
+        self.buffer.extend("\nendstream\nendobj\n".bytes());
+        self.page_buffer.clear();
+
+        // Write out the page object
+        let obj_id = self.objects.iter().map(|o| o.id).max().unwrap() + 1;
+        self.objects.push(PdfObject {
+            offset: self.buffer.len(),
+            id: obj_id,
+            is_page: true,
+        });
+        self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());
+        self.buffer.extend_from_slice(b"<</Type /Page\n");
+        self.buffer.extend_from_slice(b"/Parent 2 0 R\n");
+        self.buffer.extend(
+            format!("/MediaBox [0 0 {} {}]\n", self.width, self.height).bytes(),
+        );
+        self.buffer.extend(
+            format!("/Contents {} 0 R", obj_id - 1).bytes(),
+        );
+        self.buffer.extend_from_slice(b">>\nendobj\n");
     }
 
-    fn write_new_object<F, T>(&mut self, write_content: F) -> T
-    where
-        F: FnOnce(usize, &mut Pdf) -> T,
-    {
-        let id = self.object_offsets.len();
-        let (result, offset) = self.write_object(id, |pdf| write_content(id, pdf));
-        self.object_offsets.push(offset);
-        result
+    /// Move to a new page in the PDF document
+    pub fn add_page(&mut self, width: f32, height: f32) -> &mut Self {
+        // Compress and write out the previous page if it exists
+        if !self.page_buffer.is_empty() {
+            self.flush_page();
+        }
+
+        self.page_buffer.extend(
+            "/DeviceRGB cs /DeviceRGB CS\n".bytes(),
+        );
+        self.width = width;
+        self.height = height;
+        self
     }
 
-    fn write_object_with_id<F, T>(&mut self, id: usize, write_content: F) -> T
-    where
-        F: FnOnce(&mut Pdf) -> T,
-    {
-        assert!(self.object_offsets[id] == -1);
-        let (result, offset) = self.write_object(id, write_content);
-        self.object_offsets[id] = offset;
-        result
-    }
-
-    fn write_object<F, T>(&mut self, id: usize, write_content: F) -> (T, i64)
-    where
-        F: FnOnce(&mut Pdf) -> T,
-    {
-        // `as i64` here would overflow for PDF files bigger than 2**63 bytes
-        let offset = self.tell() as i64;
-        self.buffer.extend(format!("{} 0 obj\n", id).bytes());
-        let result = write_content(self);
-        self.buffer.extend("endobj\n".bytes());
-        (result, offset)
-    }
-
-    /// Write out the document trailer.
-    /// The trailer consists of the pages object, the root object,
-    /// the xref list, the trailer object and the startxref position.
+    /// Write the in-memory PDF representation to disk
     pub fn write_to(&mut self, filename: &str) -> io::Result<()> {
         use std::io::Write;
 
-        self.write_object_with_id(PAGES_OBJECT_ID, |pdf| {
-            pdf.buffer.extend(
-                format!(
-                    "<< /Type /Pages\n   \
-                       /Count {c}\n   \
-                       /Kids [ {pages}]\n\
-                    >>\n",
-                    c = pdf.page_objects_ids.len(),
-                    pages = pdf.page_objects_ids
-                        .iter()
-                        .map(|id| format!("{} 0 R ", id))
-                        .collect::<String>()
-                ).bytes(),
+        if !self.page_buffer.is_empty() {
+            self.flush_page();
+        }
+
+        // Write out the page tree object
+        self.objects[1].offset = self.buffer.len();
+        self.buffer.extend_from_slice(b"2 0 obj\n");
+        self.buffer.extend_from_slice(b"<</Type /Pages\n");
+        self.buffer.extend(
+            format!(
+                "/Count {}\n",
+                self.objects.iter().filter(|o| o.is_page).count()
+            ).bytes(),
+        );
+        self.buffer.extend_from_slice(b"/Kids [ ");
+        for obj in self.objects.iter().skip(2).filter(|obj| obj.is_page) {
+            self.buffer.extend(format!("{} 0 R ", obj.id).bytes());
+        }
+        self.buffer.extend_from_slice(b"]>>\nendobj\n");
+
+        // Write out the catalog dictionary object
+        self.objects[0].offset = self.buffer.len();
+        self.buffer.extend_from_slice(
+            b"1 0 obj\n<</Type /Catalog\n/Pages 2 0 R>>\nendobj\n",
+        );
+
+        // Write the cross-reference table
+        let startxref = self.buffer.len();
+        self.buffer.extend_from_slice(b"xref\n");
+        self.buffer.extend(
+            format!("0 {}\n", self.objects.len() + 1).bytes(),
+        );
+        self.buffer.extend_from_slice(b"0000000000 65535 f \n");
+        self.objects.sort_by(|a, b| a.id.cmp(&b.id));
+
+        for obj in &self.objects {
+            self.buffer.extend(
+                format!("{:010} 00000 f \n", obj.offset).bytes(),
             );
-        });
-        let document_info_id = if !self.document_info.is_empty() {
-            let info = self.document_info.clone();
-            self.write_new_object(|page_object_id, pdf| {
-                write!(pdf.buffer, "<<").unwrap();
-                for (key, value) in info {
-                    write!(pdf.buffer, " /{} ({})\n", key, value).unwrap();
-                }
-                if let Ok(now) = time::strftime("%Y%m%d%H%M%S%z", &time::now()) {
-                    write!(
-                        pdf.buffer,
-                        " /CreationDate (D:{now})\n \
-                                  /ModDate (D:{now})",
-                        now = now
-                    ).unwrap();
-                }
-                write!(pdf.buffer, ">>\n").unwrap();
-                Some(page_object_id)
-            })
-        } else {
-            None
-        };
-
-        let outlines_id = self.write_outlines();
-
-        self.write_object_with_id(ROOT_OBJECT_ID, |pdf| {
-            write!(
-                pdf.buffer,
-                "<< /Type /Catalog\n   \
-                            /Pages {} 0 R\n",
-                PAGES_OBJECT_ID
-            ).unwrap();
-            if let Some(outlines_id) = outlines_id {
-                write!(pdf.buffer, "/Outlines {} 0 R\n", outlines_id).unwrap();
-            }
-            write!(pdf.buffer, ">>\n").unwrap();
-        });
-        let startxref = self.tell();
-        write!(
-            self.buffer,
-            "xref\n\
-                     0 {}\n\
-                     0000000000 65535 f \n",
-            self.object_offsets.len()
-        ).unwrap();
-        // Object 0 (above) is special
-        // Use [1..] to skip object 0 in self.object_offsets.
-        for &offset in &self.object_offsets[1..] {
-            assert!(offset >= 0);
-            write!(self.buffer, "{:010} 00000 n \n", offset).unwrap();
-        }
-        write!(
-            self.buffer,
-            "trailer\n\
-                     << /Size {size}\n   \
-                        /Root {root} 0 R\n",
-            size = self.object_offsets.len(),
-            root = ROOT_OBJECT_ID
-        ).unwrap();
-        if let Some(id) = document_info_id {
-            write!(self.buffer, "   /Info {} 0 R\n", id).unwrap();
         }
 
-        write!(
-            self.buffer,
-            ">>\n\
-                     startxref\n\
-                     {}\n\
-                     %%EOF\n",
-            startxref
-        ).unwrap();
+        // Write the document trailer
+        self.buffer.extend_from_slice(b"trailer\n");
+        self.buffer.extend(
+            format!("<</Size {}\n", self.objects.len())
+                .bytes(),
+        );
+        self.buffer.extend_from_slice(b"/Root 1 0 R>>\n");
+
+        // Write the offset to the xref table
+        self.buffer.extend(
+            format!("startxref\n{}\n", startxref).bytes(),
+        );
+
+        // Write the PDF EOF
+        self.buffer.extend_from_slice(b"%%EOF");
 
         File::create(filename)?.write_all(self.buffer.as_slice())
-    }
-
-    fn write_outlines(&mut self) -> Option<usize> {
-        if self.outline_items.is_empty() {
-            return None;
-        }
-
-        let parent_id = self.object_offsets.len();
-        self.object_offsets.push(-1);
-        let count = self.outline_items.len();
-        let mut first_id = 0;
-        let mut last_id = 0;
-        let items = self.outline_items.clone();
-        for (i, item) in items.iter().enumerate() {
-            let (is_first, is_last) = (i == 0, i == count - 1);
-            let id = self.write_new_object(|object_id, pdf| {
-                item.write_dictionary(
-                    &mut pdf.buffer,
-                    parent_id,
-                    if is_first { None } else { Some(object_id - 1) },
-                    if is_last { None } else { Some(object_id + 1) },
-                );
-                object_id
-            });
-            if is_first {
-                first_id = id;
-            }
-            if is_last {
-                last_id = id;
-            }
-        }
-        self.write_object_with_id(parent_id, |pdf| {
-            pdf.buffer.extend(
-                format!(
-                    "<< /Type /Outlines\n   \
-                    /First {first} 0 R\n   \
-                    /Last {last} 0 R\n   \
-                    /Count {count}\n\
-                    >>\n",
-                    last = last_id,
-                    first = first_id,
-                    count = count
-                ).bytes(),
-            );
-        });
-        Some(parent_id)
-    }
-}
-
-struct NamedRefs {
-    oids: HashMap<FontRef, usize>,
-}
-
-impl NamedRefs {
-    fn new() -> Self {
-        NamedRefs { oids: HashMap::new() }
-    }
-    fn insert(&mut self, name: FontRef, oid: usize) -> Option<usize> {
-        self.oids.insert(name, oid)
-    }
-}
-
-
-impl fmt::Display for NamedRefs {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for (name, id) in self.oids.iter() {
-            write!(f, "{} {} 0 R ", name, id)?;
-        }
-        Ok(())
     }
 }
