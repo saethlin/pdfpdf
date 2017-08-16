@@ -1,6 +1,6 @@
 [package]
 name = "pdfpdf"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Benjamin Kimock <kimockb@gmail.com>"]
 license = "MIT"
 description = """

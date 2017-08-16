@@ -1,6 +1,6 @@
-//! A Pretty Darn Fast library for creating PDF files.
+//! A Pretty Darn Fast library for creating PDF files. Currently, only simple vector graphics and simple text are supported
 //!
-//! Currently, only simple vector graphics are supported
+//!
 
 //! # Example
 //!
@@ -55,10 +55,11 @@ pub struct Pdf {
 impl Pdf {
     /// Create a new blank PDF document
     pub fn new() -> Self {
-        let mut this = Pdf {
-            buffer: Vec::new(),
+        let mut buffer = Vec::new();
+        buffer.extend(b"%PDF-1.7\n%\xB5\xED\xAE\xFB\n");
+        Pdf {
+            buffer: buffer,
             page_buffer: Vec::new(),
-            // Object Catalog and Page Tree
             objects: vec![
                 PdfObject {
                     offset: 0,
@@ -73,12 +74,7 @@ impl Pdf {
             ],
             width: 400.0,
             height: 400.0,
-        };
-        // PDF magic header, should probably use a lower
-        this.buffer.extend_from_slice(
-            b"%PDF-1.7\n%\xB5\xED\xAE\xFB\n",
-        );
-        this
+        }
     }
 
     /// Move then pen, starting a new path
@@ -186,6 +182,14 @@ impl Pdf {
         self
     }
 
+    /// Draw text a a given location with the current settings
+    pub fn draw_text(&mut self, text: &str, x: f32, y: f32) -> &mut Self {
+        self.page_buffer.extend(
+            format!("BT\n/F13 21 Tf\n{} {} Td\n({}) Tj\nET\n", x, y, text).bytes(),
+        );
+        self
+    }
+
     /// Dump a page out to disk
     fn flush_page(&mut self) {
         // Write out the data stream for this page
@@ -217,7 +221,7 @@ impl Pdf {
         );
 
         self.buffer.extend(compressed.iter());
-        self.buffer.extend("\nendstream\nendobj\n".bytes());
+        self.buffer.extend("endstream\nendobj\n".bytes());
         self.page_buffer.clear();
 
         // Write out the page object
@@ -230,6 +234,10 @@ impl Pdf {
         self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());
         self.buffer.extend_from_slice(b"<</Type /Page\n");
         self.buffer.extend_from_slice(b"/Parent 2 0 R\n");
+        // TODO: Temporary restricted fonts
+        self.buffer.extend_from_slice(
+            b"/Resources << /Font << /F13 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>\n",
+        );
         self.buffer.extend(
             format!("/MediaBox [0 0 {} {}]\n", self.width, self.height).bytes(),
         );
