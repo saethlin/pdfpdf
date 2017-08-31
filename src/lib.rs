@@ -21,7 +21,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! pdfpdf = "*"
+//! pdfpdf = "0.2"
 //! ```
 //!
 //! More working examples can be found in [here]
@@ -31,14 +31,18 @@
 #[macro_use]
 extern crate lazy_static;
 extern crate deflate;
+extern crate num;
 
+use num::NumCast;
 use std::fs::File;
 use std::io;
 
 mod graphicsstate;
 mod fonts;
-use fonts::Font;
+mod text;
+pub use fonts::Font;
 pub use graphicsstate::{Color, Matrix};
+pub use text::Alignment;
 
 // Represents a PDF internal object
 struct PdfObject {
@@ -52,9 +56,10 @@ pub struct Pdf {
     buffer: Vec<u8>,
     page_buffer: Vec<u8>,
     objects: Vec<PdfObject>,
-    width: f32,
-    height: f32,
+    width: f64,
+    height: f64,
     font: fonts::Font,
+    font_size: f64,
 }
 
 impl Pdf {
@@ -81,12 +86,13 @@ impl Pdf {
             width: 400.0,
             height: 400.0,
             font: fonts::Font::Helvetica,
+            font_size: 12.0,
         }
     }
 
     /// Move then pen, starting a new path
     #[inline]
-    fn move_to(&mut self, x: f32, y: f32) -> &mut Self {
+    fn move_to(&mut self, x: f64, y: f64) -> &mut Self {
         self.page_buffer.extend(
             format!("{:.2} {:.2} m ", x, y).bytes(),
         );
@@ -95,7 +101,7 @@ impl Pdf {
 
     /// Draw a line from the current location
     #[inline]
-    fn line_to(&mut self, x: f32, y: f32) -> &mut Self {
+    fn line_to(&mut self, x: f64, y: f64) -> &mut Self {
         self.page_buffer.extend(
             format!("{:.2} {:.2} l ", x, y).bytes(),
         );
@@ -106,9 +112,9 @@ impl Pdf {
     #[inline]
     fn curve_to(
         &mut self,
-        (x1, y1): (f32, f32),
-        (x2, y2): (f32, f32),
-        (x3, y3): (f32, f32),
+        (x1, y1): (f64, f64),
+        (x2, y2): (f64, f64),
+        (x3, y3): (f64, f64),
     ) -> &mut Self {
         self.page_buffer.extend(
             format!(
@@ -126,8 +132,13 @@ impl Pdf {
 
     /// Set the current line width
     #[inline]
-    pub fn set_line_width(&mut self, width: f32) -> &mut Self {
-        self.page_buffer.extend(format!("{:.2} w\n", width).bytes());
+    pub fn set_line_width<N: NumCast>(&mut self, width: N) -> &mut Self {
+        self.page_buffer.extend(
+            format!(
+                "{:.2} w\n",
+                width.to_f64().unwrap()
+            ).bytes(),
+        );
         self
     }
 
@@ -135,7 +146,7 @@ impl Pdf {
     /// does not affect fill calls
     #[inline]
     pub fn set_stroke_color(&mut self, color: &Color) -> &mut Self {
-        let norm = |color| color as f32 / 255.0;
+        let norm = |color| color as f64 / 255.0;
         self.page_buffer.extend(
             format!(
                 "{:.2} {:.2} {:.2} SC\n",
@@ -157,7 +168,10 @@ impl Pdf {
     /// Draw a circle with the current drawing configuration,
     /// based on http://spencermortensen.com/articles/bezier-circle/
     #[inline]
-    pub fn draw_circle(&mut self, x: f32, y: f32, radius: f32) -> &mut Self {
+    pub fn draw_circle<N: NumCast>(&mut self, x: N, y: N, radius: N) -> &mut Self {
+        let x = x.to_f64().unwrap();
+        let y = y.to_f64().unwrap();
+        let radius = radius.to_f64().unwrap();
         let top = y - radius;
         let bottom = y + radius;
         let left = x - radius;
@@ -178,13 +192,17 @@ impl Pdf {
 
     /// Draw a line between all these points in the order they appear
     #[inline]
-    pub fn draw_line<I>(&mut self, mut points: I) -> &mut Self
+    pub fn draw_line<I, N: NumCast>(&mut self, mut points: I) -> &mut Self
     where
-        I: Iterator<Item = (f32, f32)>,
+        I: Iterator<Item = (N, N)>,
     {
         if let Some((x, y)) = points.next() {
+            let x = x.to_f64().unwrap();
+            let y = y.to_f64().unwrap();
             self.move_to(x, y);
             for (x, y) in points {
+                let x = x.to_f64().unwrap();
+                let y = y.to_f64().unwrap();
                 self.line_to(x, y);
             }
         }
@@ -194,42 +212,59 @@ impl Pdf {
 
     #[inline]
     /// Set the font for all subsequent drawing calls
-    pub fn font(&mut self, font: Font) -> &mut Self {
+    pub fn font<N: NumCast>(&mut self, font: Font, size: N) -> &mut Self {
         self.font = font;
+        self.font_size = size.to_f64().unwrap();
         self
     }
 
     /// Draw text at a given location with the current settings
     #[inline]
-    pub fn draw_text(&mut self, text: &str, x: f32, y: f32) -> &mut Self {
+    pub fn draw_text<N: NumCast>(
+        &mut self,
+        x: N,
+        y: N,
+        alignment: Alignment,
+        text: &str,
+    ) -> &mut Self {
+
+        let x = x.to_f64().unwrap();
+        let y = y.to_f64().unwrap();
+
+        // TODO: Width calculation should be done conditionally
+        // TODO: Not sure why the rendering appears to ignore newline characters...
+        let widths = &fonts::GLYPH_WIDTHS[&self.font];
+        let width = text.chars()
+            .filter(|c| *c != '\n')
+            .map(|c| *widths.get(&c).unwrap_or(&1.0))
+            .sum::<f64>() * self.font_size;
+        let height = self.font_size;
+
+        let (x, y) = match alignment {
+            Alignment::TopLeft => (x, y - height),
+            Alignment::TopRight => (x - width, y - height),
+            Alignment::TopCenter => (x - width / 2.0, y - height),
+            Alignment::BottomLeft => (x, y),
+            Alignment::BottomRight => (x - width, y),
+            Alignment::BottomCenter => (x - width / 2.0, y),
+        };
+
         self.page_buffer.extend(
-            format!("BT\n/F13 12 Tf\n{} {} Td\n(", x, y)
-                .bytes(),
+            format!("BT\n/F13 {} Tf\n{} {} Td\n(", self.font_size, x, y).bytes(),
         );
         for c in text.chars() {
-            let data = format!("\\{:o}", c as u8);
+            let data = format!("\\{:o}", c as u32);
+            //println!("{}", data);
             self.page_buffer.extend(data.bytes());
         }
         self.page_buffer.extend(b") Tj\nET\n");
         self
     }
 
-    /// Draw text with the bottom-right corner at x, y
-    #[inline]
-    pub fn draw_text_right_aligned(&mut self, text: &str, mut x: f32, y: f32) -> &mut Self {
-        {
-            let widths = &fonts::GLYPH_WIDTHS[&self.font];
-            let width: f64 = text.chars().map(|c| *widths.get(&c).expect(&format!("Character \"{}\" not found", c))).sum();
-            x -= width as f32 * 12.0;
-        }
-        self.draw_text(text, x, y);
-        self
-    }
-
     // TODO: test with multi-page documents
     /// Move to a new page in the PDF document
     #[inline]
-    pub fn add_page(&mut self, width: f32, height: f32) -> &mut Self {
+    pub fn add_page<N: NumCast>(&mut self, width: N, height: N) -> &mut Self {
         // Compress and write out the previous page if it exists
         if !self.page_buffer.is_empty() {
             self.flush_page();
@@ -238,8 +273,8 @@ impl Pdf {
         self.page_buffer.extend(
             "/DeviceRGB cs /DeviceRGB CS\n".bytes(),
         );
-        self.width = width;
-        self.height = height;
+        self.width = width.to_f64().unwrap();
+        self.height = height.to_f64().unwrap();
         self
     }
 

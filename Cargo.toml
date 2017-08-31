@@ -18,6 +18,7 @@ categories = ["visualization"]
 [dependencies]
 deflate = "0.7"
 lazy_static = "0.2"
+num = "0.1"
 
 [profile.release]
 lto = true

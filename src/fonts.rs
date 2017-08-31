@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
 #![allow(unused_mut)]
+#![allow(missing_docs)]
 use std::collections::HashMap;
 
 lazy_static!{

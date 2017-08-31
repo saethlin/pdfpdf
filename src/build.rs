@@ -1,5 +1,4 @@
 use std::char;
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::Path;
@@ -10,12 +9,6 @@ fn main() {
     // .afm file gives us a mapping from postscript name to width
 
     let output_path = Path::new("src/fonts.rs");
-
-    /*
-    if output_path.is_file() {
-        return;
-    }
-    */
 
     let mut char_to_name = Vec::new();
     for line in BufReader::new(File::open("data/glyphlist.txt").unwrap())
@@ -39,6 +32,7 @@ fn main() {
     let mut output = BufWriter::new(File::create(output_path).unwrap());
     write!(output, "#![allow(non_snake_case)]\n").unwrap();
     write!(output, "#![allow(unused_mut)]\n").unwrap();
+    write!(output, "#![allow(missing_docs)]\n").unwrap();
 
     write!(output, "use std::collections::HashMap;\n\n").unwrap();
     write!(output, "lazy_static!{{\n").unwrap();
