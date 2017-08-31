@@ -1,4 +1,4 @@
-//! A Pretty Darn Fast library for creating PDF files. Currently, only simple vector graphics and simple text are supported
+//! A Pretty Darn Fast library for creating PDF files. Currently, only simple vector graphics and simple text are supported.
 //!
 //!
 
@@ -28,13 +28,17 @@
 //! (https://github.com/saethlin/pdfpdf/tree/master/examples).
 #![deny(missing_docs)]
 
+#[macro_use]
+extern crate lazy_static;
 extern crate deflate;
 
 use std::fs::File;
 use std::io;
 
-pub mod graphicsstate;
-use graphicsstate::{Color, Matrix};
+mod graphicsstate;
+mod fonts;
+use fonts::Font;
+pub use graphicsstate::{Color, Matrix};
 
 // Represents a PDF internal object
 struct PdfObject {
@@ -50,10 +54,12 @@ pub struct Pdf {
     objects: Vec<PdfObject>,
     width: f32,
     height: f32,
+    font: fonts::Font,
 }
 
 impl Pdf {
     /// Create a new blank PDF document
+    #[inline]
     pub fn new() -> Self {
         let mut buffer = Vec::new();
         buffer.extend(b"%PDF-1.7\n%\xB5\xED\xAE\xFB\n");
@@ -74,10 +80,12 @@ impl Pdf {
             ],
             width: 400.0,
             height: 400.0,
+            font: fonts::Font::Helvetica,
         }
     }
 
     /// Move then pen, starting a new path
+    #[inline]
     fn move_to(&mut self, x: f32, y: f32) -> &mut Self {
         self.page_buffer.extend(
             format!("{:.2} {:.2} m ", x, y).bytes(),
@@ -86,6 +94,7 @@ impl Pdf {
     }
 
     /// Draw a line from the current location
+    #[inline]
     fn line_to(&mut self, x: f32, y: f32) -> &mut Self {
         self.page_buffer.extend(
             format!("{:.2} {:.2} l ", x, y).bytes(),
@@ -94,8 +103,13 @@ impl Pdf {
     }
 
     // Draw a cubic Bézier curve
-    fn curve_to(&mut self, (x1, y1): (f32, f32), (x2, y2): (f32, f32), (x3, y3): (f32, f32))
-        -> &mut Self {
+    #[inline]
+    fn curve_to(
+        &mut self,
+        (x1, y1): (f32, f32),
+        (x2, y2): (f32, f32),
+        (x3, y3): (f32, f32),
+    ) -> &mut Self {
         self.page_buffer.extend(
             format!(
                 "{:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c\n",
@@ -111,6 +125,7 @@ impl Pdf {
     }
 
     /// Set the current line width
+    #[inline]
     pub fn set_line_width(&mut self, width: f32) -> &mut Self {
         self.page_buffer.extend(format!("{:.2} w\n", width).bytes());
         self
@@ -118,29 +133,22 @@ impl Pdf {
 
     /// Set the drawing color for the stroke operation,
     /// does not affect fill calls
-    pub fn set_stroke_color(&mut self, color: Color) -> &mut Self {
+    #[inline]
+    pub fn set_stroke_color(&mut self, color: &Color) -> &mut Self {
         let norm = |color| color as f32 / 255.0;
-        match color {
-            Color::RGB { red, green, blue } => {
-                self.page_buffer.extend(
-                    format!(
-                        "{:.2} {:.2} {:.2} SC\n",
-                        norm(red),
-                        norm(green),
-                        norm(blue)
-                    ).bytes(),
-                )
-            }
-            Color::Gray { gray } => {
-                self.page_buffer.extend(
-                    format!("{:.2} G\n", norm(gray)).bytes(),
-                )
-            }
-        };
+        self.page_buffer.extend(
+            format!(
+                "{:.2} {:.2} {:.2} SC\n",
+                norm(color.red),
+                norm(color.green),
+                norm(color.blue),
+            ).bytes(),
+        );
         self
     }
 
     /// Apply a coordinate transformation to all subsequent drawing calls
+    #[inline]
     pub fn transform(&mut self, m: Matrix) -> &mut Self {
         self.page_buffer.extend(format!("{} cm\n", m).bytes());
         self
@@ -148,6 +156,7 @@ impl Pdf {
 
     /// Draw a circle with the current drawing configuration,
     /// based on http://spencermortensen.com/articles/bezier-circle/
+    #[inline]
     pub fn draw_circle(&mut self, x: f32, y: f32, radius: f32) -> &mut Self {
         let top = y - radius;
         let bottom = y + radius;
@@ -168,6 +177,7 @@ impl Pdf {
     }
 
     /// Draw a line between all these points in the order they appear
+    #[inline]
     pub fn draw_line<I>(&mut self, mut points: I) -> &mut Self
     where
         I: Iterator<Item = (f32, f32)>,
@@ -182,11 +192,54 @@ impl Pdf {
         self
     }
 
-    /// Draw text a a given location with the current settings
+    #[inline]
+    /// Set the font for all subsequent drawing calls
+    pub fn font(&mut self, font: Font) -> &mut Self {
+        self.font = font;
+        self
+    }
+
+    /// Draw text at a given location with the current settings
+    #[inline]
     pub fn draw_text(&mut self, text: &str, x: f32, y: f32) -> &mut Self {
         self.page_buffer.extend(
-            format!("BT\n/F13 21 Tf\n{} {} Td\n({}) Tj\nET\n", x, y, text).bytes(),
+            format!("BT\n/F13 12 Tf\n{} {} Td\n(", x, y)
+                .bytes(),
         );
+        for c in text.chars() {
+            let data = format!("\\{:o}", c as u8);
+            self.page_buffer.extend(data.bytes());
+        }
+        self.page_buffer.extend(b") Tj\nET\n");
+        self
+    }
+
+    /// Draw text with the bottom-right corner at x, y
+    #[inline]
+    pub fn draw_text_right_aligned(&mut self, text: &str, mut x: f32, y: f32) -> &mut Self {
+        {
+            let widths = &fonts::GLYPH_WIDTHS[&self.font];
+            let width: f64 = text.chars().map(|c| *widths.get(&c).expect(&format!("Character \"{}\" not found", c))).sum();
+            x -= width as f32 * 12.0;
+        }
+        self.draw_text(text, x, y);
+        self
+    }
+
+    // TODO: test with multi-page documents
+    /// Move to a new page in the PDF document
+    #[inline]
+    pub fn add_page(&mut self, width: f32, height: f32) -> &mut Self {
+        // Compress and write out the previous page if it exists
+        if !self.page_buffer.is_empty() {
+            self.flush_page();
+        }
+
+        self.page_buffer.extend(
+            "/DeviceRGB cs /DeviceRGB CS\n".bytes(),
+        );
+        self.width = width;
+        self.height = height;
         self
     }
 
@@ -236,7 +289,7 @@ impl Pdf {
         self.buffer.extend_from_slice(b"/Parent 2 0 R\n");
         // TODO: Temporary restricted fonts
         self.buffer.extend_from_slice(
-            b"/Resources << /Font << /F13 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>\n",
+            b"/Resources << /Font << /F13 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding>> >> >>\n",
         );
         self.buffer.extend(
             format!("/MediaBox [0 0 {} {}]\n", self.width, self.height).bytes(),
@@ -245,21 +298,6 @@ impl Pdf {
             format!("/Contents {} 0 R", obj_id - 1).bytes(),
         );
         self.buffer.extend_from_slice(b">>\nendobj\n");
-    }
-
-    /// Move to a new page in the PDF document
-    pub fn add_page(&mut self, width: f32, height: f32) -> &mut Self {
-        // Compress and write out the previous page if it exists
-        if !self.page_buffer.is_empty() {
-            self.flush_page();
-        }
-
-        self.page_buffer.extend(
-            "/DeviceRGB cs /DeviceRGB CS\n".bytes(),
-        );
-        self.width = width;
-        self.height = height;
-        self
     }
 
     /// Write the in-memory PDF representation to disk

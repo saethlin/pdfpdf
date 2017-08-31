@@ -1,8 +1,7 @@
 ///! Example program drawing mandalas on a page.
 extern crate pdfpdf;
 
-use pdfpdf::Pdf;
-use pdfpdf::graphicsstate::{Color, Matrix};
+use pdfpdf::{Color, Matrix, Pdf};
 use std::env;
 use std::f32::consts::PI;
 
@@ -19,7 +18,7 @@ fn main() {
     document
         .add_page(600.0, 600.0)
         .transform(Matrix::translate(300.0, 300.0))
-        .set_stroke_color(Color::gray(0));
+        .set_stroke_color(&Color::gray(0));
 
     for _ in 0..n {
         document

@@ -6,6 +6,7 @@ use std::ops::Mul;
 
 /// Line join styles, as described in section 8.4.3.4 of the PDF
 /// specification.
+#[allow(dead_code)]
 pub enum JoinStyle {
     /// The outer edges continues until they meet.
     Miter,
@@ -18,6 +19,7 @@ pub enum JoinStyle {
 
 /// Line cap styles, as described in section 8.4.3.4 of the PDF
 /// specification.
+#[allow(dead_code)]
 pub enum CapStyle {
     /// Truncate the line squarely through the endpoint.
     Butt,
@@ -29,11 +31,14 @@ pub enum CapStyle {
 }
 
 /// Any color (or grayscale) value that this library can make PDF represent.
-pub enum Color {
-    #[doc(hidden)]
-    RGB { red: u8, green: u8, blue: u8 },
-    #[doc(hidden)]
-    Gray { gray: u8 },
+#[derive(Clone)]
+pub struct Color {
+    /// Red
+    pub red: u8,
+    /// Green
+    pub green: u8,
+    /// Blue
+    pub blue: u8,
 }
 
 impl Color {
@@ -47,8 +52,9 @@ impl Color {
     /// let red    = Color::rgb(255, 0, 0);
     /// let yellow = Color::rgb(255, 255, 0);
     /// ````
+    #[inline]
     pub fn rgb(red: u8, green: u8, blue: u8) -> Self {
-        Color::RGB {
+        Color {
             red: red,
             green: green,
             blue: blue,
@@ -63,8 +69,13 @@ impl Color {
     /// let white = Color::gray(255);
     /// let gray  = Color::gray(128);
     /// ````
+    #[inline]
     pub fn gray(gray: u8) -> Self {
-        Color::Gray { gray: gray }
+        Color {
+            red: gray,
+            green: gray,
+            blue: gray,
+        }
     }
 }
 
@@ -95,34 +106,41 @@ pub struct Matrix {
 
 impl Matrix {
     /// Construct a matrix for translation
+    #[inline]
     pub fn translate(dx: f32, dy: f32) -> Self {
         Matrix { v: [1., 0., 0., 1., dx, dy] }
     }
     /// Construct a matrix for rotating by `a` radians.
+    #[inline]
     pub fn rotate(a: f32) -> Self {
         Matrix { v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.] }
     }
     /// Construct a matrix for rotating by `a` degrees.
+    #[inline]
     pub fn rotate_deg(a: f32) -> Self {
         Self::rotate(a * PI / 180.)
     }
     /// Construct a matrix for scaling by factor `sx` in x-direction
     /// and by `sy` in y-direction.
+    #[inline]
     pub fn scale(sx: f32, sy: f32) -> Self {
         Matrix { v: [sx, 0., 0., sy, 0., 0.] }
     }
     /// Construct a matrix for scaling by the same factor, `s` in both
     /// directions.
+    #[inline]
     pub fn uniform_scale(s: f32) -> Self {
         Self::scale(s, s)
     }
     /// Construct a matrix for skewing.
+    #[inline]
     pub fn skew(a: f32, b: f32) -> Self {
         Matrix { v: [1., a.tan(), b.tan(), 1., 0., 0.] }
     }
 }
 
 impl Display for Matrix {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let v = self.v;
         write!(f, "{} {} {} {} {} {}", v[0], v[1], v[2], v[3], v[4], v[5])
@@ -131,6 +149,7 @@ impl Display for Matrix {
 
 impl Mul for Matrix {
     type Output = Self;
+    #[inline]
     fn mul(self, b: Self) -> Self {
         let a = self.v;
         let b = b.v;
@@ -165,7 +184,7 @@ fn test_matrix_mul_d() {
 }
 
 #[allow(dead_code)]
-fn assert_unit(m: Matrix) {
+fn assert_unit(m: &Matrix) {
     assert_eq!(None, diff(&[1., 0., 0., 1., 0., 0.], &m.v));
 }
 

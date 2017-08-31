@@ -1,17 +1,23 @@
 [package]
 name = "pdfpdf"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Benjamin Kimock <kimockb@gmail.com>"]
-license = "MIT"
+license = "MIT/Apache-2.0"
+build = "src/build.rs"
+
 description = """
-Generate PDF files in pure Rust.
-Currently, simple vector graphics are supported."""
-documentation = "https://docs.rs/pdfpdf"
+A Pretty Darn Fast library for creating PDF files.
+Currently, only simple vector graphics and simple text are supported."""
 repository = "https://github.com/saethlin/pdfpdf"
+documentation = "https://docs.rs/pdfpdf"
 readme = "README.md"
+
+keywords = ["pdf", "PDF"]
+categories = ["visualization"]
 
 [dependencies]
 deflate = "0.7"
+lazy_static = "0.2"
 
 [profile.release]
 lto = true
