@@ -7,4 +7,5 @@ pub enum Alignment {
     BottomLeft,
     BottomRight,
     BottomCenter,
+    CenterCenter,
 }

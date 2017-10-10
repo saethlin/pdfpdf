@@ -3,7 +3,6 @@ name = "pdfpdf"
 version = "0.2.0"
 authors = ["Benjamin Kimock <kimockb@gmail.com>"]
 license = "MIT/Apache-2.0"
-build = "src/build.rs"
 
 description = """
 A Pretty Darn Fast library for creating PDF files.

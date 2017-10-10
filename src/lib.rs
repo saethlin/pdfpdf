@@ -10,7 +10,7 @@
 //!
 //! Pdf::new()
 //!     .add_page(180.0, 240.0)
-//!     .set_stroke_color(Color::rgb(0, 0, 248))
+//!     .set_color(&Color::rgb(0, 0, 248))
 //!     .draw_circle(90.0, 120.0, 50.0)
 //!     .write_to("example.pdf")
 //!     .expect("Failed to write to file");
@@ -60,6 +60,7 @@ pub struct Pdf {
     height: f64,
     font: fonts::Font,
     font_size: f64,
+    compress: bool,
 }
 
 impl Pdf {
@@ -87,7 +88,16 @@ impl Pdf {
             height: 400.0,
             font: fonts::Font::Helvetica,
             font_size: 12.0,
+            compress: true,
         }
+    }
+
+    /// Create a new blank PDF document without compression
+    #[inline]
+    pub fn new_uncompressed() -> Self {
+        let mut this = Pdf::new();
+        this.compress = false;
+        this
     }
 
     /// Move then pen, starting a new path
@@ -145,7 +155,7 @@ impl Pdf {
     /// Set the drawing color for the stroke operation,
     /// does not affect fill calls
     #[inline]
-    pub fn set_stroke_color(&mut self, color: &Color) -> &mut Self {
+    pub fn set_color(&mut self, color: &Color) -> &mut Self {
         let norm = |color| color as f64 / 255.0;
         self.page_buffer.extend(
             format!(
@@ -155,6 +165,15 @@ impl Pdf {
                 norm(color.blue),
             ).bytes(),
         );
+        self.page_buffer.extend(
+            format!(
+                "{:.2} {:.2} {:.2} rg\n",
+                norm(color.red),
+                norm(color.green),
+                norm(color.blue),
+            ).bytes(),
+        );
+
         self
     }
 
@@ -210,6 +229,29 @@ impl Pdf {
         self
     }
 
+    /// Draw a rectangle that extends from x1, y1 to x2, y2
+    #[inline]
+    pub fn draw_rectangle_filled<N: NumCast>(
+        &mut self,
+        x: N,
+        y: N,
+        width: N,
+        height: N,
+    ) -> &mut Self {
+        self.page_buffer.extend(
+            format!(
+                "{:.2} {:.2} {:.2} {:.2} re\n",
+                x.to_f64().unwrap(),
+                y.to_f64().unwrap(),
+                width.to_f64().unwrap(),
+                height.to_f64().unwrap()
+            ).bytes(),
+        );
+        // Fill path using Nonzero Winding Number Rule
+        self.page_buffer.extend_from_slice(b"f\n");
+        self
+    }
+
     #[inline]
     /// Set the font for all subsequent drawing calls
     pub fn font<N: NumCast>(&mut self, font: Font, size: N) -> &mut Self {
@@ -230,34 +272,39 @@ impl Pdf {
 
         let x = x.to_f64().unwrap();
         let y = y.to_f64().unwrap();
-
-        // TODO: Width calculation should be done conditionally
-        // TODO: Not sure why the rendering appears to ignore newline characters...
         let widths = &fonts::GLYPH_WIDTHS[&self.font];
-        let width = text.chars()
-            .filter(|c| *c != '\n')
-            .map(|c| *widths.get(&c).unwrap_or(&1.0))
-            .sum::<f64>() * self.font_size;
         let height = self.font_size;
 
-        let (x, y) = match alignment {
-            Alignment::TopLeft => (x, y - height),
-            Alignment::TopRight => (x - width, y - height),
-            Alignment::TopCenter => (x - width / 2.0, y - height),
-            Alignment::BottomLeft => (x, y),
-            Alignment::BottomRight => (x - width, y),
-            Alignment::BottomCenter => (x - width / 2.0, y),
-        };
-
         self.page_buffer.extend(
-            format!("BT\n/F13 {} Tf\n{} {} Td\n(", self.font_size, x, y).bytes(),
+            format!("BT\n/F13 {} Tf\n", self.font_size)
+                .bytes(),
         );
-        for c in text.chars() {
-            let data = format!("\\{:o}", c as u32);
-            //println!("{}", data);
-            self.page_buffer.extend(data.bytes());
+
+        let num_lines = text.split('\n').count();
+        for (l, line) in text.split('\n').enumerate() {
+            let line_width = line.chars()
+                .filter(|c| *c != '\n')
+                .map(|c| *widths.get(&c).unwrap_or(&1.0))
+                .sum::<f64>() * self.font_size;
+
+            let (line_x, line_y) = match alignment {
+                Alignment::TopLeft => (x, y - height),
+                Alignment::TopRight => (x - line_width, y - height),
+                Alignment::TopCenter => (x - line_width / 2.0, y - height),
+                Alignment::BottomLeft => (x, y),
+                Alignment::BottomRight => (x - line_width, y),
+                Alignment::BottomCenter => (x - line_width / 2.0, y),
+                Alignment::CenterCenter => (x - line_width / 2.0, (y - height / 3.0) - (l as f64 - (num_lines as f64 -1.0)/2.0) * height * 1.25),
+            };
+
+            self.page_buffer.extend(format!("1 0 0 1 {} {} Tm (", line_x, line_y).bytes());
+            for c in line.chars() {
+                let data = format!("\\{:o}", c as u32);
+                self.page_buffer.extend(data.bytes());
+            }
+            self.page_buffer.extend(b") Tj\n");
         }
-        self.page_buffer.extend(b") Tj\nET\n");
+        self.page_buffer.extend(b"ET\n");
         self
     }
 
@@ -290,13 +337,15 @@ impl Pdf {
 
         let mut compressed = self.page_buffer.clone();
         let mut rounds = 0;
-        loop {
-            let another = deflate::deflate_bytes_zlib(compressed.as_slice());
-            if another.len() < compressed.len() {
-                compressed = another;
-                rounds += 1;
-            } else {
-                break;
+        if self.compress {
+            loop {
+                let another = deflate::deflate_bytes_zlib(compressed.as_slice());
+                if another.len() < compressed.len() {
+                    compressed = another;
+                    rounds += 1;
+                } else {
+                    break;
+                }
             }
         }
         self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());

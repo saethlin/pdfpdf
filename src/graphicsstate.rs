@@ -32,12 +32,10 @@ pub enum CapStyle {
 
 /// Any color (or grayscale) value that this library can make PDF represent.
 #[derive(Clone)]
+#[allow(missing_docs)]
 pub struct Color {
-    /// Red
     pub red: u8,
-    /// Green
     pub green: u8,
-    /// Blue
     pub blue: u8,
 }
 
@@ -47,9 +45,9 @@ impl Color {
     /// # Example
     /// ````
     /// # use pdfpdf::graphicsstate::Color;
-    /// let white  = Color::rgb(255, 255, 255);
-    /// let black  = Color::rgb(0, 0, 0);
-    /// let red    = Color::rgb(255, 0, 0);
+    /// let white = Color::rgb(255, 255, 255);
+    /// let black = Color::rgb(0, 0, 0);
+    /// let red = Color::rgb(255, 0, 0);
     /// let yellow = Color::rgb(255, 255, 0);
     /// ````
     #[inline]
@@ -67,7 +65,7 @@ impl Color {
     /// ````
     /// # use pdfpdf::graphicsstate::Color;
     /// let white = Color::gray(255);
-    /// let gray  = Color::gray(128);
+    /// let gray = Color::gray(128);
     /// ````
     #[inline]
     pub fn gray(gray: u8) -> Self {
