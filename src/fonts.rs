@@ -4023,7 +4023,7 @@ lazy_static!{
     };
 }
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Hash, PartialEq, Eq, Debug)]
 pub enum Font {
     TimesRoman,
     HelveticaOblique,

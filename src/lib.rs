@@ -44,6 +44,13 @@ pub use fonts::Font;
 pub use graphicsstate::{Color, Matrix};
 pub use text::Alignment;
 
+enum PdfOperation {
+    None,
+    DrawText,
+    DrawLine,
+    DrawRectangle,
+}
+
 // Represents a PDF internal object
 struct PdfObject {
     offset: usize,
@@ -58,7 +65,7 @@ pub struct Pdf {
     objects: Vec<PdfObject>,
     width: f64,
     height: f64,
-    font: fonts::Font,
+    fonts: Vec<fonts::Font>,
     font_size: f64,
     compress: bool,
 }
@@ -86,7 +93,7 @@ impl Pdf {
             ],
             width: 400.0,
             height: 400.0,
-            font: fonts::Font::Helvetica,
+            fonts: vec![Font::Helvetica],
             font_size: 12.0,
             compress: true,
         }
@@ -152,8 +159,7 @@ impl Pdf {
         self
     }
 
-    /// Set the drawing color for the stroke operation,
-    /// does not affect fill calls
+    /// Set the color for all subsequent drawing operations
     #[inline]
     pub fn set_color(&mut self, color: &Color) -> &mut Self {
         let norm = |color| color as f64 / 255.0;
@@ -178,6 +184,7 @@ impl Pdf {
     }
 
     /// Apply a coordinate transformation to all subsequent drawing calls
+    /// Consecutive applications of this function are cumulative
     #[inline]
     pub fn transform(&mut self, m: Matrix) -> &mut Self {
         self.page_buffer.extend(format!("{} cm\n", m).bytes());
@@ -255,7 +262,7 @@ impl Pdf {
     #[inline]
     /// Set the font for all subsequent drawing calls
     pub fn font<N: NumCast>(&mut self, font: Font, size: N) -> &mut Self {
-        self.font = font;
+        self.fonts.push(font);
         self.font_size = size.to_f64().unwrap();
         self
     }
@@ -272,12 +279,11 @@ impl Pdf {
 
         let x = x.to_f64().unwrap();
         let y = y.to_f64().unwrap();
-        let widths = &fonts::GLYPH_WIDTHS[&self.font];
+        let widths = &fonts::GLYPH_WIDTHS[&self.fonts.iter().last().unwrap()];
         let height = self.font_size;
 
         self.page_buffer.extend(
-            format!("BT\n/F13 {} Tf\n", self.font_size)
-                .bytes(),
+            format!("BT\n/F{} {} Tf\n", self.fonts.len() - 1, self.font_size).bytes(),
         );
 
         let num_lines = text.split('\n').count();
@@ -288,16 +294,45 @@ impl Pdf {
                 .sum::<f64>() * self.font_size;
 
             let (line_x, line_y) = match alignment {
-                Alignment::TopLeft => (x, y - height),
-                Alignment::TopRight => (x - line_width, y - height),
-                Alignment::TopCenter => (x - line_width / 2.0, y - height),
-                Alignment::BottomLeft => (x, y),
-                Alignment::BottomRight => (x - line_width, y),
-                Alignment::BottomCenter => (x - line_width / 2.0, y),
-                Alignment::CenterCenter => (x - line_width / 2.0, (y - height / 3.0) - (l as f64 - (num_lines as f64 -1.0)/2.0) * height * 1.25),
+                Alignment::TopLeft => (x, y - height * (l as f64 + 1.0)),
+                Alignment::TopRight => (x - line_width, y - height * (l as f64 + 1.0)),
+                Alignment::TopCenter => (x - line_width / 2.0, y - height * (l as f64 + 1.0)),
+                Alignment::CenterLeft => (
+                    x,
+                    (y - height / 3.0) -
+                        (l as f64 - (num_lines as f64 - 1.0) / 2.0) *
+                            height * 1.25,
+                ),
+                Alignment::CenterRight => (
+                    x - line_width,
+                    (y - height / 3.0) -
+                        (l as f64 - (num_lines as f64 - 1.0) / 2.0) *
+                            height * 1.25,
+                ),
+                Alignment::CenterCenter => (
+                    x - line_width / 2.0,
+                    (y - height / 3.0) -
+                        (l as f64 - (num_lines as f64 - 1.0) / 2.0) *
+                            height * 1.25,
+                ),
+                Alignment::BottomLeft => (x, y + (num_lines - l - 1) as f64 * 1.25 * height),
+                Alignment::BottomRight => (
+                    x - line_width,
+                    y + (num_lines - l - 1) as f64 * 1.25 * height,
+                ),
+                Alignment::BottomCenter => (
+                    x - line_width / 2.0,
+                    y + (num_lines - l - 1) as f64 * 1.25 * height,
+                ),
             };
 
-            self.page_buffer.extend(format!("1 0 0 1 {} {} Tm (", line_x, line_y).bytes());
+            self.page_buffer.extend(
+                format!(
+                    "1 0 0 1 {} {} Tm (",
+                    line_x,
+                    line_y
+                ).bytes(),
+            );
             for c in line.chars() {
                 let data = format!("\\{:o}", c as u32);
                 self.page_buffer.extend(data.bytes());
@@ -335,30 +370,25 @@ impl Pdf {
             is_page: false,
         });
 
-        let mut compressed = self.page_buffer.clone();
-        let mut rounds = 0;
-        if self.compress {
-            loop {
-                let another = deflate::deflate_bytes_zlib(compressed.as_slice());
-                if another.len() < compressed.len() {
-                    compressed = another;
-                    rounds += 1;
-                } else {
-                    break;
-                }
-            }
-        }
         self.buffer.extend(format!("{} 0 obj\n", obj_id).bytes());
-        self.buffer.extend(
-            format!(
-                "<</Length {}\n/Filter [{}]>>\nstream\n",
-                compressed.len(),
-                "/FlateDecode ".repeat(rounds)
-            ).bytes(),
-        );
-
-        self.buffer.extend(compressed.iter());
-        self.buffer.extend("endstream\nendobj\n".bytes());
+        if self.compress {
+            let (compressed, rounds) = compress(self.page_buffer.clone());
+            self.buffer.extend(
+                format!(
+                    "<</Length {} /Filter [{}]>>\nstream\n",
+                    compressed.len(),
+                    "/FlateDecode ".repeat(rounds)
+                ).bytes(),
+            );
+            self.buffer.extend(compressed.iter());
+            self.buffer.extend("endstream\nendobj\n".bytes())
+        } else {
+            self.buffer.extend(
+                format!("<</Length {}>>\nstream\n", self.page_buffer.len()).bytes(),
+            );
+            self.buffer.extend(self.page_buffer.iter());
+            self.buffer.extend("endstream\nendobj\n".bytes());
+        }
         self.page_buffer.clear();
 
         // Write out the page object
@@ -372,16 +402,22 @@ impl Pdf {
         self.buffer.extend_from_slice(b"<</Type /Page\n");
         self.buffer.extend_from_slice(b"/Parent 2 0 R\n");
         // TODO: Temporary restricted fonts
-        self.buffer.extend_from_slice(
-            b"/Resources << /Font << /F13 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding>> >> >>\n",
-        );
+        for (f, font) in self.fonts.iter().enumerate() {
+            self.buffer.extend(
+            format!("/Resources << /Font << /F{} << /Type /Font /Subtype /Type1 /BaseFont /{:?} /Encoding /WinAnsiEncoding>> >> >>\n", f, font).bytes(),
+            );
+        }
+
         self.buffer.extend(
             format!("/MediaBox [0 0 {} {}]\n", self.width, self.height).bytes(),
         );
         self.buffer.extend(
-            format!("/Contents {} 0 R", obj_id - 1).bytes(),
+            format!("/Contents {} 0 R >>\n", obj_id - 1)
+                .bytes(),
         );
-        self.buffer.extend_from_slice(b">>\nendobj\n");
+
+        self.buffer.extend("endobj\n".bytes());
+        self.fonts.clear();
     }
 
     /// Write the in-memory PDF representation to disk
@@ -448,4 +484,19 @@ impl Pdf {
 
         File::create(filename)?.write_all(self.buffer.as_slice())
     }
+}
+
+fn compress(input: Vec<u8>) -> (Vec<u8>, usize) {
+    let mut compressed = input;
+    let mut rounds = 0;
+    loop {
+        let another = deflate::deflate_bytes_zlib(compressed.as_slice());
+        if another.len() < compressed.len() {
+            compressed = another;
+            rounds += 1;
+        } else {
+            break;
+        }
+    }
+    (compressed, rounds)
 }

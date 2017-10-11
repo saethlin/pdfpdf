@@ -4,8 +4,10 @@ pub enum Alignment {
     TopLeft,
     TopRight,
     TopCenter,
+    CenterLeft,
+    CenterCenter,
+    CenterRight,
     BottomLeft,
     BottomRight,
     BottomCenter,
-    CenterCenter,
 }
