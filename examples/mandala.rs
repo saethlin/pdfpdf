@@ -18,7 +18,7 @@ fn main() {
     document
         .add_page(600.0, 600.0)
         .transform(Matrix::translate(300.0, 300.0))
-        .set_stroke_color(&Color::gray(0));
+        .set_color(&Color::gray(0));
 
     for _ in 0..n {
         document

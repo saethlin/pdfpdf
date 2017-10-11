@@ -4023,6 +4023,7 @@ lazy_static!{
     };
 }
 
+/// Supported fonts
 #[derive(Hash, PartialEq, Eq, Debug)]
 pub enum Font {
     TimesRoman,

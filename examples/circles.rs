@@ -18,10 +18,10 @@ fn main() {
 
     Pdf::new()
         .add_page(400.0, 400.0)
-        .set_stroke_color(&Color::rgb(0, 0, 0))
+        .set_color(&Color::rgb(0, 0, 0))
         .set_line_width(2.0)
         .draw_circle(x, y, r)
-        .set_stroke_color(&Color::rgb(255, 230, 150))
+        .set_color(&Color::rgb(255, 230, 150))
         .set_line_width(1.0)
         .draw_line(angles.map(|phi| (x + r * phi.cos(), y + r * phi.sin())))
         .write_to("circles.pdf")

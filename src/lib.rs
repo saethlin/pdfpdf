@@ -5,8 +5,7 @@
 //! # Example
 //!
 //! ```
-//! use pdfpdf::Pdf;
-//! use pdfpdf::graphicsstate::Color;
+//! use pdfpdf::{Color, Pdf};
 //!
 //! Pdf::new()
 //!     .add_page(180.0, 240.0)
@@ -58,7 +57,7 @@ struct PdfObject {
     is_page: bool,
 }
 
-/// The top-level struct that represents an in-memory PDF file
+/// The top-level struct that represents a (partially) in-memory PDF file
 pub struct Pdf {
     buffer: Vec<u8>,
     page_buffer: Vec<u8>,

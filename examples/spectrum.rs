@@ -9,7 +9,7 @@ fn main() {
 
     Pdf::new()
         .add_page(600.0, 600.0)
-        .set_stroke_color(&Color::gray(100))
+        .set_color(&Color::gray(100))
         .draw_line(x.into_iter().zip(y.into_iter()))
         .write_to("spectrum.pdf")
         .unwrap();
