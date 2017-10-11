@@ -165,23 +165,23 @@ impl Mul for Matrix {
 
 #[test]
 fn test_matrix_mul_a() {
-    assert_unit(Matrix::rotate_deg(45.) * Matrix::rotate_deg(-45.));
+    assert_unit(&(Matrix::rotate_deg(45.) * Matrix::rotate_deg(-45.)));
 }
 #[test]
 fn test_matrix_mul_b() {
-    assert_unit(Matrix::uniform_scale(2.) * Matrix::uniform_scale(0.5));
+    assert_unit(&(Matrix::uniform_scale(2.) * Matrix::uniform_scale(0.5)));
 }
 #[test]
 fn test_matrix_mul_c() {
-    assert_unit(Matrix::rotate(2. * PI));
+    assert_unit(&Matrix::rotate(2. * PI));
 }
 #[test]
 fn test_matrix_mul_d() {
-    assert_unit(Matrix::rotate(PI) * Matrix::uniform_scale(-1.));
+    assert_unit(&(Matrix::rotate(PI) * Matrix::uniform_scale(-1.)));
 }
 
 #[allow(dead_code)]
-fn assert_unit(m: Matrix) {
+fn assert_unit(m: &Matrix) {
     assert_eq!(None, diff(&[1., 0., 0., 1., 0., 0.], &m.v));
 }
 

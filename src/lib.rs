@@ -43,13 +43,6 @@ pub use fonts::Font;
 pub use graphicsstate::{Color, Matrix};
 pub use text::Alignment;
 
-enum PdfOperation {
-    None,
-    DrawText,
-    DrawLine,
-    DrawRectangle,
-}
-
 // Represents a PDF internal object
 struct PdfObject {
     offset: usize,
@@ -193,7 +186,12 @@ impl Pdf {
     /// Draw a circle with the current drawing configuration,
     /// based on http://spencermortensen.com/articles/bezier-circle/
     #[inline]
-    pub fn draw_circle<N: NumCast>(&mut self, x: N, y: N, radius: N) -> &mut Self {
+    pub fn draw_circle<N1: NumCast, N2: NumCast, N3: NumCast>(
+        &mut self,
+        x: N1,
+        y: N2,
+        radius: N3,
+    ) -> &mut Self {
         let x = x.to_f64().unwrap();
         let y = y.to_f64().unwrap();
         let radius = radius.to_f64().unwrap();
@@ -237,12 +235,12 @@ impl Pdf {
 
     /// Draw a rectangle that extends from x1, y1 to x2, y2
     #[inline]
-    pub fn draw_rectangle_filled<N: NumCast>(
+    pub fn draw_rectangle_filled<N1: NumCast, N2: NumCast, N3: NumCast, N4: NumCast>(
         &mut self,
-        x: N,
-        y: N,
-        width: N,
-        height: N,
+        x: N1,
+        y: N2,
+        width: N3,
+        height: N4,
     ) -> &mut Self {
         self.page_buffer.extend(
             format!(
@@ -268,17 +266,17 @@ impl Pdf {
 
     /// Draw text at a given location with the current settings
     #[inline]
-    pub fn draw_text<N: NumCast>(
+    pub fn draw_text<N1: NumCast, N2: NumCast>(
         &mut self,
-        x: N,
-        y: N,
+        x: N1,
+        y: N2,
         alignment: Alignment,
         text: &str,
     ) -> &mut Self {
 
         let x = x.to_f64().unwrap();
         let y = y.to_f64().unwrap();
-        let widths = &fonts::GLYPH_WIDTHS[&self.fonts.iter().last().unwrap()];
+        let widths = &fonts::GLYPH_WIDTHS[self.fonts.iter().last().unwrap()];
         let height = self.font_size;
 
         self.page_buffer.extend(
@@ -345,7 +343,7 @@ impl Pdf {
     // TODO: test with multi-page documents
     /// Move to a new page in the PDF document
     #[inline]
-    pub fn add_page<N: NumCast>(&mut self, width: N, height: N) -> &mut Self {
+    pub fn add_page<N1: NumCast, N2: NumCast>(&mut self, width: N1, height: N2) -> &mut Self {
         // Compress and write out the previous page if it exists
         if !self.page_buffer.is_empty() {
             self.flush_page();

@@ -56,7 +56,7 @@ impl Slideshow {
 }
 
 fn main() {
-    let mut slides = Slideshow::new(
+    Slideshow::new(
         1024.0,
         769.0,
         Font::Helvetica,
