@@ -14,7 +14,7 @@ fn main() {
     let d = 141.4;
     let rr = 36.0;
 
-    let mut document = Pdf::new();
+    let mut document = Pdf::new_uncompressed();
     document
         .add_page(600.0, 600.0)
         .transform(Matrix::translate(300.0, 300.0))

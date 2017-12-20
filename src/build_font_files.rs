@@ -126,3 +126,4 @@ fn main() {
     }
     write!(output, "}}\n").unwrap();
 }
+

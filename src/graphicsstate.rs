@@ -105,12 +105,16 @@ impl Matrix {
     /// Construct a matrix for translation
     #[inline]
     pub fn translate(dx: f32, dy: f32) -> Self {
-        Matrix { v: [1., 0., 0., 1., dx, dy] }
+        Matrix {
+            v: [1., 0., 0., 1., dx, dy],
+        }
     }
     /// Construct a matrix for rotating by `a` radians.
     #[inline]
     pub fn rotate(a: f32) -> Self {
-        Matrix { v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.] }
+        Matrix {
+            v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.],
+        }
     }
     /// Construct a matrix for rotating by `a` degrees.
     #[inline]
@@ -121,7 +125,9 @@ impl Matrix {
     /// and by `sy` in y-direction.
     #[inline]
     pub fn scale(sx: f32, sy: f32) -> Self {
-        Matrix { v: [sx, 0., 0., sy, 0., 0.] }
+        Matrix {
+            v: [sx, 0., 0., sy, 0., 0.],
+        }
     }
     /// Construct a matrix for scaling by the same factor, `s` in both
     /// directions.
@@ -132,7 +138,9 @@ impl Matrix {
     /// Construct a matrix for skewing.
     #[inline]
     pub fn skew(a: f32, b: f32) -> Self {
-        Matrix { v: [1., a.tan(), b.tan(), 1., 0., 0.] }
+        Matrix {
+            v: [1., a.tan(), b.tan(), 1., 0., 0.],
+        }
     }
 }
 

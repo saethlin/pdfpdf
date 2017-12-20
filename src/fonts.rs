@@ -1,4043 +1,4052 @@
 #![allow(non_snake_case)]
-#![allow(unused_mut)]
 #![allow(missing_docs)]
-use std::collections::HashMap;
 
-lazy_static!{
-    pub static ref GLYPH_WIDTHS: HashMap<Font, HashMap<char, f64>> = {
-        let mut TimesRoman_widths: HashMap<char, f64> = HashMap::new();
-        TimesRoman_widths.insert('A', 0.72);
-        TimesRoman_widths.insert('Æ', 0.89);
-        TimesRoman_widths.insert('Á', 0.72);
-        TimesRoman_widths.insert('Ă', 0.72);
-        TimesRoman_widths.insert('Â', 0.72);
-        TimesRoman_widths.insert('Ä', 0.72);
-        TimesRoman_widths.insert('À', 0.72);
-        TimesRoman_widths.insert('Ā', 0.72);
-        TimesRoman_widths.insert('Ą', 0.72);
-        TimesRoman_widths.insert('Å', 0.72);
-        TimesRoman_widths.insert('Ã', 0.72);
-        TimesRoman_widths.insert('B', 0.67);
-        TimesRoman_widths.insert('C', 0.67);
-        TimesRoman_widths.insert('Ć', 0.67);
-        TimesRoman_widths.insert('Č', 0.67);
-        TimesRoman_widths.insert('Ç', 0.67);
-        TimesRoman_widths.insert('D', 0.72);
-        TimesRoman_widths.insert('Ď', 0.72);
-        TimesRoman_widths.insert('Đ', 0.72);
-        TimesRoman_widths.insert('∆', 0.61);
-        TimesRoman_widths.insert('E', 0.61);
-        TimesRoman_widths.insert('É', 0.61);
-        TimesRoman_widths.insert('Ě', 0.61);
-        TimesRoman_widths.insert('Ê', 0.61);
-        TimesRoman_widths.insert('Ë', 0.61);
-        TimesRoman_widths.insert('Ė', 0.61);
-        TimesRoman_widths.insert('È', 0.61);
-        TimesRoman_widths.insert('Ē', 0.61);
-        TimesRoman_widths.insert('Ę', 0.61);
-        TimesRoman_widths.insert('Ð', 0.72);
-        TimesRoman_widths.insert('€', 0.50);
-        TimesRoman_widths.insert('F', 0.56);
-        TimesRoman_widths.insert('G', 0.72);
-        TimesRoman_widths.insert('Ğ', 0.72);
-        TimesRoman_widths.insert('Ģ', 0.72);
-        TimesRoman_widths.insert('H', 0.72);
-        TimesRoman_widths.insert('I', 0.33);
-        TimesRoman_widths.insert('Í', 0.33);
-        TimesRoman_widths.insert('Î', 0.33);
-        TimesRoman_widths.insert('Ï', 0.33);
-        TimesRoman_widths.insert('İ', 0.33);
-        TimesRoman_widths.insert('Ì', 0.33);
-        TimesRoman_widths.insert('Ī', 0.33);
-        TimesRoman_widths.insert('Į', 0.33);
-        TimesRoman_widths.insert('J', 0.39);
-        TimesRoman_widths.insert('K', 0.72);
-        TimesRoman_widths.insert('Ķ', 0.72);
-        TimesRoman_widths.insert('L', 0.61);
-        TimesRoman_widths.insert('Ĺ', 0.61);
-        TimesRoman_widths.insert('Ľ', 0.61);
-        TimesRoman_widths.insert('Ļ', 0.61);
-        TimesRoman_widths.insert('Ł', 0.61);
-        TimesRoman_widths.insert('M', 0.89);
-        TimesRoman_widths.insert('N', 0.72);
-        TimesRoman_widths.insert('Ń', 0.72);
-        TimesRoman_widths.insert('Ň', 0.72);
-        TimesRoman_widths.insert('Ņ', 0.72);
-        TimesRoman_widths.insert('Ñ', 0.72);
-        TimesRoman_widths.insert('O', 0.72);
-        TimesRoman_widths.insert('Œ', 0.89);
-        TimesRoman_widths.insert('Ó', 0.72);
-        TimesRoman_widths.insert('Ô', 0.72);
-        TimesRoman_widths.insert('Ö', 0.72);
-        TimesRoman_widths.insert('Ò', 0.72);
-        TimesRoman_widths.insert('Ő', 0.72);
-        TimesRoman_widths.insert('Ō', 0.72);
-        TimesRoman_widths.insert('Ø', 0.72);
-        TimesRoman_widths.insert('Õ', 0.72);
-        TimesRoman_widths.insert('P', 0.56);
-        TimesRoman_widths.insert('Q', 0.72);
-        TimesRoman_widths.insert('R', 0.67);
-        TimesRoman_widths.insert('Ŕ', 0.67);
-        TimesRoman_widths.insert('Ř', 0.67);
-        TimesRoman_widths.insert('Ŗ', 0.67);
-        TimesRoman_widths.insert('S', 0.56);
-        TimesRoman_widths.insert('Ś', 0.56);
-        TimesRoman_widths.insert('Š', 0.56);
-        TimesRoman_widths.insert('Ş', 0.56);
-        TimesRoman_widths.insert('Ș', 0.56);
-        TimesRoman_widths.insert('T', 0.61);
-        TimesRoman_widths.insert('Ť', 0.61);
-        TimesRoman_widths.insert('Ţ', 0.61);
-        TimesRoman_widths.insert('Þ', 0.56);
-        TimesRoman_widths.insert('U', 0.72);
-        TimesRoman_widths.insert('Ú', 0.72);
-        TimesRoman_widths.insert('Û', 0.72);
-        TimesRoman_widths.insert('Ü', 0.72);
-        TimesRoman_widths.insert('Ù', 0.72);
-        TimesRoman_widths.insert('Ű', 0.72);
-        TimesRoman_widths.insert('Ū', 0.72);
-        TimesRoman_widths.insert('Ų', 0.72);
-        TimesRoman_widths.insert('Ů', 0.72);
-        TimesRoman_widths.insert('V', 0.72);
-        TimesRoman_widths.insert('W', 0.94);
-        TimesRoman_widths.insert('X', 0.72);
-        TimesRoman_widths.insert('Y', 0.72);
-        TimesRoman_widths.insert('Ý', 0.72);
-        TimesRoman_widths.insert('Ÿ', 0.72);
-        TimesRoman_widths.insert('Z', 0.61);
-        TimesRoman_widths.insert('Ź', 0.61);
-        TimesRoman_widths.insert('Ž', 0.61);
-        TimesRoman_widths.insert('Ż', 0.61);
-        TimesRoman_widths.insert('a', 0.44);
-        TimesRoman_widths.insert('á', 0.44);
-        TimesRoman_widths.insert('ă', 0.44);
-        TimesRoman_widths.insert('â', 0.44);
-        TimesRoman_widths.insert('´', 0.33);
-        TimesRoman_widths.insert('ä', 0.44);
-        TimesRoman_widths.insert('æ', 0.67);
-        TimesRoman_widths.insert('à', 0.44);
-        TimesRoman_widths.insert('ā', 0.44);
-        TimesRoman_widths.insert('&', 0.78);
-        TimesRoman_widths.insert('ą', 0.44);
-        TimesRoman_widths.insert('å', 0.44);
-        TimesRoman_widths.insert('^', 0.47);
-        TimesRoman_widths.insert('~', 0.54);
-        TimesRoman_widths.insert('*', 0.50);
-        TimesRoman_widths.insert('@', 0.92);
-        TimesRoman_widths.insert('ã', 0.44);
-        TimesRoman_widths.insert('b', 0.50);
-        TimesRoman_widths.insert('\\', 0.28);
-        TimesRoman_widths.insert('|', 0.20);
-        TimesRoman_widths.insert('{', 0.48);
-        TimesRoman_widths.insert('}', 0.48);
-        TimesRoman_widths.insert('[', 0.33);
-        TimesRoman_widths.insert(']', 0.33);
-        TimesRoman_widths.insert('˘', 0.33);
-        TimesRoman_widths.insert('¦', 0.20);
-        TimesRoman_widths.insert('•', 0.35);
-        TimesRoman_widths.insert('c', 0.44);
-        TimesRoman_widths.insert('ć', 0.44);
-        TimesRoman_widths.insert('ˇ', 0.33);
-        TimesRoman_widths.insert('č', 0.44);
-        TimesRoman_widths.insert('ç', 0.44);
-        TimesRoman_widths.insert('¸', 0.33);
-        TimesRoman_widths.insert('¢', 0.50);
-        TimesRoman_widths.insert('ˆ', 0.33);
-        TimesRoman_widths.insert(':', 0.28);
-        TimesRoman_widths.insert(',', 0.25);
-        TimesRoman_widths.insert('', 0.25);
-        TimesRoman_widths.insert('©', 0.76);
-        TimesRoman_widths.insert('¤', 0.50);
-        TimesRoman_widths.insert('d', 0.50);
-        TimesRoman_widths.insert('†', 0.50);
-        TimesRoman_widths.insert('‡', 0.50);
-        TimesRoman_widths.insert('ď', 0.59);
-        TimesRoman_widths.insert('đ', 0.50);
-        TimesRoman_widths.insert('°', 0.40);
-        TimesRoman_widths.insert('¨', 0.33);
-        TimesRoman_widths.insert('÷', 0.56);
-        TimesRoman_widths.insert('$', 0.50);
-        TimesRoman_widths.insert('˙', 0.33);
-        TimesRoman_widths.insert('ı', 0.28);
-        TimesRoman_widths.insert('e', 0.44);
-        TimesRoman_widths.insert('é', 0.44);
-        TimesRoman_widths.insert('ě', 0.44);
-        TimesRoman_widths.insert('ê', 0.44);
-        TimesRoman_widths.insert('ë', 0.44);
-        TimesRoman_widths.insert('ė', 0.44);
-        TimesRoman_widths.insert('è', 0.44);
-        TimesRoman_widths.insert('8', 0.50);
-        TimesRoman_widths.insert('…', 1.00);
-        TimesRoman_widths.insert('ē', 0.44);
-        TimesRoman_widths.insert('—', 1.00);
-        TimesRoman_widths.insert('–', 0.50);
-        TimesRoman_widths.insert('ę', 0.44);
-        TimesRoman_widths.insert('=', 0.56);
-        TimesRoman_widths.insert('ð', 0.50);
-        TimesRoman_widths.insert('!', 0.33);
-        TimesRoman_widths.insert('¡', 0.33);
-        TimesRoman_widths.insert('f', 0.33);
-        TimesRoman_widths.insert('ﬁ', 0.56);
-        TimesRoman_widths.insert('5', 0.50);
-        TimesRoman_widths.insert('ﬂ', 0.56);
-        TimesRoman_widths.insert('ƒ', 0.50);
-        TimesRoman_widths.insert('4', 0.50);
-        TimesRoman_widths.insert('⁄', 0.17);
-        TimesRoman_widths.insert('g', 0.50);
-        TimesRoman_widths.insert('ğ', 0.50);
-        TimesRoman_widths.insert('ģ', 0.50);
-        TimesRoman_widths.insert('ß', 0.50);
-        TimesRoman_widths.insert('`', 0.33);
-        TimesRoman_widths.insert('>', 0.56);
-        TimesRoman_widths.insert('≥', 0.55);
-        TimesRoman_widths.insert('«', 0.50);
-        TimesRoman_widths.insert('»', 0.50);
-        TimesRoman_widths.insert('‹', 0.33);
-        TimesRoman_widths.insert('›', 0.33);
-        TimesRoman_widths.insert('h', 0.50);
-        TimesRoman_widths.insert('˝', 0.33);
-        TimesRoman_widths.insert('-', 0.33);
-        TimesRoman_widths.insert('i', 0.28);
-        TimesRoman_widths.insert('í', 0.28);
-        TimesRoman_widths.insert('î', 0.28);
-        TimesRoman_widths.insert('ï', 0.28);
-        TimesRoman_widths.insert('ì', 0.28);
-        TimesRoman_widths.insert('ī', 0.28);
-        TimesRoman_widths.insert('į', 0.28);
-        TimesRoman_widths.insert('j', 0.28);
-        TimesRoman_widths.insert('k', 0.50);
-        TimesRoman_widths.insert('ķ', 0.50);
-        TimesRoman_widths.insert('l', 0.28);
-        TimesRoman_widths.insert('ĺ', 0.28);
-        TimesRoman_widths.insert('ľ', 0.34);
-        TimesRoman_widths.insert('ļ', 0.28);
-        TimesRoman_widths.insert('<', 0.56);
-        TimesRoman_widths.insert('≤', 0.55);
-        TimesRoman_widths.insert('¬', 0.56);
-        TimesRoman_widths.insert('◊', 0.47);
-        TimesRoman_widths.insert('ł', 0.28);
-        TimesRoman_widths.insert('m', 0.78);
-        TimesRoman_widths.insert('¯', 0.33);
-        TimesRoman_widths.insert('−', 0.56);
-        TimesRoman_widths.insert('µ', 0.50);
-        TimesRoman_widths.insert('×', 0.56);
-        TimesRoman_widths.insert('n', 0.50);
-        TimesRoman_widths.insert('ń', 0.50);
-        TimesRoman_widths.insert('ň', 0.50);
-        TimesRoman_widths.insert('ņ', 0.50);
-        TimesRoman_widths.insert('9', 0.50);
-        TimesRoman_widths.insert('≠', 0.55);
-        TimesRoman_widths.insert('ñ', 0.50);
-        TimesRoman_widths.insert('#', 0.50);
-        TimesRoman_widths.insert('o', 0.50);
-        TimesRoman_widths.insert('ó', 0.50);
-        TimesRoman_widths.insert('ô', 0.50);
-        TimesRoman_widths.insert('ö', 0.50);
-        TimesRoman_widths.insert('œ', 0.72);
-        TimesRoman_widths.insert('˛', 0.33);
-        TimesRoman_widths.insert('ò', 0.50);
-        TimesRoman_widths.insert('ő', 0.50);
-        TimesRoman_widths.insert('ō', 0.50);
-        TimesRoman_widths.insert('1', 0.50);
-        TimesRoman_widths.insert('½', 0.75);
-        TimesRoman_widths.insert('¼', 0.75);
-        TimesRoman_widths.insert('¹', 0.30);
-        TimesRoman_widths.insert('ª', 0.28);
-        TimesRoman_widths.insert('º', 0.31);
-        TimesRoman_widths.insert('ø', 0.50);
-        TimesRoman_widths.insert('õ', 0.50);
-        TimesRoman_widths.insert('p', 0.50);
-        TimesRoman_widths.insert('¶', 0.45);
-        TimesRoman_widths.insert('(', 0.33);
-        TimesRoman_widths.insert(')', 0.33);
-        TimesRoman_widths.insert('∂', 0.48);
-        TimesRoman_widths.insert('%', 0.83);
-        TimesRoman_widths.insert('.', 0.25);
-        TimesRoman_widths.insert('·', 0.25);
-        TimesRoman_widths.insert('‰', 1.00);
-        TimesRoman_widths.insert('+', 0.56);
-        TimesRoman_widths.insert('±', 0.56);
-        TimesRoman_widths.insert('q', 0.50);
-        TimesRoman_widths.insert('?', 0.44);
-        TimesRoman_widths.insert('¿', 0.44);
-        TimesRoman_widths.insert('"', 0.41);
-        TimesRoman_widths.insert('„', 0.44);
-        TimesRoman_widths.insert('“', 0.44);
-        TimesRoman_widths.insert('”', 0.44);
-        TimesRoman_widths.insert('‘', 0.33);
-        TimesRoman_widths.insert('’', 0.33);
-        TimesRoman_widths.insert('‚', 0.33);
-        TimesRoman_widths.insert('\'', 0.18);
-        TimesRoman_widths.insert('r', 0.33);
-        TimesRoman_widths.insert('ŕ', 0.33);
-        TimesRoman_widths.insert('√', 0.45);
-        TimesRoman_widths.insert('ř', 0.33);
-        TimesRoman_widths.insert('ŗ', 0.33);
-        TimesRoman_widths.insert('®', 0.76);
-        TimesRoman_widths.insert('˚', 0.33);
-        TimesRoman_widths.insert('s', 0.39);
-        TimesRoman_widths.insert('ś', 0.39);
-        TimesRoman_widths.insert('š', 0.39);
-        TimesRoman_widths.insert('ş', 0.39);
-        TimesRoman_widths.insert('ș', 0.39);
-        TimesRoman_widths.insert('§', 0.50);
-        TimesRoman_widths.insert(';', 0.28);
-        TimesRoman_widths.insert('7', 0.50);
-        TimesRoman_widths.insert('6', 0.50);
-        TimesRoman_widths.insert('/', 0.28);
-        TimesRoman_widths.insert(' ', 0.25);
-        TimesRoman_widths.insert('£', 0.50);
-        TimesRoman_widths.insert('∑', 0.60);
-        TimesRoman_widths.insert('t', 0.28);
-        TimesRoman_widths.insert('ť', 0.33);
-        TimesRoman_widths.insert('ţ', 0.28);
-        TimesRoman_widths.insert('þ', 0.50);
-        TimesRoman_widths.insert('3', 0.50);
-        TimesRoman_widths.insert('¾', 0.75);
-        TimesRoman_widths.insert('³', 0.30);
-        TimesRoman_widths.insert('˜', 0.33);
-        TimesRoman_widths.insert('™', 0.98);
-        TimesRoman_widths.insert('2', 0.50);
-        TimesRoman_widths.insert('²', 0.30);
-        TimesRoman_widths.insert('u', 0.50);
-        TimesRoman_widths.insert('ú', 0.50);
-        TimesRoman_widths.insert('û', 0.50);
-        TimesRoman_widths.insert('ü', 0.50);
-        TimesRoman_widths.insert('ù', 0.50);
-        TimesRoman_widths.insert('ű', 0.50);
-        TimesRoman_widths.insert('ū', 0.50);
-        TimesRoman_widths.insert('_', 0.50);
-        TimesRoman_widths.insert('ų', 0.50);
-        TimesRoman_widths.insert('ů', 0.50);
-        TimesRoman_widths.insert('v', 0.50);
-        TimesRoman_widths.insert('w', 0.72);
-        TimesRoman_widths.insert('x', 0.50);
-        TimesRoman_widths.insert('y', 0.50);
-        TimesRoman_widths.insert('ý', 0.50);
-        TimesRoman_widths.insert('ÿ', 0.50);
-        TimesRoman_widths.insert('¥', 0.50);
-        TimesRoman_widths.insert('z', 0.44);
-        TimesRoman_widths.insert('ź', 0.44);
-        TimesRoman_widths.insert('ž', 0.44);
-        TimesRoman_widths.insert('ż', 0.44);
-        TimesRoman_widths.insert('0', 0.50);
+pub fn glyph_width(font: &Font, c: char) -> f64 {
+    match font {
+        &Font::ZapfDingbats => match c {
+            ' ' => 0.278,
+            _ => 0.0,
+        },
 
-        let mut HelveticaOblique_widths: HashMap<char, f64> = HashMap::new();
-        HelveticaOblique_widths.insert('A', 0.67);
-        HelveticaOblique_widths.insert('Æ', 1.00);
-        HelveticaOblique_widths.insert('Á', 0.67);
-        HelveticaOblique_widths.insert('Ă', 0.67);
-        HelveticaOblique_widths.insert('Â', 0.67);
-        HelveticaOblique_widths.insert('Ä', 0.67);
-        HelveticaOblique_widths.insert('À', 0.67);
-        HelveticaOblique_widths.insert('Ā', 0.67);
-        HelveticaOblique_widths.insert('Ą', 0.67);
-        HelveticaOblique_widths.insert('Å', 0.67);
-        HelveticaOblique_widths.insert('Ã', 0.67);
-        HelveticaOblique_widths.insert('B', 0.67);
-        HelveticaOblique_widths.insert('C', 0.72);
-        HelveticaOblique_widths.insert('Ć', 0.72);
-        HelveticaOblique_widths.insert('Č', 0.72);
-        HelveticaOblique_widths.insert('Ç', 0.72);
-        HelveticaOblique_widths.insert('D', 0.72);
-        HelveticaOblique_widths.insert('Ď', 0.72);
-        HelveticaOblique_widths.insert('Đ', 0.72);
-        HelveticaOblique_widths.insert('∆', 0.61);
-        HelveticaOblique_widths.insert('E', 0.67);
-        HelveticaOblique_widths.insert('É', 0.67);
-        HelveticaOblique_widths.insert('Ě', 0.67);
-        HelveticaOblique_widths.insert('Ê', 0.67);
-        HelveticaOblique_widths.insert('Ë', 0.67);
-        HelveticaOblique_widths.insert('Ė', 0.67);
-        HelveticaOblique_widths.insert('È', 0.67);
-        HelveticaOblique_widths.insert('Ē', 0.67);
-        HelveticaOblique_widths.insert('Ę', 0.67);
-        HelveticaOblique_widths.insert('Ð', 0.72);
-        HelveticaOblique_widths.insert('€', 0.56);
-        HelveticaOblique_widths.insert('F', 0.61);
-        HelveticaOblique_widths.insert('G', 0.78);
-        HelveticaOblique_widths.insert('Ğ', 0.78);
-        HelveticaOblique_widths.insert('Ģ', 0.78);
-        HelveticaOblique_widths.insert('H', 0.72);
-        HelveticaOblique_widths.insert('I', 0.28);
-        HelveticaOblique_widths.insert('Í', 0.28);
-        HelveticaOblique_widths.insert('Î', 0.28);
-        HelveticaOblique_widths.insert('Ï', 0.28);
-        HelveticaOblique_widths.insert('İ', 0.28);
-        HelveticaOblique_widths.insert('Ì', 0.28);
-        HelveticaOblique_widths.insert('Ī', 0.28);
-        HelveticaOblique_widths.insert('Į', 0.28);
-        HelveticaOblique_widths.insert('J', 0.50);
-        HelveticaOblique_widths.insert('K', 0.67);
-        HelveticaOblique_widths.insert('Ķ', 0.67);
-        HelveticaOblique_widths.insert('L', 0.56);
-        HelveticaOblique_widths.insert('Ĺ', 0.56);
-        HelveticaOblique_widths.insert('Ľ', 0.56);
-        HelveticaOblique_widths.insert('Ļ', 0.56);
-        HelveticaOblique_widths.insert('Ł', 0.56);
-        HelveticaOblique_widths.insert('M', 0.83);
-        HelveticaOblique_widths.insert('N', 0.72);
-        HelveticaOblique_widths.insert('Ń', 0.72);
-        HelveticaOblique_widths.insert('Ň', 0.72);
-        HelveticaOblique_widths.insert('Ņ', 0.72);
-        HelveticaOblique_widths.insert('Ñ', 0.72);
-        HelveticaOblique_widths.insert('O', 0.78);
-        HelveticaOblique_widths.insert('Œ', 1.00);
-        HelveticaOblique_widths.insert('Ó', 0.78);
-        HelveticaOblique_widths.insert('Ô', 0.78);
-        HelveticaOblique_widths.insert('Ö', 0.78);
-        HelveticaOblique_widths.insert('Ò', 0.78);
-        HelveticaOblique_widths.insert('Ő', 0.78);
-        HelveticaOblique_widths.insert('Ō', 0.78);
-        HelveticaOblique_widths.insert('Ø', 0.78);
-        HelveticaOblique_widths.insert('Õ', 0.78);
-        HelveticaOblique_widths.insert('P', 0.67);
-        HelveticaOblique_widths.insert('Q', 0.78);
-        HelveticaOblique_widths.insert('R', 0.72);
-        HelveticaOblique_widths.insert('Ŕ', 0.72);
-        HelveticaOblique_widths.insert('Ř', 0.72);
-        HelveticaOblique_widths.insert('Ŗ', 0.72);
-        HelveticaOblique_widths.insert('S', 0.67);
-        HelveticaOblique_widths.insert('Ś', 0.67);
-        HelveticaOblique_widths.insert('Š', 0.67);
-        HelveticaOblique_widths.insert('Ş', 0.67);
-        HelveticaOblique_widths.insert('Ș', 0.67);
-        HelveticaOblique_widths.insert('T', 0.61);
-        HelveticaOblique_widths.insert('Ť', 0.61);
-        HelveticaOblique_widths.insert('Ţ', 0.61);
-        HelveticaOblique_widths.insert('Þ', 0.67);
-        HelveticaOblique_widths.insert('U', 0.72);
-        HelveticaOblique_widths.insert('Ú', 0.72);
-        HelveticaOblique_widths.insert('Û', 0.72);
-        HelveticaOblique_widths.insert('Ü', 0.72);
-        HelveticaOblique_widths.insert('Ù', 0.72);
-        HelveticaOblique_widths.insert('Ű', 0.72);
-        HelveticaOblique_widths.insert('Ū', 0.72);
-        HelveticaOblique_widths.insert('Ų', 0.72);
-        HelveticaOblique_widths.insert('Ů', 0.72);
-        HelveticaOblique_widths.insert('V', 0.67);
-        HelveticaOblique_widths.insert('W', 0.94);
-        HelveticaOblique_widths.insert('X', 0.67);
-        HelveticaOblique_widths.insert('Y', 0.67);
-        HelveticaOblique_widths.insert('Ý', 0.67);
-        HelveticaOblique_widths.insert('Ÿ', 0.67);
-        HelveticaOblique_widths.insert('Z', 0.61);
-        HelveticaOblique_widths.insert('Ź', 0.61);
-        HelveticaOblique_widths.insert('Ž', 0.61);
-        HelveticaOblique_widths.insert('Ż', 0.61);
-        HelveticaOblique_widths.insert('a', 0.56);
-        HelveticaOblique_widths.insert('á', 0.56);
-        HelveticaOblique_widths.insert('ă', 0.56);
-        HelveticaOblique_widths.insert('â', 0.56);
-        HelveticaOblique_widths.insert('´', 0.33);
-        HelveticaOblique_widths.insert('ä', 0.56);
-        HelveticaOblique_widths.insert('æ', 0.89);
-        HelveticaOblique_widths.insert('à', 0.56);
-        HelveticaOblique_widths.insert('ā', 0.56);
-        HelveticaOblique_widths.insert('&', 0.67);
-        HelveticaOblique_widths.insert('ą', 0.56);
-        HelveticaOblique_widths.insert('å', 0.56);
-        HelveticaOblique_widths.insert('^', 0.47);
-        HelveticaOblique_widths.insert('~', 0.58);
-        HelveticaOblique_widths.insert('*', 0.39);
-        HelveticaOblique_widths.insert('@', 1.01);
-        HelveticaOblique_widths.insert('ã', 0.56);
-        HelveticaOblique_widths.insert('b', 0.56);
-        HelveticaOblique_widths.insert('\\', 0.28);
-        HelveticaOblique_widths.insert('|', 0.26);
-        HelveticaOblique_widths.insert('{', 0.33);
-        HelveticaOblique_widths.insert('}', 0.33);
-        HelveticaOblique_widths.insert('[', 0.28);
-        HelveticaOblique_widths.insert(']', 0.28);
-        HelveticaOblique_widths.insert('˘', 0.33);
-        HelveticaOblique_widths.insert('¦', 0.26);
-        HelveticaOblique_widths.insert('•', 0.35);
-        HelveticaOblique_widths.insert('c', 0.50);
-        HelveticaOblique_widths.insert('ć', 0.50);
-        HelveticaOblique_widths.insert('ˇ', 0.33);
-        HelveticaOblique_widths.insert('č', 0.50);
-        HelveticaOblique_widths.insert('ç', 0.50);
-        HelveticaOblique_widths.insert('¸', 0.33);
-        HelveticaOblique_widths.insert('¢', 0.56);
-        HelveticaOblique_widths.insert('ˆ', 0.33);
-        HelveticaOblique_widths.insert(':', 0.28);
-        HelveticaOblique_widths.insert(',', 0.28);
-        HelveticaOblique_widths.insert('', 0.25);
-        HelveticaOblique_widths.insert('©', 0.74);
-        HelveticaOblique_widths.insert('¤', 0.56);
-        HelveticaOblique_widths.insert('d', 0.56);
-        HelveticaOblique_widths.insert('†', 0.56);
-        HelveticaOblique_widths.insert('‡', 0.56);
-        HelveticaOblique_widths.insert('ď', 0.64);
-        HelveticaOblique_widths.insert('đ', 0.56);
-        HelveticaOblique_widths.insert('°', 0.40);
-        HelveticaOblique_widths.insert('¨', 0.33);
-        HelveticaOblique_widths.insert('÷', 0.58);
-        HelveticaOblique_widths.insert('$', 0.56);
-        HelveticaOblique_widths.insert('˙', 0.33);
-        HelveticaOblique_widths.insert('ı', 0.28);
-        HelveticaOblique_widths.insert('e', 0.56);
-        HelveticaOblique_widths.insert('é', 0.56);
-        HelveticaOblique_widths.insert('ě', 0.56);
-        HelveticaOblique_widths.insert('ê', 0.56);
-        HelveticaOblique_widths.insert('ë', 0.56);
-        HelveticaOblique_widths.insert('ė', 0.56);
-        HelveticaOblique_widths.insert('è', 0.56);
-        HelveticaOblique_widths.insert('8', 0.56);
-        HelveticaOblique_widths.insert('…', 1.00);
-        HelveticaOblique_widths.insert('ē', 0.56);
-        HelveticaOblique_widths.insert('—', 1.00);
-        HelveticaOblique_widths.insert('–', 0.56);
-        HelveticaOblique_widths.insert('ę', 0.56);
-        HelveticaOblique_widths.insert('=', 0.58);
-        HelveticaOblique_widths.insert('ð', 0.56);
-        HelveticaOblique_widths.insert('!', 0.28);
-        HelveticaOblique_widths.insert('¡', 0.33);
-        HelveticaOblique_widths.insert('f', 0.28);
-        HelveticaOblique_widths.insert('ﬁ', 0.50);
-        HelveticaOblique_widths.insert('5', 0.56);
-        HelveticaOblique_widths.insert('ﬂ', 0.50);
-        HelveticaOblique_widths.insert('ƒ', 0.56);
-        HelveticaOblique_widths.insert('4', 0.56);
-        HelveticaOblique_widths.insert('⁄', 0.17);
-        HelveticaOblique_widths.insert('g', 0.56);
-        HelveticaOblique_widths.insert('ğ', 0.56);
-        HelveticaOblique_widths.insert('ģ', 0.56);
-        HelveticaOblique_widths.insert('ß', 0.61);
-        HelveticaOblique_widths.insert('`', 0.33);
-        HelveticaOblique_widths.insert('>', 0.58);
-        HelveticaOblique_widths.insert('≥', 0.55);
-        HelveticaOblique_widths.insert('«', 0.56);
-        HelveticaOblique_widths.insert('»', 0.56);
-        HelveticaOblique_widths.insert('‹', 0.33);
-        HelveticaOblique_widths.insert('›', 0.33);
-        HelveticaOblique_widths.insert('h', 0.56);
-        HelveticaOblique_widths.insert('˝', 0.33);
-        HelveticaOblique_widths.insert('-', 0.33);
-        HelveticaOblique_widths.insert('i', 0.22);
-        HelveticaOblique_widths.insert('í', 0.28);
-        HelveticaOblique_widths.insert('î', 0.28);
-        HelveticaOblique_widths.insert('ï', 0.28);
-        HelveticaOblique_widths.insert('ì', 0.28);
-        HelveticaOblique_widths.insert('ī', 0.28);
-        HelveticaOblique_widths.insert('į', 0.22);
-        HelveticaOblique_widths.insert('j', 0.22);
-        HelveticaOblique_widths.insert('k', 0.50);
-        HelveticaOblique_widths.insert('ķ', 0.50);
-        HelveticaOblique_widths.insert('l', 0.22);
-        HelveticaOblique_widths.insert('ĺ', 0.22);
-        HelveticaOblique_widths.insert('ľ', 0.30);
-        HelveticaOblique_widths.insert('ļ', 0.22);
-        HelveticaOblique_widths.insert('<', 0.58);
-        HelveticaOblique_widths.insert('≤', 0.55);
-        HelveticaOblique_widths.insert('¬', 0.58);
-        HelveticaOblique_widths.insert('◊', 0.47);
-        HelveticaOblique_widths.insert('ł', 0.22);
-        HelveticaOblique_widths.insert('m', 0.83);
-        HelveticaOblique_widths.insert('¯', 0.33);
-        HelveticaOblique_widths.insert('−', 0.58);
-        HelveticaOblique_widths.insert('µ', 0.56);
-        HelveticaOblique_widths.insert('×', 0.58);
-        HelveticaOblique_widths.insert('n', 0.56);
-        HelveticaOblique_widths.insert('ń', 0.56);
-        HelveticaOblique_widths.insert('ň', 0.56);
-        HelveticaOblique_widths.insert('ņ', 0.56);
-        HelveticaOblique_widths.insert('9', 0.56);
-        HelveticaOblique_widths.insert('≠', 0.55);
-        HelveticaOblique_widths.insert('ñ', 0.56);
-        HelveticaOblique_widths.insert('#', 0.56);
-        HelveticaOblique_widths.insert('o', 0.56);
-        HelveticaOblique_widths.insert('ó', 0.56);
-        HelveticaOblique_widths.insert('ô', 0.56);
-        HelveticaOblique_widths.insert('ö', 0.56);
-        HelveticaOblique_widths.insert('œ', 0.94);
-        HelveticaOblique_widths.insert('˛', 0.33);
-        HelveticaOblique_widths.insert('ò', 0.56);
-        HelveticaOblique_widths.insert('ő', 0.56);
-        HelveticaOblique_widths.insert('ō', 0.56);
-        HelveticaOblique_widths.insert('1', 0.56);
-        HelveticaOblique_widths.insert('½', 0.83);
-        HelveticaOblique_widths.insert('¼', 0.83);
-        HelveticaOblique_widths.insert('¹', 0.33);
-        HelveticaOblique_widths.insert('ª', 0.37);
-        HelveticaOblique_widths.insert('º', 0.36);
-        HelveticaOblique_widths.insert('ø', 0.61);
-        HelveticaOblique_widths.insert('õ', 0.56);
-        HelveticaOblique_widths.insert('p', 0.56);
-        HelveticaOblique_widths.insert('¶', 0.54);
-        HelveticaOblique_widths.insert('(', 0.33);
-        HelveticaOblique_widths.insert(')', 0.33);
-        HelveticaOblique_widths.insert('∂', 0.48);
-        HelveticaOblique_widths.insert('%', 0.89);
-        HelveticaOblique_widths.insert('.', 0.28);
-        HelveticaOblique_widths.insert('·', 0.28);
-        HelveticaOblique_widths.insert('‰', 1.00);
-        HelveticaOblique_widths.insert('+', 0.58);
-        HelveticaOblique_widths.insert('±', 0.58);
-        HelveticaOblique_widths.insert('q', 0.56);
-        HelveticaOblique_widths.insert('?', 0.56);
-        HelveticaOblique_widths.insert('¿', 0.61);
-        HelveticaOblique_widths.insert('"', 0.35);
-        HelveticaOblique_widths.insert('„', 0.33);
-        HelveticaOblique_widths.insert('“', 0.33);
-        HelveticaOblique_widths.insert('”', 0.33);
-        HelveticaOblique_widths.insert('‘', 0.22);
-        HelveticaOblique_widths.insert('’', 0.22);
-        HelveticaOblique_widths.insert('‚', 0.22);
-        HelveticaOblique_widths.insert('\'', 0.19);
-        HelveticaOblique_widths.insert('r', 0.33);
-        HelveticaOblique_widths.insert('ŕ', 0.33);
-        HelveticaOblique_widths.insert('√', 0.45);
-        HelveticaOblique_widths.insert('ř', 0.33);
-        HelveticaOblique_widths.insert('ŗ', 0.33);
-        HelveticaOblique_widths.insert('®', 0.74);
-        HelveticaOblique_widths.insert('˚', 0.33);
-        HelveticaOblique_widths.insert('s', 0.50);
-        HelveticaOblique_widths.insert('ś', 0.50);
-        HelveticaOblique_widths.insert('š', 0.50);
-        HelveticaOblique_widths.insert('ş', 0.50);
-        HelveticaOblique_widths.insert('ș', 0.50);
-        HelveticaOblique_widths.insert('§', 0.56);
-        HelveticaOblique_widths.insert(';', 0.28);
-        HelveticaOblique_widths.insert('7', 0.56);
-        HelveticaOblique_widths.insert('6', 0.56);
-        HelveticaOblique_widths.insert('/', 0.28);
-        HelveticaOblique_widths.insert(' ', 0.28);
-        HelveticaOblique_widths.insert('£', 0.56);
-        HelveticaOblique_widths.insert('∑', 0.60);
-        HelveticaOblique_widths.insert('t', 0.28);
-        HelveticaOblique_widths.insert('ť', 0.32);
-        HelveticaOblique_widths.insert('ţ', 0.28);
-        HelveticaOblique_widths.insert('þ', 0.56);
-        HelveticaOblique_widths.insert('3', 0.56);
-        HelveticaOblique_widths.insert('¾', 0.83);
-        HelveticaOblique_widths.insert('³', 0.33);
-        HelveticaOblique_widths.insert('˜', 0.33);
-        HelveticaOblique_widths.insert('™', 1.00);
-        HelveticaOblique_widths.insert('2', 0.56);
-        HelveticaOblique_widths.insert('²', 0.33);
-        HelveticaOblique_widths.insert('u', 0.56);
-        HelveticaOblique_widths.insert('ú', 0.56);
-        HelveticaOblique_widths.insert('û', 0.56);
-        HelveticaOblique_widths.insert('ü', 0.56);
-        HelveticaOblique_widths.insert('ù', 0.56);
-        HelveticaOblique_widths.insert('ű', 0.56);
-        HelveticaOblique_widths.insert('ū', 0.56);
-        HelveticaOblique_widths.insert('_', 0.56);
-        HelveticaOblique_widths.insert('ų', 0.56);
-        HelveticaOblique_widths.insert('ů', 0.56);
-        HelveticaOblique_widths.insert('v', 0.50);
-        HelveticaOblique_widths.insert('w', 0.72);
-        HelveticaOblique_widths.insert('x', 0.50);
-        HelveticaOblique_widths.insert('y', 0.50);
-        HelveticaOblique_widths.insert('ý', 0.50);
-        HelveticaOblique_widths.insert('ÿ', 0.50);
-        HelveticaOblique_widths.insert('¥', 0.56);
-        HelveticaOblique_widths.insert('z', 0.50);
-        HelveticaOblique_widths.insert('ź', 0.50);
-        HelveticaOblique_widths.insert('ž', 0.50);
-        HelveticaOblique_widths.insert('ż', 0.50);
-        HelveticaOblique_widths.insert('0', 0.56);
+        &Font::CourierBold => match c {
+            'A' => 0.600,
+            'Æ' => 0.600,
+            'Á' => 0.600,
+            'Ă' => 0.600,
+            'Â' => 0.600,
+            'Ä' => 0.600,
+            'À' => 0.600,
+            'Ā' => 0.600,
+            'Ą' => 0.600,
+            'Å' => 0.600,
+            'Ã' => 0.600,
+            'B' => 0.600,
+            'C' => 0.600,
+            'Ć' => 0.600,
+            'Č' => 0.600,
+            'Ç' => 0.600,
+            'D' => 0.600,
+            'Ď' => 0.600,
+            'Đ' => 0.600,
+            '∆' => 0.600,
+            'E' => 0.600,
+            'É' => 0.600,
+            'Ě' => 0.600,
+            'Ê' => 0.600,
+            'Ë' => 0.600,
+            'Ė' => 0.600,
+            'È' => 0.600,
+            'Ē' => 0.600,
+            'Ę' => 0.600,
+            'Ð' => 0.600,
+            '€' => 0.600,
+            'F' => 0.600,
+            'G' => 0.600,
+            'Ğ' => 0.600,
+            'Ģ' => 0.600,
+            'H' => 0.600,
+            'I' => 0.600,
+            'Í' => 0.600,
+            'Î' => 0.600,
+            'Ï' => 0.600,
+            'İ' => 0.600,
+            'Ì' => 0.600,
+            'Ī' => 0.600,
+            'Į' => 0.600,
+            'J' => 0.600,
+            'K' => 0.600,
+            'Ķ' => 0.600,
+            'L' => 0.600,
+            'Ĺ' => 0.600,
+            'Ľ' => 0.600,
+            'Ļ' => 0.600,
+            'Ł' => 0.600,
+            'M' => 0.600,
+            'N' => 0.600,
+            'Ń' => 0.600,
+            'Ň' => 0.600,
+            'Ņ' => 0.600,
+            'Ñ' => 0.600,
+            'O' => 0.600,
+            'Œ' => 0.600,
+            'Ó' => 0.600,
+            'Ô' => 0.600,
+            'Ö' => 0.600,
+            'Ò' => 0.600,
+            'Ő' => 0.600,
+            'Ō' => 0.600,
+            'Ø' => 0.600,
+            'Õ' => 0.600,
+            'P' => 0.600,
+            'Q' => 0.600,
+            'R' => 0.600,
+            'Ŕ' => 0.600,
+            'Ř' => 0.600,
+            'Ŗ' => 0.600,
+            'S' => 0.600,
+            'Ś' => 0.600,
+            'Š' => 0.600,
+            'Ş' => 0.600,
+            'Ș' => 0.600,
+            'T' => 0.600,
+            'Ť' => 0.600,
+            'Ţ' => 0.600,
+            'Þ' => 0.600,
+            'U' => 0.600,
+            'Ú' => 0.600,
+            'Û' => 0.600,
+            'Ü' => 0.600,
+            'Ù' => 0.600,
+            'Ű' => 0.600,
+            'Ū' => 0.600,
+            'Ų' => 0.600,
+            'Ů' => 0.600,
+            'V' => 0.600,
+            'W' => 0.600,
+            'X' => 0.600,
+            'Y' => 0.600,
+            'Ý' => 0.600,
+            'Ÿ' => 0.600,
+            'Z' => 0.600,
+            'Ź' => 0.600,
+            'Ž' => 0.600,
+            'Ż' => 0.600,
+            'a' => 0.600,
+            'á' => 0.600,
+            'ă' => 0.600,
+            'â' => 0.600,
+            '´' => 0.600,
+            'ä' => 0.600,
+            'æ' => 0.600,
+            'à' => 0.600,
+            'ā' => 0.600,
+            '&' => 0.600,
+            'ą' => 0.600,
+            'å' => 0.600,
+            '^' => 0.600,
+            '~' => 0.600,
+            '*' => 0.600,
+            '@' => 0.600,
+            'ã' => 0.600,
+            'b' => 0.600,
+            '\\' => 0.600,
+            '|' => 0.600,
+            '{' => 0.600,
+            '}' => 0.600,
+            '[' => 0.600,
+            ']' => 0.600,
+            '˘' => 0.600,
+            '¦' => 0.600,
+            '•' => 0.600,
+            'c' => 0.600,
+            'ć' => 0.600,
+            'ˇ' => 0.600,
+            'č' => 0.600,
+            'ç' => 0.600,
+            '¸' => 0.600,
+            '¢' => 0.600,
+            'ˆ' => 0.600,
+            ':' => 0.600,
+            ',' => 0.600,
+            '' => 0.600,
+            '©' => 0.600,
+            '¤' => 0.600,
+            'd' => 0.600,
+            '†' => 0.600,
+            '‡' => 0.600,
+            'ď' => 0.600,
+            'đ' => 0.600,
+            '°' => 0.600,
+            '¨' => 0.600,
+            '÷' => 0.600,
+            '$' => 0.600,
+            '˙' => 0.600,
+            'ı' => 0.600,
+            'e' => 0.600,
+            'é' => 0.600,
+            'ě' => 0.600,
+            'ê' => 0.600,
+            'ë' => 0.600,
+            'ė' => 0.600,
+            'è' => 0.600,
+            '8' => 0.600,
+            '…' => 0.600,
+            'ē' => 0.600,
+            '—' => 0.600,
+            '–' => 0.600,
+            'ę' => 0.600,
+            '=' => 0.600,
+            'ð' => 0.600,
+            '!' => 0.600,
+            '¡' => 0.600,
+            'f' => 0.600,
+            'ﬁ' => 0.600,
+            '5' => 0.600,
+            'ﬂ' => 0.600,
+            'ƒ' => 0.600,
+            '4' => 0.600,
+            '⁄' => 0.600,
+            'g' => 0.600,
+            'ğ' => 0.600,
+            'ģ' => 0.600,
+            'ß' => 0.600,
+            '`' => 0.600,
+            '>' => 0.600,
+            '≥' => 0.600,
+            '«' => 0.600,
+            '»' => 0.600,
+            '‹' => 0.600,
+            '›' => 0.600,
+            'h' => 0.600,
+            '˝' => 0.600,
+            '-' => 0.600,
+            'i' => 0.600,
+            'í' => 0.600,
+            'î' => 0.600,
+            'ï' => 0.600,
+            'ì' => 0.600,
+            'ī' => 0.600,
+            'į' => 0.600,
+            'j' => 0.600,
+            'k' => 0.600,
+            'ķ' => 0.600,
+            'l' => 0.600,
+            'ĺ' => 0.600,
+            'ľ' => 0.600,
+            'ļ' => 0.600,
+            '<' => 0.600,
+            '≤' => 0.600,
+            '¬' => 0.600,
+            '◊' => 0.600,
+            'ł' => 0.600,
+            'm' => 0.600,
+            '¯' => 0.600,
+            '−' => 0.600,
+            'µ' => 0.600,
+            '×' => 0.600,
+            'n' => 0.600,
+            'ń' => 0.600,
+            'ň' => 0.600,
+            'ņ' => 0.600,
+            '9' => 0.600,
+            '≠' => 0.600,
+            'ñ' => 0.600,
+            '#' => 0.600,
+            'o' => 0.600,
+            'ó' => 0.600,
+            'ô' => 0.600,
+            'ö' => 0.600,
+            'œ' => 0.600,
+            '˛' => 0.600,
+            'ò' => 0.600,
+            'ő' => 0.600,
+            'ō' => 0.600,
+            '1' => 0.600,
+            '½' => 0.600,
+            '¼' => 0.600,
+            '¹' => 0.600,
+            'ª' => 0.600,
+            'º' => 0.600,
+            'ø' => 0.600,
+            'õ' => 0.600,
+            'p' => 0.600,
+            '¶' => 0.600,
+            '(' => 0.600,
+            ')' => 0.600,
+            '∂' => 0.600,
+            '%' => 0.600,
+            '.' => 0.600,
+            '·' => 0.600,
+            '‰' => 0.600,
+            '+' => 0.600,
+            '±' => 0.600,
+            'q' => 0.600,
+            '?' => 0.600,
+            '¿' => 0.600,
+            '"' => 0.600,
+            '„' => 0.600,
+            '“' => 0.600,
+            '”' => 0.600,
+            '‘' => 0.600,
+            '’' => 0.600,
+            '‚' => 0.600,
+            '\'' => 0.600,
+            'r' => 0.600,
+            'ŕ' => 0.600,
+            '√' => 0.600,
+            'ř' => 0.600,
+            'ŗ' => 0.600,
+            '®' => 0.600,
+            '˚' => 0.600,
+            's' => 0.600,
+            'ś' => 0.600,
+            'š' => 0.600,
+            'ş' => 0.600,
+            'ș' => 0.600,
+            '§' => 0.600,
+            ';' => 0.600,
+            '7' => 0.600,
+            '6' => 0.600,
+            '/' => 0.600,
+            ' ' => 0.600,
+            '£' => 0.600,
+            '∑' => 0.600,
+            't' => 0.600,
+            'ť' => 0.600,
+            'ţ' => 0.600,
+            'þ' => 0.600,
+            '3' => 0.600,
+            '¾' => 0.600,
+            '³' => 0.600,
+            '˜' => 0.600,
+            '™' => 0.600,
+            '2' => 0.600,
+            '²' => 0.600,
+            'u' => 0.600,
+            'ú' => 0.600,
+            'û' => 0.600,
+            'ü' => 0.600,
+            'ù' => 0.600,
+            'ű' => 0.600,
+            'ū' => 0.600,
+            '_' => 0.600,
+            'ų' => 0.600,
+            'ů' => 0.600,
+            'v' => 0.600,
+            'w' => 0.600,
+            'x' => 0.600,
+            'y' => 0.600,
+            'ý' => 0.600,
+            'ÿ' => 0.600,
+            '¥' => 0.600,
+            'z' => 0.600,
+            'ź' => 0.600,
+            'ž' => 0.600,
+            'ż' => 0.600,
+            '0' => 0.600,
+            _ => 0.0,
+        },
 
-        let mut HelveticaBold_widths: HashMap<char, f64> = HashMap::new();
-        HelveticaBold_widths.insert('A', 0.72);
-        HelveticaBold_widths.insert('Æ', 1.00);
-        HelveticaBold_widths.insert('Á', 0.72);
-        HelveticaBold_widths.insert('Ă', 0.72);
-        HelveticaBold_widths.insert('Â', 0.72);
-        HelveticaBold_widths.insert('Ä', 0.72);
-        HelveticaBold_widths.insert('À', 0.72);
-        HelveticaBold_widths.insert('Ā', 0.72);
-        HelveticaBold_widths.insert('Ą', 0.72);
-        HelveticaBold_widths.insert('Å', 0.72);
-        HelveticaBold_widths.insert('Ã', 0.72);
-        HelveticaBold_widths.insert('B', 0.72);
-        HelveticaBold_widths.insert('C', 0.72);
-        HelveticaBold_widths.insert('Ć', 0.72);
-        HelveticaBold_widths.insert('Č', 0.72);
-        HelveticaBold_widths.insert('Ç', 0.72);
-        HelveticaBold_widths.insert('D', 0.72);
-        HelveticaBold_widths.insert('Ď', 0.72);
-        HelveticaBold_widths.insert('Đ', 0.72);
-        HelveticaBold_widths.insert('∆', 0.61);
-        HelveticaBold_widths.insert('E', 0.67);
-        HelveticaBold_widths.insert('É', 0.67);
-        HelveticaBold_widths.insert('Ě', 0.67);
-        HelveticaBold_widths.insert('Ê', 0.67);
-        HelveticaBold_widths.insert('Ë', 0.67);
-        HelveticaBold_widths.insert('Ė', 0.67);
-        HelveticaBold_widths.insert('È', 0.67);
-        HelveticaBold_widths.insert('Ē', 0.67);
-        HelveticaBold_widths.insert('Ę', 0.67);
-        HelveticaBold_widths.insert('Ð', 0.72);
-        HelveticaBold_widths.insert('€', 0.56);
-        HelveticaBold_widths.insert('F', 0.61);
-        HelveticaBold_widths.insert('G', 0.78);
-        HelveticaBold_widths.insert('Ğ', 0.78);
-        HelveticaBold_widths.insert('Ģ', 0.78);
-        HelveticaBold_widths.insert('H', 0.72);
-        HelveticaBold_widths.insert('I', 0.28);
-        HelveticaBold_widths.insert('Í', 0.28);
-        HelveticaBold_widths.insert('Î', 0.28);
-        HelveticaBold_widths.insert('Ï', 0.28);
-        HelveticaBold_widths.insert('İ', 0.28);
-        HelveticaBold_widths.insert('Ì', 0.28);
-        HelveticaBold_widths.insert('Ī', 0.28);
-        HelveticaBold_widths.insert('Į', 0.28);
-        HelveticaBold_widths.insert('J', 0.56);
-        HelveticaBold_widths.insert('K', 0.72);
-        HelveticaBold_widths.insert('Ķ', 0.72);
-        HelveticaBold_widths.insert('L', 0.61);
-        HelveticaBold_widths.insert('Ĺ', 0.61);
-        HelveticaBold_widths.insert('Ľ', 0.61);
-        HelveticaBold_widths.insert('Ļ', 0.61);
-        HelveticaBold_widths.insert('Ł', 0.61);
-        HelveticaBold_widths.insert('M', 0.83);
-        HelveticaBold_widths.insert('N', 0.72);
-        HelveticaBold_widths.insert('Ń', 0.72);
-        HelveticaBold_widths.insert('Ň', 0.72);
-        HelveticaBold_widths.insert('Ņ', 0.72);
-        HelveticaBold_widths.insert('Ñ', 0.72);
-        HelveticaBold_widths.insert('O', 0.78);
-        HelveticaBold_widths.insert('Œ', 1.00);
-        HelveticaBold_widths.insert('Ó', 0.78);
-        HelveticaBold_widths.insert('Ô', 0.78);
-        HelveticaBold_widths.insert('Ö', 0.78);
-        HelveticaBold_widths.insert('Ò', 0.78);
-        HelveticaBold_widths.insert('Ő', 0.78);
-        HelveticaBold_widths.insert('Ō', 0.78);
-        HelveticaBold_widths.insert('Ø', 0.78);
-        HelveticaBold_widths.insert('Õ', 0.78);
-        HelveticaBold_widths.insert('P', 0.67);
-        HelveticaBold_widths.insert('Q', 0.78);
-        HelveticaBold_widths.insert('R', 0.72);
-        HelveticaBold_widths.insert('Ŕ', 0.72);
-        HelveticaBold_widths.insert('Ř', 0.72);
-        HelveticaBold_widths.insert('Ŗ', 0.72);
-        HelveticaBold_widths.insert('S', 0.67);
-        HelveticaBold_widths.insert('Ś', 0.67);
-        HelveticaBold_widths.insert('Š', 0.67);
-        HelveticaBold_widths.insert('Ş', 0.67);
-        HelveticaBold_widths.insert('Ș', 0.67);
-        HelveticaBold_widths.insert('T', 0.61);
-        HelveticaBold_widths.insert('Ť', 0.61);
-        HelveticaBold_widths.insert('Ţ', 0.61);
-        HelveticaBold_widths.insert('Þ', 0.67);
-        HelveticaBold_widths.insert('U', 0.72);
-        HelveticaBold_widths.insert('Ú', 0.72);
-        HelveticaBold_widths.insert('Û', 0.72);
-        HelveticaBold_widths.insert('Ü', 0.72);
-        HelveticaBold_widths.insert('Ù', 0.72);
-        HelveticaBold_widths.insert('Ű', 0.72);
-        HelveticaBold_widths.insert('Ū', 0.72);
-        HelveticaBold_widths.insert('Ų', 0.72);
-        HelveticaBold_widths.insert('Ů', 0.72);
-        HelveticaBold_widths.insert('V', 0.67);
-        HelveticaBold_widths.insert('W', 0.94);
-        HelveticaBold_widths.insert('X', 0.67);
-        HelveticaBold_widths.insert('Y', 0.67);
-        HelveticaBold_widths.insert('Ý', 0.67);
-        HelveticaBold_widths.insert('Ÿ', 0.67);
-        HelveticaBold_widths.insert('Z', 0.61);
-        HelveticaBold_widths.insert('Ź', 0.61);
-        HelveticaBold_widths.insert('Ž', 0.61);
-        HelveticaBold_widths.insert('Ż', 0.61);
-        HelveticaBold_widths.insert('a', 0.56);
-        HelveticaBold_widths.insert('á', 0.56);
-        HelveticaBold_widths.insert('ă', 0.56);
-        HelveticaBold_widths.insert('â', 0.56);
-        HelveticaBold_widths.insert('´', 0.33);
-        HelveticaBold_widths.insert('ä', 0.56);
-        HelveticaBold_widths.insert('æ', 0.89);
-        HelveticaBold_widths.insert('à', 0.56);
-        HelveticaBold_widths.insert('ā', 0.56);
-        HelveticaBold_widths.insert('&', 0.72);
-        HelveticaBold_widths.insert('ą', 0.56);
-        HelveticaBold_widths.insert('å', 0.56);
-        HelveticaBold_widths.insert('^', 0.58);
-        HelveticaBold_widths.insert('~', 0.58);
-        HelveticaBold_widths.insert('*', 0.39);
-        HelveticaBold_widths.insert('@', 0.97);
-        HelveticaBold_widths.insert('ã', 0.56);
-        HelveticaBold_widths.insert('b', 0.61);
-        HelveticaBold_widths.insert('\\', 0.28);
-        HelveticaBold_widths.insert('|', 0.28);
-        HelveticaBold_widths.insert('{', 0.39);
-        HelveticaBold_widths.insert('}', 0.39);
-        HelveticaBold_widths.insert('[', 0.33);
-        HelveticaBold_widths.insert(']', 0.33);
-        HelveticaBold_widths.insert('˘', 0.33);
-        HelveticaBold_widths.insert('¦', 0.28);
-        HelveticaBold_widths.insert('•', 0.35);
-        HelveticaBold_widths.insert('c', 0.56);
-        HelveticaBold_widths.insert('ć', 0.56);
-        HelveticaBold_widths.insert('ˇ', 0.33);
-        HelveticaBold_widths.insert('č', 0.56);
-        HelveticaBold_widths.insert('ç', 0.56);
-        HelveticaBold_widths.insert('¸', 0.33);
-        HelveticaBold_widths.insert('¢', 0.56);
-        HelveticaBold_widths.insert('ˆ', 0.33);
-        HelveticaBold_widths.insert(':', 0.33);
-        HelveticaBold_widths.insert(',', 0.28);
-        HelveticaBold_widths.insert('', 0.25);
-        HelveticaBold_widths.insert('©', 0.74);
-        HelveticaBold_widths.insert('¤', 0.56);
-        HelveticaBold_widths.insert('d', 0.61);
-        HelveticaBold_widths.insert('†', 0.56);
-        HelveticaBold_widths.insert('‡', 0.56);
-        HelveticaBold_widths.insert('ď', 0.74);
-        HelveticaBold_widths.insert('đ', 0.61);
-        HelveticaBold_widths.insert('°', 0.40);
-        HelveticaBold_widths.insert('¨', 0.33);
-        HelveticaBold_widths.insert('÷', 0.58);
-        HelveticaBold_widths.insert('$', 0.56);
-        HelveticaBold_widths.insert('˙', 0.33);
-        HelveticaBold_widths.insert('ı', 0.28);
-        HelveticaBold_widths.insert('e', 0.56);
-        HelveticaBold_widths.insert('é', 0.56);
-        HelveticaBold_widths.insert('ě', 0.56);
-        HelveticaBold_widths.insert('ê', 0.56);
-        HelveticaBold_widths.insert('ë', 0.56);
-        HelveticaBold_widths.insert('ė', 0.56);
-        HelveticaBold_widths.insert('è', 0.56);
-        HelveticaBold_widths.insert('8', 0.56);
-        HelveticaBold_widths.insert('…', 1.00);
-        HelveticaBold_widths.insert('ē', 0.56);
-        HelveticaBold_widths.insert('—', 1.00);
-        HelveticaBold_widths.insert('–', 0.56);
-        HelveticaBold_widths.insert('ę', 0.56);
-        HelveticaBold_widths.insert('=', 0.58);
-        HelveticaBold_widths.insert('ð', 0.61);
-        HelveticaBold_widths.insert('!', 0.33);
-        HelveticaBold_widths.insert('¡', 0.33);
-        HelveticaBold_widths.insert('f', 0.33);
-        HelveticaBold_widths.insert('ﬁ', 0.61);
-        HelveticaBold_widths.insert('5', 0.56);
-        HelveticaBold_widths.insert('ﬂ', 0.61);
-        HelveticaBold_widths.insert('ƒ', 0.56);
-        HelveticaBold_widths.insert('4', 0.56);
-        HelveticaBold_widths.insert('⁄', 0.17);
-        HelveticaBold_widths.insert('g', 0.61);
-        HelveticaBold_widths.insert('ğ', 0.61);
-        HelveticaBold_widths.insert('ģ', 0.61);
-        HelveticaBold_widths.insert('ß', 0.61);
-        HelveticaBold_widths.insert('`', 0.33);
-        HelveticaBold_widths.insert('>', 0.58);
-        HelveticaBold_widths.insert('≥', 0.55);
-        HelveticaBold_widths.insert('«', 0.56);
-        HelveticaBold_widths.insert('»', 0.56);
-        HelveticaBold_widths.insert('‹', 0.33);
-        HelveticaBold_widths.insert('›', 0.33);
-        HelveticaBold_widths.insert('h', 0.61);
-        HelveticaBold_widths.insert('˝', 0.33);
-        HelveticaBold_widths.insert('-', 0.33);
-        HelveticaBold_widths.insert('i', 0.28);
-        HelveticaBold_widths.insert('í', 0.28);
-        HelveticaBold_widths.insert('î', 0.28);
-        HelveticaBold_widths.insert('ï', 0.28);
-        HelveticaBold_widths.insert('ì', 0.28);
-        HelveticaBold_widths.insert('ī', 0.28);
-        HelveticaBold_widths.insert('į', 0.28);
-        HelveticaBold_widths.insert('j', 0.28);
-        HelveticaBold_widths.insert('k', 0.56);
-        HelveticaBold_widths.insert('ķ', 0.56);
-        HelveticaBold_widths.insert('l', 0.28);
-        HelveticaBold_widths.insert('ĺ', 0.28);
-        HelveticaBold_widths.insert('ľ', 0.40);
-        HelveticaBold_widths.insert('ļ', 0.28);
-        HelveticaBold_widths.insert('<', 0.58);
-        HelveticaBold_widths.insert('≤', 0.55);
-        HelveticaBold_widths.insert('¬', 0.58);
-        HelveticaBold_widths.insert('◊', 0.49);
-        HelveticaBold_widths.insert('ł', 0.28);
-        HelveticaBold_widths.insert('m', 0.89);
-        HelveticaBold_widths.insert('¯', 0.33);
-        HelveticaBold_widths.insert('−', 0.58);
-        HelveticaBold_widths.insert('µ', 0.61);
-        HelveticaBold_widths.insert('×', 0.58);
-        HelveticaBold_widths.insert('n', 0.61);
-        HelveticaBold_widths.insert('ń', 0.61);
-        HelveticaBold_widths.insert('ň', 0.61);
-        HelveticaBold_widths.insert('ņ', 0.61);
-        HelveticaBold_widths.insert('9', 0.56);
-        HelveticaBold_widths.insert('≠', 0.55);
-        HelveticaBold_widths.insert('ñ', 0.61);
-        HelveticaBold_widths.insert('#', 0.56);
-        HelveticaBold_widths.insert('o', 0.61);
-        HelveticaBold_widths.insert('ó', 0.61);
-        HelveticaBold_widths.insert('ô', 0.61);
-        HelveticaBold_widths.insert('ö', 0.61);
-        HelveticaBold_widths.insert('œ', 0.94);
-        HelveticaBold_widths.insert('˛', 0.33);
-        HelveticaBold_widths.insert('ò', 0.61);
-        HelveticaBold_widths.insert('ő', 0.61);
-        HelveticaBold_widths.insert('ō', 0.61);
-        HelveticaBold_widths.insert('1', 0.56);
-        HelveticaBold_widths.insert('½', 0.83);
-        HelveticaBold_widths.insert('¼', 0.83);
-        HelveticaBold_widths.insert('¹', 0.33);
-        HelveticaBold_widths.insert('ª', 0.37);
-        HelveticaBold_widths.insert('º', 0.36);
-        HelveticaBold_widths.insert('ø', 0.61);
-        HelveticaBold_widths.insert('õ', 0.61);
-        HelveticaBold_widths.insert('p', 0.61);
-        HelveticaBold_widths.insert('¶', 0.56);
-        HelveticaBold_widths.insert('(', 0.33);
-        HelveticaBold_widths.insert(')', 0.33);
-        HelveticaBold_widths.insert('∂', 0.49);
-        HelveticaBold_widths.insert('%', 0.89);
-        HelveticaBold_widths.insert('.', 0.28);
-        HelveticaBold_widths.insert('·', 0.28);
-        HelveticaBold_widths.insert('‰', 1.00);
-        HelveticaBold_widths.insert('+', 0.58);
-        HelveticaBold_widths.insert('±', 0.58);
-        HelveticaBold_widths.insert('q', 0.61);
-        HelveticaBold_widths.insert('?', 0.61);
-        HelveticaBold_widths.insert('¿', 0.61);
-        HelveticaBold_widths.insert('"', 0.47);
-        HelveticaBold_widths.insert('„', 0.50);
-        HelveticaBold_widths.insert('“', 0.50);
-        HelveticaBold_widths.insert('”', 0.50);
-        HelveticaBold_widths.insert('‘', 0.28);
-        HelveticaBold_widths.insert('’', 0.28);
-        HelveticaBold_widths.insert('‚', 0.28);
-        HelveticaBold_widths.insert('\'', 0.24);
-        HelveticaBold_widths.insert('r', 0.39);
-        HelveticaBold_widths.insert('ŕ', 0.39);
-        HelveticaBold_widths.insert('√', 0.55);
-        HelveticaBold_widths.insert('ř', 0.39);
-        HelveticaBold_widths.insert('ŗ', 0.39);
-        HelveticaBold_widths.insert('®', 0.74);
-        HelveticaBold_widths.insert('˚', 0.33);
-        HelveticaBold_widths.insert('s', 0.56);
-        HelveticaBold_widths.insert('ś', 0.56);
-        HelveticaBold_widths.insert('š', 0.56);
-        HelveticaBold_widths.insert('ş', 0.56);
-        HelveticaBold_widths.insert('ș', 0.56);
-        HelveticaBold_widths.insert('§', 0.56);
-        HelveticaBold_widths.insert(';', 0.33);
-        HelveticaBold_widths.insert('7', 0.56);
-        HelveticaBold_widths.insert('6', 0.56);
-        HelveticaBold_widths.insert('/', 0.28);
-        HelveticaBold_widths.insert(' ', 0.28);
-        HelveticaBold_widths.insert('£', 0.56);
-        HelveticaBold_widths.insert('∑', 0.60);
-        HelveticaBold_widths.insert('t', 0.33);
-        HelveticaBold_widths.insert('ť', 0.39);
-        HelveticaBold_widths.insert('ţ', 0.33);
-        HelveticaBold_widths.insert('þ', 0.61);
-        HelveticaBold_widths.insert('3', 0.56);
-        HelveticaBold_widths.insert('¾', 0.83);
-        HelveticaBold_widths.insert('³', 0.33);
-        HelveticaBold_widths.insert('˜', 0.33);
-        HelveticaBold_widths.insert('™', 1.00);
-        HelveticaBold_widths.insert('2', 0.56);
-        HelveticaBold_widths.insert('²', 0.33);
-        HelveticaBold_widths.insert('u', 0.61);
-        HelveticaBold_widths.insert('ú', 0.61);
-        HelveticaBold_widths.insert('û', 0.61);
-        HelveticaBold_widths.insert('ü', 0.61);
-        HelveticaBold_widths.insert('ù', 0.61);
-        HelveticaBold_widths.insert('ű', 0.61);
-        HelveticaBold_widths.insert('ū', 0.61);
-        HelveticaBold_widths.insert('_', 0.56);
-        HelveticaBold_widths.insert('ų', 0.61);
-        HelveticaBold_widths.insert('ů', 0.61);
-        HelveticaBold_widths.insert('v', 0.56);
-        HelveticaBold_widths.insert('w', 0.78);
-        HelveticaBold_widths.insert('x', 0.56);
-        HelveticaBold_widths.insert('y', 0.56);
-        HelveticaBold_widths.insert('ý', 0.56);
-        HelveticaBold_widths.insert('ÿ', 0.56);
-        HelveticaBold_widths.insert('¥', 0.56);
-        HelveticaBold_widths.insert('z', 0.50);
-        HelveticaBold_widths.insert('ź', 0.50);
-        HelveticaBold_widths.insert('ž', 0.50);
-        HelveticaBold_widths.insert('ż', 0.50);
-        HelveticaBold_widths.insert('0', 0.56);
+        &Font::HelveticaBold => match c {
+            'A' => 0.722,
+            'Æ' => 1.000,
+            'Á' => 0.722,
+            'Ă' => 0.722,
+            'Â' => 0.722,
+            'Ä' => 0.722,
+            'À' => 0.722,
+            'Ā' => 0.722,
+            'Ą' => 0.722,
+            'Å' => 0.722,
+            'Ã' => 0.722,
+            'B' => 0.722,
+            'C' => 0.722,
+            'Ć' => 0.722,
+            'Č' => 0.722,
+            'Ç' => 0.722,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.667,
+            'É' => 0.667,
+            'Ě' => 0.667,
+            'Ê' => 0.667,
+            'Ë' => 0.667,
+            'Ė' => 0.667,
+            'È' => 0.667,
+            'Ē' => 0.667,
+            'Ę' => 0.667,
+            'Ð' => 0.722,
+            '€' => 0.556,
+            'F' => 0.611,
+            'G' => 0.778,
+            'Ğ' => 0.778,
+            'Ģ' => 0.778,
+            'H' => 0.722,
+            'I' => 0.278,
+            'Í' => 0.278,
+            'Î' => 0.278,
+            'Ï' => 0.278,
+            'İ' => 0.278,
+            'Ì' => 0.278,
+            'Ī' => 0.278,
+            'Į' => 0.278,
+            'J' => 0.556,
+            'K' => 0.722,
+            'Ķ' => 0.722,
+            'L' => 0.611,
+            'Ĺ' => 0.611,
+            'Ľ' => 0.611,
+            'Ļ' => 0.611,
+            'Ł' => 0.611,
+            'M' => 0.833,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.778,
+            'Œ' => 1.000,
+            'Ó' => 0.778,
+            'Ô' => 0.778,
+            'Ö' => 0.778,
+            'Ò' => 0.778,
+            'Ő' => 0.778,
+            'Ō' => 0.778,
+            'Ø' => 0.778,
+            'Õ' => 0.778,
+            'P' => 0.667,
+            'Q' => 0.778,
+            'R' => 0.722,
+            'Ŕ' => 0.722,
+            'Ř' => 0.722,
+            'Ŗ' => 0.722,
+            'S' => 0.667,
+            'Ś' => 0.667,
+            'Š' => 0.667,
+            'Ş' => 0.667,
+            'Ș' => 0.667,
+            'T' => 0.611,
+            'Ť' => 0.611,
+            'Ţ' => 0.611,
+            'Þ' => 0.667,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.667,
+            'W' => 0.944,
+            'X' => 0.667,
+            'Y' => 0.667,
+            'Ý' => 0.667,
+            'Ÿ' => 0.667,
+            'Z' => 0.611,
+            'Ź' => 0.611,
+            'Ž' => 0.611,
+            'Ż' => 0.611,
+            'a' => 0.556,
+            'á' => 0.556,
+            'ă' => 0.556,
+            'â' => 0.556,
+            '´' => 0.333,
+            'ä' => 0.556,
+            'æ' => 0.889,
+            'à' => 0.556,
+            'ā' => 0.556,
+            '&' => 0.722,
+            'ą' => 0.556,
+            'å' => 0.556,
+            '^' => 0.584,
+            '~' => 0.584,
+            '*' => 0.389,
+            '@' => 0.975,
+            'ã' => 0.556,
+            'b' => 0.611,
+            '\\' => 0.278,
+            '|' => 0.280,
+            '{' => 0.389,
+            '}' => 0.389,
+            '[' => 0.333,
+            ']' => 0.333,
+            '˘' => 0.333,
+            '¦' => 0.280,
+            '•' => 0.350,
+            'c' => 0.556,
+            'ć' => 0.556,
+            'ˇ' => 0.333,
+            'č' => 0.556,
+            'ç' => 0.556,
+            '¸' => 0.333,
+            '¢' => 0.556,
+            'ˆ' => 0.333,
+            ':' => 0.333,
+            ',' => 0.278,
+            '' => 0.250,
+            '©' => 0.737,
+            '¤' => 0.556,
+            'd' => 0.611,
+            '†' => 0.556,
+            '‡' => 0.556,
+            'ď' => 0.743,
+            'đ' => 0.611,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.584,
+            '$' => 0.556,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.556,
+            'é' => 0.556,
+            'ě' => 0.556,
+            'ê' => 0.556,
+            'ë' => 0.556,
+            'ė' => 0.556,
+            'è' => 0.556,
+            '8' => 0.556,
+            '…' => 1.000,
+            'ē' => 0.556,
+            '—' => 1.000,
+            '–' => 0.556,
+            'ę' => 0.556,
+            '=' => 0.584,
+            'ð' => 0.611,
+            '!' => 0.333,
+            '¡' => 0.333,
+            'f' => 0.333,
+            'ﬁ' => 0.611,
+            '5' => 0.556,
+            'ﬂ' => 0.611,
+            'ƒ' => 0.556,
+            '4' => 0.556,
+            '⁄' => 0.167,
+            'g' => 0.611,
+            'ğ' => 0.611,
+            'ģ' => 0.611,
+            'ß' => 0.611,
+            '`' => 0.333,
+            '>' => 0.584,
+            '≥' => 0.549,
+            '«' => 0.556,
+            '»' => 0.556,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.611,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.278,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.278,
+            'j' => 0.278,
+            'k' => 0.556,
+            'ķ' => 0.556,
+            'l' => 0.278,
+            'ĺ' => 0.278,
+            'ľ' => 0.400,
+            'ļ' => 0.278,
+            '<' => 0.584,
+            '≤' => 0.549,
+            '¬' => 0.584,
+            '◊' => 0.494,
+            'ł' => 0.278,
+            'm' => 0.889,
+            '¯' => 0.333,
+            '−' => 0.584,
+            'µ' => 0.611,
+            '×' => 0.584,
+            'n' => 0.611,
+            'ń' => 0.611,
+            'ň' => 0.611,
+            'ņ' => 0.611,
+            '9' => 0.556,
+            '≠' => 0.549,
+            'ñ' => 0.611,
+            '#' => 0.556,
+            'o' => 0.611,
+            'ó' => 0.611,
+            'ô' => 0.611,
+            'ö' => 0.611,
+            'œ' => 0.944,
+            '˛' => 0.333,
+            'ò' => 0.611,
+            'ő' => 0.611,
+            'ō' => 0.611,
+            '1' => 0.556,
+            '½' => 0.834,
+            '¼' => 0.834,
+            '¹' => 0.333,
+            'ª' => 0.370,
+            'º' => 0.365,
+            'ø' => 0.611,
+            'õ' => 0.611,
+            'p' => 0.611,
+            '¶' => 0.556,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.494,
+            '%' => 0.889,
+            '.' => 0.278,
+            '·' => 0.278,
+            '‰' => 1.000,
+            '+' => 0.584,
+            '±' => 0.584,
+            'q' => 0.611,
+            '?' => 0.611,
+            '¿' => 0.611,
+            '"' => 0.474,
+            '„' => 0.500,
+            '“' => 0.500,
+            '”' => 0.500,
+            '‘' => 0.278,
+            '’' => 0.278,
+            '‚' => 0.278,
+            '\'' => 0.238,
+            'r' => 0.389,
+            'ŕ' => 0.389,
+            '√' => 0.549,
+            'ř' => 0.389,
+            'ŗ' => 0.389,
+            '®' => 0.737,
+            '˚' => 0.333,
+            's' => 0.556,
+            'ś' => 0.556,
+            'š' => 0.556,
+            'ş' => 0.556,
+            'ș' => 0.556,
+            '§' => 0.556,
+            ';' => 0.333,
+            '7' => 0.556,
+            '6' => 0.556,
+            '/' => 0.278,
+            ' ' => 0.278,
+            '£' => 0.556,
+            '∑' => 0.600,
+            't' => 0.333,
+            'ť' => 0.389,
+            'ţ' => 0.333,
+            'þ' => 0.611,
+            '3' => 0.556,
+            '¾' => 0.834,
+            '³' => 0.333,
+            '˜' => 0.333,
+            '™' => 1.000,
+            '2' => 0.556,
+            '²' => 0.333,
+            'u' => 0.611,
+            'ú' => 0.611,
+            'û' => 0.611,
+            'ü' => 0.611,
+            'ù' => 0.611,
+            'ű' => 0.611,
+            'ū' => 0.611,
+            '_' => 0.556,
+            'ų' => 0.611,
+            'ů' => 0.611,
+            'v' => 0.556,
+            'w' => 0.778,
+            'x' => 0.556,
+            'y' => 0.556,
+            'ý' => 0.556,
+            'ÿ' => 0.556,
+            '¥' => 0.556,
+            'z' => 0.500,
+            'ź' => 0.500,
+            'ž' => 0.500,
+            'ż' => 0.500,
+            '0' => 0.556,
+            _ => 0.0,
+        },
 
-        let mut HelveticaBoldOblique_widths: HashMap<char, f64> = HashMap::new();
-        HelveticaBoldOblique_widths.insert('A', 0.72);
-        HelveticaBoldOblique_widths.insert('Æ', 1.00);
-        HelveticaBoldOblique_widths.insert('Á', 0.72);
-        HelveticaBoldOblique_widths.insert('Ă', 0.72);
-        HelveticaBoldOblique_widths.insert('Â', 0.72);
-        HelveticaBoldOblique_widths.insert('Ä', 0.72);
-        HelveticaBoldOblique_widths.insert('À', 0.72);
-        HelveticaBoldOblique_widths.insert('Ā', 0.72);
-        HelveticaBoldOblique_widths.insert('Ą', 0.72);
-        HelveticaBoldOblique_widths.insert('Å', 0.72);
-        HelveticaBoldOblique_widths.insert('Ã', 0.72);
-        HelveticaBoldOblique_widths.insert('B', 0.72);
-        HelveticaBoldOblique_widths.insert('C', 0.72);
-        HelveticaBoldOblique_widths.insert('Ć', 0.72);
-        HelveticaBoldOblique_widths.insert('Č', 0.72);
-        HelveticaBoldOblique_widths.insert('Ç', 0.72);
-        HelveticaBoldOblique_widths.insert('D', 0.72);
-        HelveticaBoldOblique_widths.insert('Ď', 0.72);
-        HelveticaBoldOblique_widths.insert('Đ', 0.72);
-        HelveticaBoldOblique_widths.insert('∆', 0.61);
-        HelveticaBoldOblique_widths.insert('E', 0.67);
-        HelveticaBoldOblique_widths.insert('É', 0.67);
-        HelveticaBoldOblique_widths.insert('Ě', 0.67);
-        HelveticaBoldOblique_widths.insert('Ê', 0.67);
-        HelveticaBoldOblique_widths.insert('Ë', 0.67);
-        HelveticaBoldOblique_widths.insert('Ė', 0.67);
-        HelveticaBoldOblique_widths.insert('È', 0.67);
-        HelveticaBoldOblique_widths.insert('Ē', 0.67);
-        HelveticaBoldOblique_widths.insert('Ę', 0.67);
-        HelveticaBoldOblique_widths.insert('Ð', 0.72);
-        HelveticaBoldOblique_widths.insert('€', 0.56);
-        HelveticaBoldOblique_widths.insert('F', 0.61);
-        HelveticaBoldOblique_widths.insert('G', 0.78);
-        HelveticaBoldOblique_widths.insert('Ğ', 0.78);
-        HelveticaBoldOblique_widths.insert('Ģ', 0.78);
-        HelveticaBoldOblique_widths.insert('H', 0.72);
-        HelveticaBoldOblique_widths.insert('I', 0.28);
-        HelveticaBoldOblique_widths.insert('Í', 0.28);
-        HelveticaBoldOblique_widths.insert('Î', 0.28);
-        HelveticaBoldOblique_widths.insert('Ï', 0.28);
-        HelveticaBoldOblique_widths.insert('İ', 0.28);
-        HelveticaBoldOblique_widths.insert('Ì', 0.28);
-        HelveticaBoldOblique_widths.insert('Ī', 0.28);
-        HelveticaBoldOblique_widths.insert('Į', 0.28);
-        HelveticaBoldOblique_widths.insert('J', 0.56);
-        HelveticaBoldOblique_widths.insert('K', 0.72);
-        HelveticaBoldOblique_widths.insert('Ķ', 0.72);
-        HelveticaBoldOblique_widths.insert('L', 0.61);
-        HelveticaBoldOblique_widths.insert('Ĺ', 0.61);
-        HelveticaBoldOblique_widths.insert('Ľ', 0.61);
-        HelveticaBoldOblique_widths.insert('Ļ', 0.61);
-        HelveticaBoldOblique_widths.insert('Ł', 0.61);
-        HelveticaBoldOblique_widths.insert('M', 0.83);
-        HelveticaBoldOblique_widths.insert('N', 0.72);
-        HelveticaBoldOblique_widths.insert('Ń', 0.72);
-        HelveticaBoldOblique_widths.insert('Ň', 0.72);
-        HelveticaBoldOblique_widths.insert('Ņ', 0.72);
-        HelveticaBoldOblique_widths.insert('Ñ', 0.72);
-        HelveticaBoldOblique_widths.insert('O', 0.78);
-        HelveticaBoldOblique_widths.insert('Œ', 1.00);
-        HelveticaBoldOblique_widths.insert('Ó', 0.78);
-        HelveticaBoldOblique_widths.insert('Ô', 0.78);
-        HelveticaBoldOblique_widths.insert('Ö', 0.78);
-        HelveticaBoldOblique_widths.insert('Ò', 0.78);
-        HelveticaBoldOblique_widths.insert('Ő', 0.78);
-        HelveticaBoldOblique_widths.insert('Ō', 0.78);
-        HelveticaBoldOblique_widths.insert('Ø', 0.78);
-        HelveticaBoldOblique_widths.insert('Õ', 0.78);
-        HelveticaBoldOblique_widths.insert('P', 0.67);
-        HelveticaBoldOblique_widths.insert('Q', 0.78);
-        HelveticaBoldOblique_widths.insert('R', 0.72);
-        HelveticaBoldOblique_widths.insert('Ŕ', 0.72);
-        HelveticaBoldOblique_widths.insert('Ř', 0.72);
-        HelveticaBoldOblique_widths.insert('Ŗ', 0.72);
-        HelveticaBoldOblique_widths.insert('S', 0.67);
-        HelveticaBoldOblique_widths.insert('Ś', 0.67);
-        HelveticaBoldOblique_widths.insert('Š', 0.67);
-        HelveticaBoldOblique_widths.insert('Ş', 0.67);
-        HelveticaBoldOblique_widths.insert('Ș', 0.67);
-        HelveticaBoldOblique_widths.insert('T', 0.61);
-        HelveticaBoldOblique_widths.insert('Ť', 0.61);
-        HelveticaBoldOblique_widths.insert('Ţ', 0.61);
-        HelveticaBoldOblique_widths.insert('Þ', 0.67);
-        HelveticaBoldOblique_widths.insert('U', 0.72);
-        HelveticaBoldOblique_widths.insert('Ú', 0.72);
-        HelveticaBoldOblique_widths.insert('Û', 0.72);
-        HelveticaBoldOblique_widths.insert('Ü', 0.72);
-        HelveticaBoldOblique_widths.insert('Ù', 0.72);
-        HelveticaBoldOblique_widths.insert('Ű', 0.72);
-        HelveticaBoldOblique_widths.insert('Ū', 0.72);
-        HelveticaBoldOblique_widths.insert('Ų', 0.72);
-        HelveticaBoldOblique_widths.insert('Ů', 0.72);
-        HelveticaBoldOblique_widths.insert('V', 0.67);
-        HelveticaBoldOblique_widths.insert('W', 0.94);
-        HelveticaBoldOblique_widths.insert('X', 0.67);
-        HelveticaBoldOblique_widths.insert('Y', 0.67);
-        HelveticaBoldOblique_widths.insert('Ý', 0.67);
-        HelveticaBoldOblique_widths.insert('Ÿ', 0.67);
-        HelveticaBoldOblique_widths.insert('Z', 0.61);
-        HelveticaBoldOblique_widths.insert('Ź', 0.61);
-        HelveticaBoldOblique_widths.insert('Ž', 0.61);
-        HelveticaBoldOblique_widths.insert('Ż', 0.61);
-        HelveticaBoldOblique_widths.insert('a', 0.56);
-        HelveticaBoldOblique_widths.insert('á', 0.56);
-        HelveticaBoldOblique_widths.insert('ă', 0.56);
-        HelveticaBoldOblique_widths.insert('â', 0.56);
-        HelveticaBoldOblique_widths.insert('´', 0.33);
-        HelveticaBoldOblique_widths.insert('ä', 0.56);
-        HelveticaBoldOblique_widths.insert('æ', 0.89);
-        HelveticaBoldOblique_widths.insert('à', 0.56);
-        HelveticaBoldOblique_widths.insert('ā', 0.56);
-        HelveticaBoldOblique_widths.insert('&', 0.72);
-        HelveticaBoldOblique_widths.insert('ą', 0.56);
-        HelveticaBoldOblique_widths.insert('å', 0.56);
-        HelveticaBoldOblique_widths.insert('^', 0.58);
-        HelveticaBoldOblique_widths.insert('~', 0.58);
-        HelveticaBoldOblique_widths.insert('*', 0.39);
-        HelveticaBoldOblique_widths.insert('@', 0.97);
-        HelveticaBoldOblique_widths.insert('ã', 0.56);
-        HelveticaBoldOblique_widths.insert('b', 0.61);
-        HelveticaBoldOblique_widths.insert('\\', 0.28);
-        HelveticaBoldOblique_widths.insert('|', 0.28);
-        HelveticaBoldOblique_widths.insert('{', 0.39);
-        HelveticaBoldOblique_widths.insert('}', 0.39);
-        HelveticaBoldOblique_widths.insert('[', 0.33);
-        HelveticaBoldOblique_widths.insert(']', 0.33);
-        HelveticaBoldOblique_widths.insert('˘', 0.33);
-        HelveticaBoldOblique_widths.insert('¦', 0.28);
-        HelveticaBoldOblique_widths.insert('•', 0.35);
-        HelveticaBoldOblique_widths.insert('c', 0.56);
-        HelveticaBoldOblique_widths.insert('ć', 0.56);
-        HelveticaBoldOblique_widths.insert('ˇ', 0.33);
-        HelveticaBoldOblique_widths.insert('č', 0.56);
-        HelveticaBoldOblique_widths.insert('ç', 0.56);
-        HelveticaBoldOblique_widths.insert('¸', 0.33);
-        HelveticaBoldOblique_widths.insert('¢', 0.56);
-        HelveticaBoldOblique_widths.insert('ˆ', 0.33);
-        HelveticaBoldOblique_widths.insert(':', 0.33);
-        HelveticaBoldOblique_widths.insert(',', 0.28);
-        HelveticaBoldOblique_widths.insert('', 0.25);
-        HelveticaBoldOblique_widths.insert('©', 0.74);
-        HelveticaBoldOblique_widths.insert('¤', 0.56);
-        HelveticaBoldOblique_widths.insert('d', 0.61);
-        HelveticaBoldOblique_widths.insert('†', 0.56);
-        HelveticaBoldOblique_widths.insert('‡', 0.56);
-        HelveticaBoldOblique_widths.insert('ď', 0.74);
-        HelveticaBoldOblique_widths.insert('đ', 0.61);
-        HelveticaBoldOblique_widths.insert('°', 0.40);
-        HelveticaBoldOblique_widths.insert('¨', 0.33);
-        HelveticaBoldOblique_widths.insert('÷', 0.58);
-        HelveticaBoldOblique_widths.insert('$', 0.56);
-        HelveticaBoldOblique_widths.insert('˙', 0.33);
-        HelveticaBoldOblique_widths.insert('ı', 0.28);
-        HelveticaBoldOblique_widths.insert('e', 0.56);
-        HelveticaBoldOblique_widths.insert('é', 0.56);
-        HelveticaBoldOblique_widths.insert('ě', 0.56);
-        HelveticaBoldOblique_widths.insert('ê', 0.56);
-        HelveticaBoldOblique_widths.insert('ë', 0.56);
-        HelveticaBoldOblique_widths.insert('ė', 0.56);
-        HelveticaBoldOblique_widths.insert('è', 0.56);
-        HelveticaBoldOblique_widths.insert('8', 0.56);
-        HelveticaBoldOblique_widths.insert('…', 1.00);
-        HelveticaBoldOblique_widths.insert('ē', 0.56);
-        HelveticaBoldOblique_widths.insert('—', 1.00);
-        HelveticaBoldOblique_widths.insert('–', 0.56);
-        HelveticaBoldOblique_widths.insert('ę', 0.56);
-        HelveticaBoldOblique_widths.insert('=', 0.58);
-        HelveticaBoldOblique_widths.insert('ð', 0.61);
-        HelveticaBoldOblique_widths.insert('!', 0.33);
-        HelveticaBoldOblique_widths.insert('¡', 0.33);
-        HelveticaBoldOblique_widths.insert('f', 0.33);
-        HelveticaBoldOblique_widths.insert('ﬁ', 0.61);
-        HelveticaBoldOblique_widths.insert('5', 0.56);
-        HelveticaBoldOblique_widths.insert('ﬂ', 0.61);
-        HelveticaBoldOblique_widths.insert('ƒ', 0.56);
-        HelveticaBoldOblique_widths.insert('4', 0.56);
-        HelveticaBoldOblique_widths.insert('⁄', 0.17);
-        HelveticaBoldOblique_widths.insert('g', 0.61);
-        HelveticaBoldOblique_widths.insert('ğ', 0.61);
-        HelveticaBoldOblique_widths.insert('ģ', 0.61);
-        HelveticaBoldOblique_widths.insert('ß', 0.61);
-        HelveticaBoldOblique_widths.insert('`', 0.33);
-        HelveticaBoldOblique_widths.insert('>', 0.58);
-        HelveticaBoldOblique_widths.insert('≥', 0.55);
-        HelveticaBoldOblique_widths.insert('«', 0.56);
-        HelveticaBoldOblique_widths.insert('»', 0.56);
-        HelveticaBoldOblique_widths.insert('‹', 0.33);
-        HelveticaBoldOblique_widths.insert('›', 0.33);
-        HelveticaBoldOblique_widths.insert('h', 0.61);
-        HelveticaBoldOblique_widths.insert('˝', 0.33);
-        HelveticaBoldOblique_widths.insert('-', 0.33);
-        HelveticaBoldOblique_widths.insert('i', 0.28);
-        HelveticaBoldOblique_widths.insert('í', 0.28);
-        HelveticaBoldOblique_widths.insert('î', 0.28);
-        HelveticaBoldOblique_widths.insert('ï', 0.28);
-        HelveticaBoldOblique_widths.insert('ì', 0.28);
-        HelveticaBoldOblique_widths.insert('ī', 0.28);
-        HelveticaBoldOblique_widths.insert('į', 0.28);
-        HelveticaBoldOblique_widths.insert('j', 0.28);
-        HelveticaBoldOblique_widths.insert('k', 0.56);
-        HelveticaBoldOblique_widths.insert('ķ', 0.56);
-        HelveticaBoldOblique_widths.insert('l', 0.28);
-        HelveticaBoldOblique_widths.insert('ĺ', 0.28);
-        HelveticaBoldOblique_widths.insert('ľ', 0.40);
-        HelveticaBoldOblique_widths.insert('ļ', 0.28);
-        HelveticaBoldOblique_widths.insert('<', 0.58);
-        HelveticaBoldOblique_widths.insert('≤', 0.55);
-        HelveticaBoldOblique_widths.insert('¬', 0.58);
-        HelveticaBoldOblique_widths.insert('◊', 0.49);
-        HelveticaBoldOblique_widths.insert('ł', 0.28);
-        HelveticaBoldOblique_widths.insert('m', 0.89);
-        HelveticaBoldOblique_widths.insert('¯', 0.33);
-        HelveticaBoldOblique_widths.insert('−', 0.58);
-        HelveticaBoldOblique_widths.insert('µ', 0.61);
-        HelveticaBoldOblique_widths.insert('×', 0.58);
-        HelveticaBoldOblique_widths.insert('n', 0.61);
-        HelveticaBoldOblique_widths.insert('ń', 0.61);
-        HelveticaBoldOblique_widths.insert('ň', 0.61);
-        HelveticaBoldOblique_widths.insert('ņ', 0.61);
-        HelveticaBoldOblique_widths.insert('9', 0.56);
-        HelveticaBoldOblique_widths.insert('≠', 0.55);
-        HelveticaBoldOblique_widths.insert('ñ', 0.61);
-        HelveticaBoldOblique_widths.insert('#', 0.56);
-        HelveticaBoldOblique_widths.insert('o', 0.61);
-        HelveticaBoldOblique_widths.insert('ó', 0.61);
-        HelveticaBoldOblique_widths.insert('ô', 0.61);
-        HelveticaBoldOblique_widths.insert('ö', 0.61);
-        HelveticaBoldOblique_widths.insert('œ', 0.94);
-        HelveticaBoldOblique_widths.insert('˛', 0.33);
-        HelveticaBoldOblique_widths.insert('ò', 0.61);
-        HelveticaBoldOblique_widths.insert('ő', 0.61);
-        HelveticaBoldOblique_widths.insert('ō', 0.61);
-        HelveticaBoldOblique_widths.insert('1', 0.56);
-        HelveticaBoldOblique_widths.insert('½', 0.83);
-        HelveticaBoldOblique_widths.insert('¼', 0.83);
-        HelveticaBoldOblique_widths.insert('¹', 0.33);
-        HelveticaBoldOblique_widths.insert('ª', 0.37);
-        HelveticaBoldOblique_widths.insert('º', 0.36);
-        HelveticaBoldOblique_widths.insert('ø', 0.61);
-        HelveticaBoldOblique_widths.insert('õ', 0.61);
-        HelveticaBoldOblique_widths.insert('p', 0.61);
-        HelveticaBoldOblique_widths.insert('¶', 0.56);
-        HelveticaBoldOblique_widths.insert('(', 0.33);
-        HelveticaBoldOblique_widths.insert(')', 0.33);
-        HelveticaBoldOblique_widths.insert('∂', 0.49);
-        HelveticaBoldOblique_widths.insert('%', 0.89);
-        HelveticaBoldOblique_widths.insert('.', 0.28);
-        HelveticaBoldOblique_widths.insert('·', 0.28);
-        HelveticaBoldOblique_widths.insert('‰', 1.00);
-        HelveticaBoldOblique_widths.insert('+', 0.58);
-        HelveticaBoldOblique_widths.insert('±', 0.58);
-        HelveticaBoldOblique_widths.insert('q', 0.61);
-        HelveticaBoldOblique_widths.insert('?', 0.61);
-        HelveticaBoldOblique_widths.insert('¿', 0.61);
-        HelveticaBoldOblique_widths.insert('"', 0.47);
-        HelveticaBoldOblique_widths.insert('„', 0.50);
-        HelveticaBoldOblique_widths.insert('“', 0.50);
-        HelveticaBoldOblique_widths.insert('”', 0.50);
-        HelveticaBoldOblique_widths.insert('‘', 0.28);
-        HelveticaBoldOblique_widths.insert('’', 0.28);
-        HelveticaBoldOblique_widths.insert('‚', 0.28);
-        HelveticaBoldOblique_widths.insert('\'', 0.24);
-        HelveticaBoldOblique_widths.insert('r', 0.39);
-        HelveticaBoldOblique_widths.insert('ŕ', 0.39);
-        HelveticaBoldOblique_widths.insert('√', 0.55);
-        HelveticaBoldOblique_widths.insert('ř', 0.39);
-        HelveticaBoldOblique_widths.insert('ŗ', 0.39);
-        HelveticaBoldOblique_widths.insert('®', 0.74);
-        HelveticaBoldOblique_widths.insert('˚', 0.33);
-        HelveticaBoldOblique_widths.insert('s', 0.56);
-        HelveticaBoldOblique_widths.insert('ś', 0.56);
-        HelveticaBoldOblique_widths.insert('š', 0.56);
-        HelveticaBoldOblique_widths.insert('ş', 0.56);
-        HelveticaBoldOblique_widths.insert('ș', 0.56);
-        HelveticaBoldOblique_widths.insert('§', 0.56);
-        HelveticaBoldOblique_widths.insert(';', 0.33);
-        HelveticaBoldOblique_widths.insert('7', 0.56);
-        HelveticaBoldOblique_widths.insert('6', 0.56);
-        HelveticaBoldOblique_widths.insert('/', 0.28);
-        HelveticaBoldOblique_widths.insert(' ', 0.28);
-        HelveticaBoldOblique_widths.insert('£', 0.56);
-        HelveticaBoldOblique_widths.insert('∑', 0.60);
-        HelveticaBoldOblique_widths.insert('t', 0.33);
-        HelveticaBoldOblique_widths.insert('ť', 0.39);
-        HelveticaBoldOblique_widths.insert('ţ', 0.33);
-        HelveticaBoldOblique_widths.insert('þ', 0.61);
-        HelveticaBoldOblique_widths.insert('3', 0.56);
-        HelveticaBoldOblique_widths.insert('¾', 0.83);
-        HelveticaBoldOblique_widths.insert('³', 0.33);
-        HelveticaBoldOblique_widths.insert('˜', 0.33);
-        HelveticaBoldOblique_widths.insert('™', 1.00);
-        HelveticaBoldOblique_widths.insert('2', 0.56);
-        HelveticaBoldOblique_widths.insert('²', 0.33);
-        HelveticaBoldOblique_widths.insert('u', 0.61);
-        HelveticaBoldOblique_widths.insert('ú', 0.61);
-        HelveticaBoldOblique_widths.insert('û', 0.61);
-        HelveticaBoldOblique_widths.insert('ü', 0.61);
-        HelveticaBoldOblique_widths.insert('ù', 0.61);
-        HelveticaBoldOblique_widths.insert('ű', 0.61);
-        HelveticaBoldOblique_widths.insert('ū', 0.61);
-        HelveticaBoldOblique_widths.insert('_', 0.56);
-        HelveticaBoldOblique_widths.insert('ų', 0.61);
-        HelveticaBoldOblique_widths.insert('ů', 0.61);
-        HelveticaBoldOblique_widths.insert('v', 0.56);
-        HelveticaBoldOblique_widths.insert('w', 0.78);
-        HelveticaBoldOblique_widths.insert('x', 0.56);
-        HelveticaBoldOblique_widths.insert('y', 0.56);
-        HelveticaBoldOblique_widths.insert('ý', 0.56);
-        HelveticaBoldOblique_widths.insert('ÿ', 0.56);
-        HelveticaBoldOblique_widths.insert('¥', 0.56);
-        HelveticaBoldOblique_widths.insert('z', 0.50);
-        HelveticaBoldOblique_widths.insert('ź', 0.50);
-        HelveticaBoldOblique_widths.insert('ž', 0.50);
-        HelveticaBoldOblique_widths.insert('ż', 0.50);
-        HelveticaBoldOblique_widths.insert('0', 0.56);
+        &Font::TimesBold => match c {
+            'A' => 0.722,
+            'Æ' => 1.000,
+            'Á' => 0.722,
+            'Ă' => 0.722,
+            'Â' => 0.722,
+            'Ä' => 0.722,
+            'À' => 0.722,
+            'Ā' => 0.722,
+            'Ą' => 0.722,
+            'Å' => 0.722,
+            'Ã' => 0.722,
+            'B' => 0.667,
+            'C' => 0.722,
+            'Ć' => 0.722,
+            'Č' => 0.722,
+            'Ç' => 0.722,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.667,
+            'É' => 0.667,
+            'Ě' => 0.667,
+            'Ê' => 0.667,
+            'Ë' => 0.667,
+            'Ė' => 0.667,
+            'È' => 0.667,
+            'Ē' => 0.667,
+            'Ę' => 0.667,
+            'Ð' => 0.722,
+            '€' => 0.500,
+            'F' => 0.611,
+            'G' => 0.778,
+            'Ğ' => 0.778,
+            'Ģ' => 0.778,
+            'H' => 0.778,
+            'I' => 0.389,
+            'Í' => 0.389,
+            'Î' => 0.389,
+            'Ï' => 0.389,
+            'İ' => 0.389,
+            'Ì' => 0.389,
+            'Ī' => 0.389,
+            'Į' => 0.389,
+            'J' => 0.500,
+            'K' => 0.778,
+            'Ķ' => 0.778,
+            'L' => 0.667,
+            'Ĺ' => 0.667,
+            'Ľ' => 0.667,
+            'Ļ' => 0.667,
+            'Ł' => 0.667,
+            'M' => 0.944,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.778,
+            'Œ' => 1.000,
+            'Ó' => 0.778,
+            'Ô' => 0.778,
+            'Ö' => 0.778,
+            'Ò' => 0.778,
+            'Ő' => 0.778,
+            'Ō' => 0.778,
+            'Ø' => 0.778,
+            'Õ' => 0.778,
+            'P' => 0.611,
+            'Q' => 0.778,
+            'R' => 0.722,
+            'Ŕ' => 0.722,
+            'Ř' => 0.722,
+            'Ŗ' => 0.722,
+            'S' => 0.556,
+            'Ś' => 0.556,
+            'Š' => 0.556,
+            'Ş' => 0.556,
+            'Ș' => 0.556,
+            'T' => 0.667,
+            'Ť' => 0.667,
+            'Ţ' => 0.667,
+            'Þ' => 0.611,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.722,
+            'W' => 1.000,
+            'X' => 0.722,
+            'Y' => 0.722,
+            'Ý' => 0.722,
+            'Ÿ' => 0.722,
+            'Z' => 0.667,
+            'Ź' => 0.667,
+            'Ž' => 0.667,
+            'Ż' => 0.667,
+            'a' => 0.500,
+            'á' => 0.500,
+            'ă' => 0.500,
+            'â' => 0.500,
+            '´' => 0.333,
+            'ä' => 0.500,
+            'æ' => 0.722,
+            'à' => 0.500,
+            'ā' => 0.500,
+            '&' => 0.833,
+            'ą' => 0.500,
+            'å' => 0.500,
+            '^' => 0.581,
+            '~' => 0.520,
+            '*' => 0.500,
+            '@' => 0.930,
+            'ã' => 0.500,
+            'b' => 0.556,
+            '\\' => 0.278,
+            '|' => 0.220,
+            '{' => 0.394,
+            '}' => 0.394,
+            '[' => 0.333,
+            ']' => 0.333,
+            '˘' => 0.333,
+            '¦' => 0.220,
+            '•' => 0.350,
+            'c' => 0.444,
+            'ć' => 0.444,
+            'ˇ' => 0.333,
+            'č' => 0.444,
+            'ç' => 0.444,
+            '¸' => 0.333,
+            '¢' => 0.500,
+            'ˆ' => 0.333,
+            ':' => 0.333,
+            ',' => 0.250,
+            '' => 0.250,
+            '©' => 0.747,
+            '¤' => 0.500,
+            'd' => 0.556,
+            '†' => 0.500,
+            '‡' => 0.500,
+            'ď' => 0.672,
+            'đ' => 0.556,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.570,
+            '$' => 0.500,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.444,
+            'é' => 0.444,
+            'ě' => 0.444,
+            'ê' => 0.444,
+            'ë' => 0.444,
+            'ė' => 0.444,
+            'è' => 0.444,
+            '8' => 0.500,
+            '…' => 1.000,
+            'ē' => 0.444,
+            '—' => 1.000,
+            '–' => 0.500,
+            'ę' => 0.444,
+            '=' => 0.570,
+            'ð' => 0.500,
+            '!' => 0.333,
+            '¡' => 0.333,
+            'f' => 0.333,
+            'ﬁ' => 0.556,
+            '5' => 0.500,
+            'ﬂ' => 0.556,
+            'ƒ' => 0.500,
+            '4' => 0.500,
+            '⁄' => 0.167,
+            'g' => 0.500,
+            'ğ' => 0.500,
+            'ģ' => 0.500,
+            'ß' => 0.556,
+            '`' => 0.333,
+            '>' => 0.570,
+            '≥' => 0.549,
+            '«' => 0.500,
+            '»' => 0.500,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.556,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.278,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.278,
+            'j' => 0.333,
+            'k' => 0.556,
+            'ķ' => 0.556,
+            'l' => 0.278,
+            'ĺ' => 0.278,
+            'ľ' => 0.394,
+            'ļ' => 0.278,
+            '<' => 0.570,
+            '≤' => 0.549,
+            '¬' => 0.570,
+            '◊' => 0.494,
+            'ł' => 0.278,
+            'm' => 0.833,
+            '¯' => 0.333,
+            '−' => 0.570,
+            'µ' => 0.556,
+            '×' => 0.570,
+            'n' => 0.556,
+            'ń' => 0.556,
+            'ň' => 0.556,
+            'ņ' => 0.556,
+            '9' => 0.500,
+            '≠' => 0.549,
+            'ñ' => 0.556,
+            '#' => 0.500,
+            'o' => 0.500,
+            'ó' => 0.500,
+            'ô' => 0.500,
+            'ö' => 0.500,
+            'œ' => 0.722,
+            '˛' => 0.333,
+            'ò' => 0.500,
+            'ő' => 0.500,
+            'ō' => 0.500,
+            '1' => 0.500,
+            '½' => 0.750,
+            '¼' => 0.750,
+            '¹' => 0.300,
+            'ª' => 0.300,
+            'º' => 0.330,
+            'ø' => 0.500,
+            'õ' => 0.500,
+            'p' => 0.556,
+            '¶' => 0.540,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.494,
+            '%' => 1.000,
+            '.' => 0.250,
+            '·' => 0.250,
+            '‰' => 1.000,
+            '+' => 0.570,
+            '±' => 0.570,
+            'q' => 0.556,
+            '?' => 0.500,
+            '¿' => 0.500,
+            '"' => 0.555,
+            '„' => 0.500,
+            '“' => 0.500,
+            '”' => 0.500,
+            '‘' => 0.333,
+            '’' => 0.333,
+            '‚' => 0.333,
+            '\'' => 0.278,
+            'r' => 0.444,
+            'ŕ' => 0.444,
+            '√' => 0.549,
+            'ř' => 0.444,
+            'ŗ' => 0.444,
+            '®' => 0.747,
+            '˚' => 0.333,
+            's' => 0.389,
+            'ś' => 0.389,
+            'š' => 0.389,
+            'ş' => 0.389,
+            'ș' => 0.389,
+            '§' => 0.500,
+            ';' => 0.333,
+            '7' => 0.500,
+            '6' => 0.500,
+            '/' => 0.278,
+            ' ' => 0.250,
+            '£' => 0.500,
+            '∑' => 0.600,
+            't' => 0.333,
+            'ť' => 0.416,
+            'ţ' => 0.333,
+            'þ' => 0.556,
+            '3' => 0.500,
+            '¾' => 0.750,
+            '³' => 0.300,
+            '˜' => 0.333,
+            '™' => 1.000,
+            '2' => 0.500,
+            '²' => 0.300,
+            'u' => 0.556,
+            'ú' => 0.556,
+            'û' => 0.556,
+            'ü' => 0.556,
+            'ù' => 0.556,
+            'ű' => 0.556,
+            'ū' => 0.556,
+            '_' => 0.500,
+            'ų' => 0.556,
+            'ů' => 0.556,
+            'v' => 0.500,
+            'w' => 0.722,
+            'x' => 0.500,
+            'y' => 0.500,
+            'ý' => 0.500,
+            'ÿ' => 0.500,
+            '¥' => 0.500,
+            'z' => 0.444,
+            'ź' => 0.444,
+            'ž' => 0.444,
+            'ż' => 0.444,
+            '0' => 0.500,
+            _ => 0.0,
+        },
 
-        let mut ZapfDingbats_widths: HashMap<char, f64> = HashMap::new();
-        ZapfDingbats_widths.insert(' ', 0.28);
+        &Font::CourierOblique => match c {
+            'A' => 0.600,
+            'Æ' => 0.600,
+            'Á' => 0.600,
+            'Ă' => 0.600,
+            'Â' => 0.600,
+            'Ä' => 0.600,
+            'À' => 0.600,
+            'Ā' => 0.600,
+            'Ą' => 0.600,
+            'Å' => 0.600,
+            'Ã' => 0.600,
+            'B' => 0.600,
+            'C' => 0.600,
+            'Ć' => 0.600,
+            'Č' => 0.600,
+            'Ç' => 0.600,
+            'D' => 0.600,
+            'Ď' => 0.600,
+            'Đ' => 0.600,
+            '∆' => 0.600,
+            'E' => 0.600,
+            'É' => 0.600,
+            'Ě' => 0.600,
+            'Ê' => 0.600,
+            'Ë' => 0.600,
+            'Ė' => 0.600,
+            'È' => 0.600,
+            'Ē' => 0.600,
+            'Ę' => 0.600,
+            'Ð' => 0.600,
+            '€' => 0.600,
+            'F' => 0.600,
+            'G' => 0.600,
+            'Ğ' => 0.600,
+            'Ģ' => 0.600,
+            'H' => 0.600,
+            'I' => 0.600,
+            'Í' => 0.600,
+            'Î' => 0.600,
+            'Ï' => 0.600,
+            'İ' => 0.600,
+            'Ì' => 0.600,
+            'Ī' => 0.600,
+            'Į' => 0.600,
+            'J' => 0.600,
+            'K' => 0.600,
+            'Ķ' => 0.600,
+            'L' => 0.600,
+            'Ĺ' => 0.600,
+            'Ľ' => 0.600,
+            'Ļ' => 0.600,
+            'Ł' => 0.600,
+            'M' => 0.600,
+            'N' => 0.600,
+            'Ń' => 0.600,
+            'Ň' => 0.600,
+            'Ņ' => 0.600,
+            'Ñ' => 0.600,
+            'O' => 0.600,
+            'Œ' => 0.600,
+            'Ó' => 0.600,
+            'Ô' => 0.600,
+            'Ö' => 0.600,
+            'Ò' => 0.600,
+            'Ő' => 0.600,
+            'Ō' => 0.600,
+            'Ø' => 0.600,
+            'Õ' => 0.600,
+            'P' => 0.600,
+            'Q' => 0.600,
+            'R' => 0.600,
+            'Ŕ' => 0.600,
+            'Ř' => 0.600,
+            'Ŗ' => 0.600,
+            'S' => 0.600,
+            'Ś' => 0.600,
+            'Š' => 0.600,
+            'Ş' => 0.600,
+            'Ș' => 0.600,
+            'T' => 0.600,
+            'Ť' => 0.600,
+            'Ţ' => 0.600,
+            'Þ' => 0.600,
+            'U' => 0.600,
+            'Ú' => 0.600,
+            'Û' => 0.600,
+            'Ü' => 0.600,
+            'Ù' => 0.600,
+            'Ű' => 0.600,
+            'Ū' => 0.600,
+            'Ų' => 0.600,
+            'Ů' => 0.600,
+            'V' => 0.600,
+            'W' => 0.600,
+            'X' => 0.600,
+            'Y' => 0.600,
+            'Ý' => 0.600,
+            'Ÿ' => 0.600,
+            'Z' => 0.600,
+            'Ź' => 0.600,
+            'Ž' => 0.600,
+            'Ż' => 0.600,
+            'a' => 0.600,
+            'á' => 0.600,
+            'ă' => 0.600,
+            'â' => 0.600,
+            '´' => 0.600,
+            'ä' => 0.600,
+            'æ' => 0.600,
+            'à' => 0.600,
+            'ā' => 0.600,
+            '&' => 0.600,
+            'ą' => 0.600,
+            'å' => 0.600,
+            '^' => 0.600,
+            '~' => 0.600,
+            '*' => 0.600,
+            '@' => 0.600,
+            'ã' => 0.600,
+            'b' => 0.600,
+            '\\' => 0.600,
+            '|' => 0.600,
+            '{' => 0.600,
+            '}' => 0.600,
+            '[' => 0.600,
+            ']' => 0.600,
+            '˘' => 0.600,
+            '¦' => 0.600,
+            '•' => 0.600,
+            'c' => 0.600,
+            'ć' => 0.600,
+            'ˇ' => 0.600,
+            'č' => 0.600,
+            'ç' => 0.600,
+            '¸' => 0.600,
+            '¢' => 0.600,
+            'ˆ' => 0.600,
+            ':' => 0.600,
+            ',' => 0.600,
+            '' => 0.600,
+            '©' => 0.600,
+            '¤' => 0.600,
+            'd' => 0.600,
+            '†' => 0.600,
+            '‡' => 0.600,
+            'ď' => 0.600,
+            'đ' => 0.600,
+            '°' => 0.600,
+            '¨' => 0.600,
+            '÷' => 0.600,
+            '$' => 0.600,
+            '˙' => 0.600,
+            'ı' => 0.600,
+            'e' => 0.600,
+            'é' => 0.600,
+            'ě' => 0.600,
+            'ê' => 0.600,
+            'ë' => 0.600,
+            'ė' => 0.600,
+            'è' => 0.600,
+            '8' => 0.600,
+            '…' => 0.600,
+            'ē' => 0.600,
+            '—' => 0.600,
+            '–' => 0.600,
+            'ę' => 0.600,
+            '=' => 0.600,
+            'ð' => 0.600,
+            '!' => 0.600,
+            '¡' => 0.600,
+            'f' => 0.600,
+            'ﬁ' => 0.600,
+            '5' => 0.600,
+            'ﬂ' => 0.600,
+            'ƒ' => 0.600,
+            '4' => 0.600,
+            '⁄' => 0.600,
+            'g' => 0.600,
+            'ğ' => 0.600,
+            'ģ' => 0.600,
+            'ß' => 0.600,
+            '`' => 0.600,
+            '>' => 0.600,
+            '≥' => 0.600,
+            '«' => 0.600,
+            '»' => 0.600,
+            '‹' => 0.600,
+            '›' => 0.600,
+            'h' => 0.600,
+            '˝' => 0.600,
+            '-' => 0.600,
+            'i' => 0.600,
+            'í' => 0.600,
+            'î' => 0.600,
+            'ï' => 0.600,
+            'ì' => 0.600,
+            'ī' => 0.600,
+            'į' => 0.600,
+            'j' => 0.600,
+            'k' => 0.600,
+            'ķ' => 0.600,
+            'l' => 0.600,
+            'ĺ' => 0.600,
+            'ľ' => 0.600,
+            'ļ' => 0.600,
+            '<' => 0.600,
+            '≤' => 0.600,
+            '¬' => 0.600,
+            '◊' => 0.600,
+            'ł' => 0.600,
+            'm' => 0.600,
+            '¯' => 0.600,
+            '−' => 0.600,
+            'µ' => 0.600,
+            '×' => 0.600,
+            'n' => 0.600,
+            'ń' => 0.600,
+            'ň' => 0.600,
+            'ņ' => 0.600,
+            '9' => 0.600,
+            '≠' => 0.600,
+            'ñ' => 0.600,
+            '#' => 0.600,
+            'o' => 0.600,
+            'ó' => 0.600,
+            'ô' => 0.600,
+            'ö' => 0.600,
+            'œ' => 0.600,
+            '˛' => 0.600,
+            'ò' => 0.600,
+            'ő' => 0.600,
+            'ō' => 0.600,
+            '1' => 0.600,
+            '½' => 0.600,
+            '¼' => 0.600,
+            '¹' => 0.600,
+            'ª' => 0.600,
+            'º' => 0.600,
+            'ø' => 0.600,
+            'õ' => 0.600,
+            'p' => 0.600,
+            '¶' => 0.600,
+            '(' => 0.600,
+            ')' => 0.600,
+            '∂' => 0.600,
+            '%' => 0.600,
+            '.' => 0.600,
+            '·' => 0.600,
+            '‰' => 0.600,
+            '+' => 0.600,
+            '±' => 0.600,
+            'q' => 0.600,
+            '?' => 0.600,
+            '¿' => 0.600,
+            '"' => 0.600,
+            '„' => 0.600,
+            '“' => 0.600,
+            '”' => 0.600,
+            '‘' => 0.600,
+            '’' => 0.600,
+            '‚' => 0.600,
+            '\'' => 0.600,
+            'r' => 0.600,
+            'ŕ' => 0.600,
+            '√' => 0.600,
+            'ř' => 0.600,
+            'ŗ' => 0.600,
+            '®' => 0.600,
+            '˚' => 0.600,
+            's' => 0.600,
+            'ś' => 0.600,
+            'š' => 0.600,
+            'ş' => 0.600,
+            'ș' => 0.600,
+            '§' => 0.600,
+            ';' => 0.600,
+            '7' => 0.600,
+            '6' => 0.600,
+            '/' => 0.600,
+            ' ' => 0.600,
+            '£' => 0.600,
+            '∑' => 0.600,
+            't' => 0.600,
+            'ť' => 0.600,
+            'ţ' => 0.600,
+            'þ' => 0.600,
+            '3' => 0.600,
+            '¾' => 0.600,
+            '³' => 0.600,
+            '˜' => 0.600,
+            '™' => 0.600,
+            '2' => 0.600,
+            '²' => 0.600,
+            'u' => 0.600,
+            'ú' => 0.600,
+            'û' => 0.600,
+            'ü' => 0.600,
+            'ù' => 0.600,
+            'ű' => 0.600,
+            'ū' => 0.600,
+            '_' => 0.600,
+            'ų' => 0.600,
+            'ů' => 0.600,
+            'v' => 0.600,
+            'w' => 0.600,
+            'x' => 0.600,
+            'y' => 0.600,
+            'ý' => 0.600,
+            'ÿ' => 0.600,
+            '¥' => 0.600,
+            'z' => 0.600,
+            'ź' => 0.600,
+            'ž' => 0.600,
+            'ż' => 0.600,
+            '0' => 0.600,
+            _ => 0.0,
+        },
 
-        let mut Courier_widths: HashMap<char, f64> = HashMap::new();
-        Courier_widths.insert('A', 0.60);
-        Courier_widths.insert('Æ', 0.60);
-        Courier_widths.insert('Á', 0.60);
-        Courier_widths.insert('Ă', 0.60);
-        Courier_widths.insert('Â', 0.60);
-        Courier_widths.insert('Ä', 0.60);
-        Courier_widths.insert('À', 0.60);
-        Courier_widths.insert('Ā', 0.60);
-        Courier_widths.insert('Ą', 0.60);
-        Courier_widths.insert('Å', 0.60);
-        Courier_widths.insert('Ã', 0.60);
-        Courier_widths.insert('B', 0.60);
-        Courier_widths.insert('C', 0.60);
-        Courier_widths.insert('Ć', 0.60);
-        Courier_widths.insert('Č', 0.60);
-        Courier_widths.insert('Ç', 0.60);
-        Courier_widths.insert('D', 0.60);
-        Courier_widths.insert('Ď', 0.60);
-        Courier_widths.insert('Đ', 0.60);
-        Courier_widths.insert('∆', 0.60);
-        Courier_widths.insert('E', 0.60);
-        Courier_widths.insert('É', 0.60);
-        Courier_widths.insert('Ě', 0.60);
-        Courier_widths.insert('Ê', 0.60);
-        Courier_widths.insert('Ë', 0.60);
-        Courier_widths.insert('Ė', 0.60);
-        Courier_widths.insert('È', 0.60);
-        Courier_widths.insert('Ē', 0.60);
-        Courier_widths.insert('Ę', 0.60);
-        Courier_widths.insert('Ð', 0.60);
-        Courier_widths.insert('€', 0.60);
-        Courier_widths.insert('F', 0.60);
-        Courier_widths.insert('G', 0.60);
-        Courier_widths.insert('Ğ', 0.60);
-        Courier_widths.insert('Ģ', 0.60);
-        Courier_widths.insert('H', 0.60);
-        Courier_widths.insert('I', 0.60);
-        Courier_widths.insert('Í', 0.60);
-        Courier_widths.insert('Î', 0.60);
-        Courier_widths.insert('Ï', 0.60);
-        Courier_widths.insert('İ', 0.60);
-        Courier_widths.insert('Ì', 0.60);
-        Courier_widths.insert('Ī', 0.60);
-        Courier_widths.insert('Į', 0.60);
-        Courier_widths.insert('J', 0.60);
-        Courier_widths.insert('K', 0.60);
-        Courier_widths.insert('Ķ', 0.60);
-        Courier_widths.insert('L', 0.60);
-        Courier_widths.insert('Ĺ', 0.60);
-        Courier_widths.insert('Ľ', 0.60);
-        Courier_widths.insert('Ļ', 0.60);
-        Courier_widths.insert('Ł', 0.60);
-        Courier_widths.insert('M', 0.60);
-        Courier_widths.insert('N', 0.60);
-        Courier_widths.insert('Ń', 0.60);
-        Courier_widths.insert('Ň', 0.60);
-        Courier_widths.insert('Ņ', 0.60);
-        Courier_widths.insert('Ñ', 0.60);
-        Courier_widths.insert('O', 0.60);
-        Courier_widths.insert('Œ', 0.60);
-        Courier_widths.insert('Ó', 0.60);
-        Courier_widths.insert('Ô', 0.60);
-        Courier_widths.insert('Ö', 0.60);
-        Courier_widths.insert('Ò', 0.60);
-        Courier_widths.insert('Ő', 0.60);
-        Courier_widths.insert('Ō', 0.60);
-        Courier_widths.insert('Ø', 0.60);
-        Courier_widths.insert('Õ', 0.60);
-        Courier_widths.insert('P', 0.60);
-        Courier_widths.insert('Q', 0.60);
-        Courier_widths.insert('R', 0.60);
-        Courier_widths.insert('Ŕ', 0.60);
-        Courier_widths.insert('Ř', 0.60);
-        Courier_widths.insert('Ŗ', 0.60);
-        Courier_widths.insert('S', 0.60);
-        Courier_widths.insert('Ś', 0.60);
-        Courier_widths.insert('Š', 0.60);
-        Courier_widths.insert('Ş', 0.60);
-        Courier_widths.insert('Ș', 0.60);
-        Courier_widths.insert('T', 0.60);
-        Courier_widths.insert('Ť', 0.60);
-        Courier_widths.insert('Ţ', 0.60);
-        Courier_widths.insert('Þ', 0.60);
-        Courier_widths.insert('U', 0.60);
-        Courier_widths.insert('Ú', 0.60);
-        Courier_widths.insert('Û', 0.60);
-        Courier_widths.insert('Ü', 0.60);
-        Courier_widths.insert('Ù', 0.60);
-        Courier_widths.insert('Ű', 0.60);
-        Courier_widths.insert('Ū', 0.60);
-        Courier_widths.insert('Ų', 0.60);
-        Courier_widths.insert('Ů', 0.60);
-        Courier_widths.insert('V', 0.60);
-        Courier_widths.insert('W', 0.60);
-        Courier_widths.insert('X', 0.60);
-        Courier_widths.insert('Y', 0.60);
-        Courier_widths.insert('Ý', 0.60);
-        Courier_widths.insert('Ÿ', 0.60);
-        Courier_widths.insert('Z', 0.60);
-        Courier_widths.insert('Ź', 0.60);
-        Courier_widths.insert('Ž', 0.60);
-        Courier_widths.insert('Ż', 0.60);
-        Courier_widths.insert('a', 0.60);
-        Courier_widths.insert('á', 0.60);
-        Courier_widths.insert('ă', 0.60);
-        Courier_widths.insert('â', 0.60);
-        Courier_widths.insert('´', 0.60);
-        Courier_widths.insert('ä', 0.60);
-        Courier_widths.insert('æ', 0.60);
-        Courier_widths.insert('à', 0.60);
-        Courier_widths.insert('ā', 0.60);
-        Courier_widths.insert('&', 0.60);
-        Courier_widths.insert('ą', 0.60);
-        Courier_widths.insert('å', 0.60);
-        Courier_widths.insert('^', 0.60);
-        Courier_widths.insert('~', 0.60);
-        Courier_widths.insert('*', 0.60);
-        Courier_widths.insert('@', 0.60);
-        Courier_widths.insert('ã', 0.60);
-        Courier_widths.insert('b', 0.60);
-        Courier_widths.insert('\\', 0.60);
-        Courier_widths.insert('|', 0.60);
-        Courier_widths.insert('{', 0.60);
-        Courier_widths.insert('}', 0.60);
-        Courier_widths.insert('[', 0.60);
-        Courier_widths.insert(']', 0.60);
-        Courier_widths.insert('˘', 0.60);
-        Courier_widths.insert('¦', 0.60);
-        Courier_widths.insert('•', 0.60);
-        Courier_widths.insert('c', 0.60);
-        Courier_widths.insert('ć', 0.60);
-        Courier_widths.insert('ˇ', 0.60);
-        Courier_widths.insert('č', 0.60);
-        Courier_widths.insert('ç', 0.60);
-        Courier_widths.insert('¸', 0.60);
-        Courier_widths.insert('¢', 0.60);
-        Courier_widths.insert('ˆ', 0.60);
-        Courier_widths.insert(':', 0.60);
-        Courier_widths.insert(',', 0.60);
-        Courier_widths.insert('', 0.60);
-        Courier_widths.insert('©', 0.60);
-        Courier_widths.insert('¤', 0.60);
-        Courier_widths.insert('d', 0.60);
-        Courier_widths.insert('†', 0.60);
-        Courier_widths.insert('‡', 0.60);
-        Courier_widths.insert('ď', 0.60);
-        Courier_widths.insert('đ', 0.60);
-        Courier_widths.insert('°', 0.60);
-        Courier_widths.insert('¨', 0.60);
-        Courier_widths.insert('÷', 0.60);
-        Courier_widths.insert('$', 0.60);
-        Courier_widths.insert('˙', 0.60);
-        Courier_widths.insert('ı', 0.60);
-        Courier_widths.insert('e', 0.60);
-        Courier_widths.insert('é', 0.60);
-        Courier_widths.insert('ě', 0.60);
-        Courier_widths.insert('ê', 0.60);
-        Courier_widths.insert('ë', 0.60);
-        Courier_widths.insert('ė', 0.60);
-        Courier_widths.insert('è', 0.60);
-        Courier_widths.insert('8', 0.60);
-        Courier_widths.insert('…', 0.60);
-        Courier_widths.insert('ē', 0.60);
-        Courier_widths.insert('—', 0.60);
-        Courier_widths.insert('–', 0.60);
-        Courier_widths.insert('ę', 0.60);
-        Courier_widths.insert('=', 0.60);
-        Courier_widths.insert('ð', 0.60);
-        Courier_widths.insert('!', 0.60);
-        Courier_widths.insert('¡', 0.60);
-        Courier_widths.insert('f', 0.60);
-        Courier_widths.insert('ﬁ', 0.60);
-        Courier_widths.insert('5', 0.60);
-        Courier_widths.insert('ﬂ', 0.60);
-        Courier_widths.insert('ƒ', 0.60);
-        Courier_widths.insert('4', 0.60);
-        Courier_widths.insert('⁄', 0.60);
-        Courier_widths.insert('g', 0.60);
-        Courier_widths.insert('ğ', 0.60);
-        Courier_widths.insert('ģ', 0.60);
-        Courier_widths.insert('ß', 0.60);
-        Courier_widths.insert('`', 0.60);
-        Courier_widths.insert('>', 0.60);
-        Courier_widths.insert('≥', 0.60);
-        Courier_widths.insert('«', 0.60);
-        Courier_widths.insert('»', 0.60);
-        Courier_widths.insert('‹', 0.60);
-        Courier_widths.insert('›', 0.60);
-        Courier_widths.insert('h', 0.60);
-        Courier_widths.insert('˝', 0.60);
-        Courier_widths.insert('-', 0.60);
-        Courier_widths.insert('i', 0.60);
-        Courier_widths.insert('í', 0.60);
-        Courier_widths.insert('î', 0.60);
-        Courier_widths.insert('ï', 0.60);
-        Courier_widths.insert('ì', 0.60);
-        Courier_widths.insert('ī', 0.60);
-        Courier_widths.insert('į', 0.60);
-        Courier_widths.insert('j', 0.60);
-        Courier_widths.insert('k', 0.60);
-        Courier_widths.insert('ķ', 0.60);
-        Courier_widths.insert('l', 0.60);
-        Courier_widths.insert('ĺ', 0.60);
-        Courier_widths.insert('ľ', 0.60);
-        Courier_widths.insert('ļ', 0.60);
-        Courier_widths.insert('<', 0.60);
-        Courier_widths.insert('≤', 0.60);
-        Courier_widths.insert('¬', 0.60);
-        Courier_widths.insert('◊', 0.60);
-        Courier_widths.insert('ł', 0.60);
-        Courier_widths.insert('m', 0.60);
-        Courier_widths.insert('¯', 0.60);
-        Courier_widths.insert('−', 0.60);
-        Courier_widths.insert('µ', 0.60);
-        Courier_widths.insert('×', 0.60);
-        Courier_widths.insert('n', 0.60);
-        Courier_widths.insert('ń', 0.60);
-        Courier_widths.insert('ň', 0.60);
-        Courier_widths.insert('ņ', 0.60);
-        Courier_widths.insert('9', 0.60);
-        Courier_widths.insert('≠', 0.60);
-        Courier_widths.insert('ñ', 0.60);
-        Courier_widths.insert('#', 0.60);
-        Courier_widths.insert('o', 0.60);
-        Courier_widths.insert('ó', 0.60);
-        Courier_widths.insert('ô', 0.60);
-        Courier_widths.insert('ö', 0.60);
-        Courier_widths.insert('œ', 0.60);
-        Courier_widths.insert('˛', 0.60);
-        Courier_widths.insert('ò', 0.60);
-        Courier_widths.insert('ő', 0.60);
-        Courier_widths.insert('ō', 0.60);
-        Courier_widths.insert('1', 0.60);
-        Courier_widths.insert('½', 0.60);
-        Courier_widths.insert('¼', 0.60);
-        Courier_widths.insert('¹', 0.60);
-        Courier_widths.insert('ª', 0.60);
-        Courier_widths.insert('º', 0.60);
-        Courier_widths.insert('ø', 0.60);
-        Courier_widths.insert('õ', 0.60);
-        Courier_widths.insert('p', 0.60);
-        Courier_widths.insert('¶', 0.60);
-        Courier_widths.insert('(', 0.60);
-        Courier_widths.insert(')', 0.60);
-        Courier_widths.insert('∂', 0.60);
-        Courier_widths.insert('%', 0.60);
-        Courier_widths.insert('.', 0.60);
-        Courier_widths.insert('·', 0.60);
-        Courier_widths.insert('‰', 0.60);
-        Courier_widths.insert('+', 0.60);
-        Courier_widths.insert('±', 0.60);
-        Courier_widths.insert('q', 0.60);
-        Courier_widths.insert('?', 0.60);
-        Courier_widths.insert('¿', 0.60);
-        Courier_widths.insert('"', 0.60);
-        Courier_widths.insert('„', 0.60);
-        Courier_widths.insert('“', 0.60);
-        Courier_widths.insert('”', 0.60);
-        Courier_widths.insert('‘', 0.60);
-        Courier_widths.insert('’', 0.60);
-        Courier_widths.insert('‚', 0.60);
-        Courier_widths.insert('\'', 0.60);
-        Courier_widths.insert('r', 0.60);
-        Courier_widths.insert('ŕ', 0.60);
-        Courier_widths.insert('√', 0.60);
-        Courier_widths.insert('ř', 0.60);
-        Courier_widths.insert('ŗ', 0.60);
-        Courier_widths.insert('®', 0.60);
-        Courier_widths.insert('˚', 0.60);
-        Courier_widths.insert('s', 0.60);
-        Courier_widths.insert('ś', 0.60);
-        Courier_widths.insert('š', 0.60);
-        Courier_widths.insert('ş', 0.60);
-        Courier_widths.insert('ș', 0.60);
-        Courier_widths.insert('§', 0.60);
-        Courier_widths.insert(';', 0.60);
-        Courier_widths.insert('7', 0.60);
-        Courier_widths.insert('6', 0.60);
-        Courier_widths.insert('/', 0.60);
-        Courier_widths.insert(' ', 0.60);
-        Courier_widths.insert('£', 0.60);
-        Courier_widths.insert('∑', 0.60);
-        Courier_widths.insert('t', 0.60);
-        Courier_widths.insert('ť', 0.60);
-        Courier_widths.insert('ţ', 0.60);
-        Courier_widths.insert('þ', 0.60);
-        Courier_widths.insert('3', 0.60);
-        Courier_widths.insert('¾', 0.60);
-        Courier_widths.insert('³', 0.60);
-        Courier_widths.insert('˜', 0.60);
-        Courier_widths.insert('™', 0.60);
-        Courier_widths.insert('2', 0.60);
-        Courier_widths.insert('²', 0.60);
-        Courier_widths.insert('u', 0.60);
-        Courier_widths.insert('ú', 0.60);
-        Courier_widths.insert('û', 0.60);
-        Courier_widths.insert('ü', 0.60);
-        Courier_widths.insert('ù', 0.60);
-        Courier_widths.insert('ű', 0.60);
-        Courier_widths.insert('ū', 0.60);
-        Courier_widths.insert('_', 0.60);
-        Courier_widths.insert('ų', 0.60);
-        Courier_widths.insert('ů', 0.60);
-        Courier_widths.insert('v', 0.60);
-        Courier_widths.insert('w', 0.60);
-        Courier_widths.insert('x', 0.60);
-        Courier_widths.insert('y', 0.60);
-        Courier_widths.insert('ý', 0.60);
-        Courier_widths.insert('ÿ', 0.60);
-        Courier_widths.insert('¥', 0.60);
-        Courier_widths.insert('z', 0.60);
-        Courier_widths.insert('ź', 0.60);
-        Courier_widths.insert('ž', 0.60);
-        Courier_widths.insert('ż', 0.60);
-        Courier_widths.insert('0', 0.60);
+        &Font::TimesBoldItalic => match c {
+            'A' => 0.667,
+            'Æ' => 0.944,
+            'Á' => 0.667,
+            'Ă' => 0.667,
+            'Â' => 0.667,
+            'Ä' => 0.667,
+            'À' => 0.667,
+            'Ā' => 0.667,
+            'Ą' => 0.667,
+            'Å' => 0.667,
+            'Ã' => 0.667,
+            'B' => 0.667,
+            'C' => 0.667,
+            'Ć' => 0.667,
+            'Č' => 0.667,
+            'Ç' => 0.667,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.667,
+            'É' => 0.667,
+            'Ě' => 0.667,
+            'Ê' => 0.667,
+            'Ë' => 0.667,
+            'Ė' => 0.667,
+            'È' => 0.667,
+            'Ē' => 0.667,
+            'Ę' => 0.667,
+            'Ð' => 0.722,
+            '€' => 0.500,
+            'F' => 0.667,
+            'G' => 0.722,
+            'Ğ' => 0.722,
+            'Ģ' => 0.722,
+            'H' => 0.778,
+            'I' => 0.389,
+            'Í' => 0.389,
+            'Î' => 0.389,
+            'Ï' => 0.389,
+            'İ' => 0.389,
+            'Ì' => 0.389,
+            'Ī' => 0.389,
+            'Į' => 0.389,
+            'J' => 0.500,
+            'K' => 0.667,
+            'Ķ' => 0.667,
+            'L' => 0.611,
+            'Ĺ' => 0.611,
+            'Ľ' => 0.611,
+            'Ļ' => 0.611,
+            'Ł' => 0.611,
+            'M' => 0.889,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.722,
+            'Œ' => 0.944,
+            'Ó' => 0.722,
+            'Ô' => 0.722,
+            'Ö' => 0.722,
+            'Ò' => 0.722,
+            'Ő' => 0.722,
+            'Ō' => 0.722,
+            'Ø' => 0.722,
+            'Õ' => 0.722,
+            'P' => 0.611,
+            'Q' => 0.722,
+            'R' => 0.667,
+            'Ŕ' => 0.667,
+            'Ř' => 0.667,
+            'Ŗ' => 0.667,
+            'S' => 0.556,
+            'Ś' => 0.556,
+            'Š' => 0.556,
+            'Ş' => 0.556,
+            'Ș' => 0.556,
+            'T' => 0.611,
+            'Ť' => 0.611,
+            'Ţ' => 0.611,
+            'Þ' => 0.611,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.667,
+            'W' => 0.889,
+            'X' => 0.667,
+            'Y' => 0.611,
+            'Ý' => 0.611,
+            'Ÿ' => 0.611,
+            'Z' => 0.611,
+            'Ź' => 0.611,
+            'Ž' => 0.611,
+            'Ż' => 0.611,
+            'a' => 0.500,
+            'á' => 0.500,
+            'ă' => 0.500,
+            'â' => 0.500,
+            '´' => 0.333,
+            'ä' => 0.500,
+            'æ' => 0.722,
+            'à' => 0.500,
+            'ā' => 0.500,
+            '&' => 0.778,
+            'ą' => 0.500,
+            'å' => 0.500,
+            '^' => 0.570,
+            '~' => 0.570,
+            '*' => 0.500,
+            '@' => 0.832,
+            'ã' => 0.500,
+            'b' => 0.500,
+            '\\' => 0.278,
+            '|' => 0.220,
+            '{' => 0.348,
+            '}' => 0.348,
+            '[' => 0.333,
+            ']' => 0.333,
+            '˘' => 0.333,
+            '¦' => 0.220,
+            '•' => 0.350,
+            'c' => 0.444,
+            'ć' => 0.444,
+            'ˇ' => 0.333,
+            'č' => 0.444,
+            'ç' => 0.444,
+            '¸' => 0.333,
+            '¢' => 0.500,
+            'ˆ' => 0.333,
+            ':' => 0.333,
+            ',' => 0.250,
+            '' => 0.250,
+            '©' => 0.747,
+            '¤' => 0.500,
+            'd' => 0.500,
+            '†' => 0.500,
+            '‡' => 0.500,
+            'ď' => 0.608,
+            'đ' => 0.500,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.570,
+            '$' => 0.500,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.444,
+            'é' => 0.444,
+            'ě' => 0.444,
+            'ê' => 0.444,
+            'ë' => 0.444,
+            'ė' => 0.444,
+            'è' => 0.444,
+            '8' => 0.500,
+            '…' => 1.000,
+            'ē' => 0.444,
+            '—' => 1.000,
+            '–' => 0.500,
+            'ę' => 0.444,
+            '=' => 0.570,
+            'ð' => 0.500,
+            '!' => 0.389,
+            '¡' => 0.389,
+            'f' => 0.333,
+            'ﬁ' => 0.556,
+            '5' => 0.500,
+            'ﬂ' => 0.556,
+            'ƒ' => 0.500,
+            '4' => 0.500,
+            '⁄' => 0.167,
+            'g' => 0.500,
+            'ğ' => 0.500,
+            'ģ' => 0.500,
+            'ß' => 0.500,
+            '`' => 0.333,
+            '>' => 0.570,
+            '≥' => 0.549,
+            '«' => 0.500,
+            '»' => 0.500,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.556,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.278,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.278,
+            'j' => 0.278,
+            'k' => 0.500,
+            'ķ' => 0.500,
+            'l' => 0.278,
+            'ĺ' => 0.278,
+            'ľ' => 0.382,
+            'ļ' => 0.278,
+            '<' => 0.570,
+            '≤' => 0.549,
+            '¬' => 0.606,
+            '◊' => 0.494,
+            'ł' => 0.278,
+            'm' => 0.778,
+            '¯' => 0.333,
+            '−' => 0.606,
+            'µ' => 0.576,
+            '×' => 0.570,
+            'n' => 0.556,
+            'ń' => 0.556,
+            'ň' => 0.556,
+            'ņ' => 0.556,
+            '9' => 0.500,
+            '≠' => 0.549,
+            'ñ' => 0.556,
+            '#' => 0.500,
+            'o' => 0.500,
+            'ó' => 0.500,
+            'ô' => 0.500,
+            'ö' => 0.500,
+            'œ' => 0.722,
+            '˛' => 0.333,
+            'ò' => 0.500,
+            'ő' => 0.500,
+            'ō' => 0.500,
+            '1' => 0.500,
+            '½' => 0.750,
+            '¼' => 0.750,
+            '¹' => 0.300,
+            'ª' => 0.266,
+            'º' => 0.300,
+            'ø' => 0.500,
+            'õ' => 0.500,
+            'p' => 0.500,
+            '¶' => 0.500,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.494,
+            '%' => 0.833,
+            '.' => 0.250,
+            '·' => 0.250,
+            '‰' => 1.000,
+            '+' => 0.570,
+            '±' => 0.570,
+            'q' => 0.500,
+            '?' => 0.500,
+            '¿' => 0.500,
+            '"' => 0.555,
+            '„' => 0.500,
+            '“' => 0.500,
+            '”' => 0.500,
+            '‘' => 0.333,
+            '’' => 0.333,
+            '‚' => 0.333,
+            '\'' => 0.278,
+            'r' => 0.389,
+            'ŕ' => 0.389,
+            '√' => 0.549,
+            'ř' => 0.389,
+            'ŗ' => 0.389,
+            '®' => 0.747,
+            '˚' => 0.333,
+            's' => 0.389,
+            'ś' => 0.389,
+            'š' => 0.389,
+            'ş' => 0.389,
+            'ș' => 0.389,
+            '§' => 0.500,
+            ';' => 0.333,
+            '7' => 0.500,
+            '6' => 0.500,
+            '/' => 0.278,
+            ' ' => 0.250,
+            '£' => 0.500,
+            '∑' => 0.600,
+            't' => 0.278,
+            'ť' => 0.366,
+            'ţ' => 0.278,
+            'þ' => 0.500,
+            '3' => 0.500,
+            '¾' => 0.750,
+            '³' => 0.300,
+            '˜' => 0.333,
+            '™' => 1.000,
+            '2' => 0.500,
+            '²' => 0.300,
+            'u' => 0.556,
+            'ú' => 0.556,
+            'û' => 0.556,
+            'ü' => 0.556,
+            'ù' => 0.556,
+            'ű' => 0.556,
+            'ū' => 0.556,
+            '_' => 0.500,
+            'ų' => 0.556,
+            'ů' => 0.556,
+            'v' => 0.444,
+            'w' => 0.667,
+            'x' => 0.500,
+            'y' => 0.444,
+            'ý' => 0.444,
+            'ÿ' => 0.444,
+            '¥' => 0.500,
+            'z' => 0.389,
+            'ź' => 0.389,
+            'ž' => 0.389,
+            'ż' => 0.389,
+            '0' => 0.500,
+            _ => 0.0,
+        },
 
-        let mut CourierOblique_widths: HashMap<char, f64> = HashMap::new();
-        CourierOblique_widths.insert('A', 0.60);
-        CourierOblique_widths.insert('Æ', 0.60);
-        CourierOblique_widths.insert('Á', 0.60);
-        CourierOblique_widths.insert('Ă', 0.60);
-        CourierOblique_widths.insert('Â', 0.60);
-        CourierOblique_widths.insert('Ä', 0.60);
-        CourierOblique_widths.insert('À', 0.60);
-        CourierOblique_widths.insert('Ā', 0.60);
-        CourierOblique_widths.insert('Ą', 0.60);
-        CourierOblique_widths.insert('Å', 0.60);
-        CourierOblique_widths.insert('Ã', 0.60);
-        CourierOblique_widths.insert('B', 0.60);
-        CourierOblique_widths.insert('C', 0.60);
-        CourierOblique_widths.insert('Ć', 0.60);
-        CourierOblique_widths.insert('Č', 0.60);
-        CourierOblique_widths.insert('Ç', 0.60);
-        CourierOblique_widths.insert('D', 0.60);
-        CourierOblique_widths.insert('Ď', 0.60);
-        CourierOblique_widths.insert('Đ', 0.60);
-        CourierOblique_widths.insert('∆', 0.60);
-        CourierOblique_widths.insert('E', 0.60);
-        CourierOblique_widths.insert('É', 0.60);
-        CourierOblique_widths.insert('Ě', 0.60);
-        CourierOblique_widths.insert('Ê', 0.60);
-        CourierOblique_widths.insert('Ë', 0.60);
-        CourierOblique_widths.insert('Ė', 0.60);
-        CourierOblique_widths.insert('È', 0.60);
-        CourierOblique_widths.insert('Ē', 0.60);
-        CourierOblique_widths.insert('Ę', 0.60);
-        CourierOblique_widths.insert('Ð', 0.60);
-        CourierOblique_widths.insert('€', 0.60);
-        CourierOblique_widths.insert('F', 0.60);
-        CourierOblique_widths.insert('G', 0.60);
-        CourierOblique_widths.insert('Ğ', 0.60);
-        CourierOblique_widths.insert('Ģ', 0.60);
-        CourierOblique_widths.insert('H', 0.60);
-        CourierOblique_widths.insert('I', 0.60);
-        CourierOblique_widths.insert('Í', 0.60);
-        CourierOblique_widths.insert('Î', 0.60);
-        CourierOblique_widths.insert('Ï', 0.60);
-        CourierOblique_widths.insert('İ', 0.60);
-        CourierOblique_widths.insert('Ì', 0.60);
-        CourierOblique_widths.insert('Ī', 0.60);
-        CourierOblique_widths.insert('Į', 0.60);
-        CourierOblique_widths.insert('J', 0.60);
-        CourierOblique_widths.insert('K', 0.60);
-        CourierOblique_widths.insert('Ķ', 0.60);
-        CourierOblique_widths.insert('L', 0.60);
-        CourierOblique_widths.insert('Ĺ', 0.60);
-        CourierOblique_widths.insert('Ľ', 0.60);
-        CourierOblique_widths.insert('Ļ', 0.60);
-        CourierOblique_widths.insert('Ł', 0.60);
-        CourierOblique_widths.insert('M', 0.60);
-        CourierOblique_widths.insert('N', 0.60);
-        CourierOblique_widths.insert('Ń', 0.60);
-        CourierOblique_widths.insert('Ň', 0.60);
-        CourierOblique_widths.insert('Ņ', 0.60);
-        CourierOblique_widths.insert('Ñ', 0.60);
-        CourierOblique_widths.insert('O', 0.60);
-        CourierOblique_widths.insert('Œ', 0.60);
-        CourierOblique_widths.insert('Ó', 0.60);
-        CourierOblique_widths.insert('Ô', 0.60);
-        CourierOblique_widths.insert('Ö', 0.60);
-        CourierOblique_widths.insert('Ò', 0.60);
-        CourierOblique_widths.insert('Ő', 0.60);
-        CourierOblique_widths.insert('Ō', 0.60);
-        CourierOblique_widths.insert('Ø', 0.60);
-        CourierOblique_widths.insert('Õ', 0.60);
-        CourierOblique_widths.insert('P', 0.60);
-        CourierOblique_widths.insert('Q', 0.60);
-        CourierOblique_widths.insert('R', 0.60);
-        CourierOblique_widths.insert('Ŕ', 0.60);
-        CourierOblique_widths.insert('Ř', 0.60);
-        CourierOblique_widths.insert('Ŗ', 0.60);
-        CourierOblique_widths.insert('S', 0.60);
-        CourierOblique_widths.insert('Ś', 0.60);
-        CourierOblique_widths.insert('Š', 0.60);
-        CourierOblique_widths.insert('Ş', 0.60);
-        CourierOblique_widths.insert('Ș', 0.60);
-        CourierOblique_widths.insert('T', 0.60);
-        CourierOblique_widths.insert('Ť', 0.60);
-        CourierOblique_widths.insert('Ţ', 0.60);
-        CourierOblique_widths.insert('Þ', 0.60);
-        CourierOblique_widths.insert('U', 0.60);
-        CourierOblique_widths.insert('Ú', 0.60);
-        CourierOblique_widths.insert('Û', 0.60);
-        CourierOblique_widths.insert('Ü', 0.60);
-        CourierOblique_widths.insert('Ù', 0.60);
-        CourierOblique_widths.insert('Ű', 0.60);
-        CourierOblique_widths.insert('Ū', 0.60);
-        CourierOblique_widths.insert('Ų', 0.60);
-        CourierOblique_widths.insert('Ů', 0.60);
-        CourierOblique_widths.insert('V', 0.60);
-        CourierOblique_widths.insert('W', 0.60);
-        CourierOblique_widths.insert('X', 0.60);
-        CourierOblique_widths.insert('Y', 0.60);
-        CourierOblique_widths.insert('Ý', 0.60);
-        CourierOblique_widths.insert('Ÿ', 0.60);
-        CourierOblique_widths.insert('Z', 0.60);
-        CourierOblique_widths.insert('Ź', 0.60);
-        CourierOblique_widths.insert('Ž', 0.60);
-        CourierOblique_widths.insert('Ż', 0.60);
-        CourierOblique_widths.insert('a', 0.60);
-        CourierOblique_widths.insert('á', 0.60);
-        CourierOblique_widths.insert('ă', 0.60);
-        CourierOblique_widths.insert('â', 0.60);
-        CourierOblique_widths.insert('´', 0.60);
-        CourierOblique_widths.insert('ä', 0.60);
-        CourierOblique_widths.insert('æ', 0.60);
-        CourierOblique_widths.insert('à', 0.60);
-        CourierOblique_widths.insert('ā', 0.60);
-        CourierOblique_widths.insert('&', 0.60);
-        CourierOblique_widths.insert('ą', 0.60);
-        CourierOblique_widths.insert('å', 0.60);
-        CourierOblique_widths.insert('^', 0.60);
-        CourierOblique_widths.insert('~', 0.60);
-        CourierOblique_widths.insert('*', 0.60);
-        CourierOblique_widths.insert('@', 0.60);
-        CourierOblique_widths.insert('ã', 0.60);
-        CourierOblique_widths.insert('b', 0.60);
-        CourierOblique_widths.insert('\\', 0.60);
-        CourierOblique_widths.insert('|', 0.60);
-        CourierOblique_widths.insert('{', 0.60);
-        CourierOblique_widths.insert('}', 0.60);
-        CourierOblique_widths.insert('[', 0.60);
-        CourierOblique_widths.insert(']', 0.60);
-        CourierOblique_widths.insert('˘', 0.60);
-        CourierOblique_widths.insert('¦', 0.60);
-        CourierOblique_widths.insert('•', 0.60);
-        CourierOblique_widths.insert('c', 0.60);
-        CourierOblique_widths.insert('ć', 0.60);
-        CourierOblique_widths.insert('ˇ', 0.60);
-        CourierOblique_widths.insert('č', 0.60);
-        CourierOblique_widths.insert('ç', 0.60);
-        CourierOblique_widths.insert('¸', 0.60);
-        CourierOblique_widths.insert('¢', 0.60);
-        CourierOblique_widths.insert('ˆ', 0.60);
-        CourierOblique_widths.insert(':', 0.60);
-        CourierOblique_widths.insert(',', 0.60);
-        CourierOblique_widths.insert('', 0.60);
-        CourierOblique_widths.insert('©', 0.60);
-        CourierOblique_widths.insert('¤', 0.60);
-        CourierOblique_widths.insert('d', 0.60);
-        CourierOblique_widths.insert('†', 0.60);
-        CourierOblique_widths.insert('‡', 0.60);
-        CourierOblique_widths.insert('ď', 0.60);
-        CourierOblique_widths.insert('đ', 0.60);
-        CourierOblique_widths.insert('°', 0.60);
-        CourierOblique_widths.insert('¨', 0.60);
-        CourierOblique_widths.insert('÷', 0.60);
-        CourierOblique_widths.insert('$', 0.60);
-        CourierOblique_widths.insert('˙', 0.60);
-        CourierOblique_widths.insert('ı', 0.60);
-        CourierOblique_widths.insert('e', 0.60);
-        CourierOblique_widths.insert('é', 0.60);
-        CourierOblique_widths.insert('ě', 0.60);
-        CourierOblique_widths.insert('ê', 0.60);
-        CourierOblique_widths.insert('ë', 0.60);
-        CourierOblique_widths.insert('ė', 0.60);
-        CourierOblique_widths.insert('è', 0.60);
-        CourierOblique_widths.insert('8', 0.60);
-        CourierOblique_widths.insert('…', 0.60);
-        CourierOblique_widths.insert('ē', 0.60);
-        CourierOblique_widths.insert('—', 0.60);
-        CourierOblique_widths.insert('–', 0.60);
-        CourierOblique_widths.insert('ę', 0.60);
-        CourierOblique_widths.insert('=', 0.60);
-        CourierOblique_widths.insert('ð', 0.60);
-        CourierOblique_widths.insert('!', 0.60);
-        CourierOblique_widths.insert('¡', 0.60);
-        CourierOblique_widths.insert('f', 0.60);
-        CourierOblique_widths.insert('ﬁ', 0.60);
-        CourierOblique_widths.insert('5', 0.60);
-        CourierOblique_widths.insert('ﬂ', 0.60);
-        CourierOblique_widths.insert('ƒ', 0.60);
-        CourierOblique_widths.insert('4', 0.60);
-        CourierOblique_widths.insert('⁄', 0.60);
-        CourierOblique_widths.insert('g', 0.60);
-        CourierOblique_widths.insert('ğ', 0.60);
-        CourierOblique_widths.insert('ģ', 0.60);
-        CourierOblique_widths.insert('ß', 0.60);
-        CourierOblique_widths.insert('`', 0.60);
-        CourierOblique_widths.insert('>', 0.60);
-        CourierOblique_widths.insert('≥', 0.60);
-        CourierOblique_widths.insert('«', 0.60);
-        CourierOblique_widths.insert('»', 0.60);
-        CourierOblique_widths.insert('‹', 0.60);
-        CourierOblique_widths.insert('›', 0.60);
-        CourierOblique_widths.insert('h', 0.60);
-        CourierOblique_widths.insert('˝', 0.60);
-        CourierOblique_widths.insert('-', 0.60);
-        CourierOblique_widths.insert('i', 0.60);
-        CourierOblique_widths.insert('í', 0.60);
-        CourierOblique_widths.insert('î', 0.60);
-        CourierOblique_widths.insert('ï', 0.60);
-        CourierOblique_widths.insert('ì', 0.60);
-        CourierOblique_widths.insert('ī', 0.60);
-        CourierOblique_widths.insert('į', 0.60);
-        CourierOblique_widths.insert('j', 0.60);
-        CourierOblique_widths.insert('k', 0.60);
-        CourierOblique_widths.insert('ķ', 0.60);
-        CourierOblique_widths.insert('l', 0.60);
-        CourierOblique_widths.insert('ĺ', 0.60);
-        CourierOblique_widths.insert('ľ', 0.60);
-        CourierOblique_widths.insert('ļ', 0.60);
-        CourierOblique_widths.insert('<', 0.60);
-        CourierOblique_widths.insert('≤', 0.60);
-        CourierOblique_widths.insert('¬', 0.60);
-        CourierOblique_widths.insert('◊', 0.60);
-        CourierOblique_widths.insert('ł', 0.60);
-        CourierOblique_widths.insert('m', 0.60);
-        CourierOblique_widths.insert('¯', 0.60);
-        CourierOblique_widths.insert('−', 0.60);
-        CourierOblique_widths.insert('µ', 0.60);
-        CourierOblique_widths.insert('×', 0.60);
-        CourierOblique_widths.insert('n', 0.60);
-        CourierOblique_widths.insert('ń', 0.60);
-        CourierOblique_widths.insert('ň', 0.60);
-        CourierOblique_widths.insert('ņ', 0.60);
-        CourierOblique_widths.insert('9', 0.60);
-        CourierOblique_widths.insert('≠', 0.60);
-        CourierOblique_widths.insert('ñ', 0.60);
-        CourierOblique_widths.insert('#', 0.60);
-        CourierOblique_widths.insert('o', 0.60);
-        CourierOblique_widths.insert('ó', 0.60);
-        CourierOblique_widths.insert('ô', 0.60);
-        CourierOblique_widths.insert('ö', 0.60);
-        CourierOblique_widths.insert('œ', 0.60);
-        CourierOblique_widths.insert('˛', 0.60);
-        CourierOblique_widths.insert('ò', 0.60);
-        CourierOblique_widths.insert('ő', 0.60);
-        CourierOblique_widths.insert('ō', 0.60);
-        CourierOblique_widths.insert('1', 0.60);
-        CourierOblique_widths.insert('½', 0.60);
-        CourierOblique_widths.insert('¼', 0.60);
-        CourierOblique_widths.insert('¹', 0.60);
-        CourierOblique_widths.insert('ª', 0.60);
-        CourierOblique_widths.insert('º', 0.60);
-        CourierOblique_widths.insert('ø', 0.60);
-        CourierOblique_widths.insert('õ', 0.60);
-        CourierOblique_widths.insert('p', 0.60);
-        CourierOblique_widths.insert('¶', 0.60);
-        CourierOblique_widths.insert('(', 0.60);
-        CourierOblique_widths.insert(')', 0.60);
-        CourierOblique_widths.insert('∂', 0.60);
-        CourierOblique_widths.insert('%', 0.60);
-        CourierOblique_widths.insert('.', 0.60);
-        CourierOblique_widths.insert('·', 0.60);
-        CourierOblique_widths.insert('‰', 0.60);
-        CourierOblique_widths.insert('+', 0.60);
-        CourierOblique_widths.insert('±', 0.60);
-        CourierOblique_widths.insert('q', 0.60);
-        CourierOblique_widths.insert('?', 0.60);
-        CourierOblique_widths.insert('¿', 0.60);
-        CourierOblique_widths.insert('"', 0.60);
-        CourierOblique_widths.insert('„', 0.60);
-        CourierOblique_widths.insert('“', 0.60);
-        CourierOblique_widths.insert('”', 0.60);
-        CourierOblique_widths.insert('‘', 0.60);
-        CourierOblique_widths.insert('’', 0.60);
-        CourierOblique_widths.insert('‚', 0.60);
-        CourierOblique_widths.insert('\'', 0.60);
-        CourierOblique_widths.insert('r', 0.60);
-        CourierOblique_widths.insert('ŕ', 0.60);
-        CourierOblique_widths.insert('√', 0.60);
-        CourierOblique_widths.insert('ř', 0.60);
-        CourierOblique_widths.insert('ŗ', 0.60);
-        CourierOblique_widths.insert('®', 0.60);
-        CourierOblique_widths.insert('˚', 0.60);
-        CourierOblique_widths.insert('s', 0.60);
-        CourierOblique_widths.insert('ś', 0.60);
-        CourierOblique_widths.insert('š', 0.60);
-        CourierOblique_widths.insert('ş', 0.60);
-        CourierOblique_widths.insert('ș', 0.60);
-        CourierOblique_widths.insert('§', 0.60);
-        CourierOblique_widths.insert(';', 0.60);
-        CourierOblique_widths.insert('7', 0.60);
-        CourierOblique_widths.insert('6', 0.60);
-        CourierOblique_widths.insert('/', 0.60);
-        CourierOblique_widths.insert(' ', 0.60);
-        CourierOblique_widths.insert('£', 0.60);
-        CourierOblique_widths.insert('∑', 0.60);
-        CourierOblique_widths.insert('t', 0.60);
-        CourierOblique_widths.insert('ť', 0.60);
-        CourierOblique_widths.insert('ţ', 0.60);
-        CourierOblique_widths.insert('þ', 0.60);
-        CourierOblique_widths.insert('3', 0.60);
-        CourierOblique_widths.insert('¾', 0.60);
-        CourierOblique_widths.insert('³', 0.60);
-        CourierOblique_widths.insert('˜', 0.60);
-        CourierOblique_widths.insert('™', 0.60);
-        CourierOblique_widths.insert('2', 0.60);
-        CourierOblique_widths.insert('²', 0.60);
-        CourierOblique_widths.insert('u', 0.60);
-        CourierOblique_widths.insert('ú', 0.60);
-        CourierOblique_widths.insert('û', 0.60);
-        CourierOblique_widths.insert('ü', 0.60);
-        CourierOblique_widths.insert('ù', 0.60);
-        CourierOblique_widths.insert('ű', 0.60);
-        CourierOblique_widths.insert('ū', 0.60);
-        CourierOblique_widths.insert('_', 0.60);
-        CourierOblique_widths.insert('ų', 0.60);
-        CourierOblique_widths.insert('ů', 0.60);
-        CourierOblique_widths.insert('v', 0.60);
-        CourierOblique_widths.insert('w', 0.60);
-        CourierOblique_widths.insert('x', 0.60);
-        CourierOblique_widths.insert('y', 0.60);
-        CourierOblique_widths.insert('ý', 0.60);
-        CourierOblique_widths.insert('ÿ', 0.60);
-        CourierOblique_widths.insert('¥', 0.60);
-        CourierOblique_widths.insert('z', 0.60);
-        CourierOblique_widths.insert('ź', 0.60);
-        CourierOblique_widths.insert('ž', 0.60);
-        CourierOblique_widths.insert('ż', 0.60);
-        CourierOblique_widths.insert('0', 0.60);
+        &Font::TimesRoman => match c {
+            'A' => 0.722,
+            'Æ' => 0.889,
+            'Á' => 0.722,
+            'Ă' => 0.722,
+            'Â' => 0.722,
+            'Ä' => 0.722,
+            'À' => 0.722,
+            'Ā' => 0.722,
+            'Ą' => 0.722,
+            'Å' => 0.722,
+            'Ã' => 0.722,
+            'B' => 0.667,
+            'C' => 0.667,
+            'Ć' => 0.667,
+            'Č' => 0.667,
+            'Ç' => 0.667,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.611,
+            'É' => 0.611,
+            'Ě' => 0.611,
+            'Ê' => 0.611,
+            'Ë' => 0.611,
+            'Ė' => 0.611,
+            'È' => 0.611,
+            'Ē' => 0.611,
+            'Ę' => 0.611,
+            'Ð' => 0.722,
+            '€' => 0.500,
+            'F' => 0.556,
+            'G' => 0.722,
+            'Ğ' => 0.722,
+            'Ģ' => 0.722,
+            'H' => 0.722,
+            'I' => 0.333,
+            'Í' => 0.333,
+            'Î' => 0.333,
+            'Ï' => 0.333,
+            'İ' => 0.333,
+            'Ì' => 0.333,
+            'Ī' => 0.333,
+            'Į' => 0.333,
+            'J' => 0.389,
+            'K' => 0.722,
+            'Ķ' => 0.722,
+            'L' => 0.611,
+            'Ĺ' => 0.611,
+            'Ľ' => 0.611,
+            'Ļ' => 0.611,
+            'Ł' => 0.611,
+            'M' => 0.889,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.722,
+            'Œ' => 0.889,
+            'Ó' => 0.722,
+            'Ô' => 0.722,
+            'Ö' => 0.722,
+            'Ò' => 0.722,
+            'Ő' => 0.722,
+            'Ō' => 0.722,
+            'Ø' => 0.722,
+            'Õ' => 0.722,
+            'P' => 0.556,
+            'Q' => 0.722,
+            'R' => 0.667,
+            'Ŕ' => 0.667,
+            'Ř' => 0.667,
+            'Ŗ' => 0.667,
+            'S' => 0.556,
+            'Ś' => 0.556,
+            'Š' => 0.556,
+            'Ş' => 0.556,
+            'Ș' => 0.556,
+            'T' => 0.611,
+            'Ť' => 0.611,
+            'Ţ' => 0.611,
+            'Þ' => 0.556,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.722,
+            'W' => 0.944,
+            'X' => 0.722,
+            'Y' => 0.722,
+            'Ý' => 0.722,
+            'Ÿ' => 0.722,
+            'Z' => 0.611,
+            'Ź' => 0.611,
+            'Ž' => 0.611,
+            'Ż' => 0.611,
+            'a' => 0.444,
+            'á' => 0.444,
+            'ă' => 0.444,
+            'â' => 0.444,
+            '´' => 0.333,
+            'ä' => 0.444,
+            'æ' => 0.667,
+            'à' => 0.444,
+            'ā' => 0.444,
+            '&' => 0.778,
+            'ą' => 0.444,
+            'å' => 0.444,
+            '^' => 0.469,
+            '~' => 0.541,
+            '*' => 0.500,
+            '@' => 0.921,
+            'ã' => 0.444,
+            'b' => 0.500,
+            '\\' => 0.278,
+            '|' => 0.200,
+            '{' => 0.480,
+            '}' => 0.480,
+            '[' => 0.333,
+            ']' => 0.333,
+            '˘' => 0.333,
+            '¦' => 0.200,
+            '•' => 0.350,
+            'c' => 0.444,
+            'ć' => 0.444,
+            'ˇ' => 0.333,
+            'č' => 0.444,
+            'ç' => 0.444,
+            '¸' => 0.333,
+            '¢' => 0.500,
+            'ˆ' => 0.333,
+            ':' => 0.278,
+            ',' => 0.250,
+            '' => 0.250,
+            '©' => 0.760,
+            '¤' => 0.500,
+            'd' => 0.500,
+            '†' => 0.500,
+            '‡' => 0.500,
+            'ď' => 0.588,
+            'đ' => 0.500,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.564,
+            '$' => 0.500,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.444,
+            'é' => 0.444,
+            'ě' => 0.444,
+            'ê' => 0.444,
+            'ë' => 0.444,
+            'ė' => 0.444,
+            'è' => 0.444,
+            '8' => 0.500,
+            '…' => 1.000,
+            'ē' => 0.444,
+            '—' => 1.000,
+            '–' => 0.500,
+            'ę' => 0.444,
+            '=' => 0.564,
+            'ð' => 0.500,
+            '!' => 0.333,
+            '¡' => 0.333,
+            'f' => 0.333,
+            'ﬁ' => 0.556,
+            '5' => 0.500,
+            'ﬂ' => 0.556,
+            'ƒ' => 0.500,
+            '4' => 0.500,
+            '⁄' => 0.167,
+            'g' => 0.500,
+            'ğ' => 0.500,
+            'ģ' => 0.500,
+            'ß' => 0.500,
+            '`' => 0.333,
+            '>' => 0.564,
+            '≥' => 0.549,
+            '«' => 0.500,
+            '»' => 0.500,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.500,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.278,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.278,
+            'j' => 0.278,
+            'k' => 0.500,
+            'ķ' => 0.500,
+            'l' => 0.278,
+            'ĺ' => 0.278,
+            'ľ' => 0.344,
+            'ļ' => 0.278,
+            '<' => 0.564,
+            '≤' => 0.549,
+            '¬' => 0.564,
+            '◊' => 0.471,
+            'ł' => 0.278,
+            'm' => 0.778,
+            '¯' => 0.333,
+            '−' => 0.564,
+            'µ' => 0.500,
+            '×' => 0.564,
+            'n' => 0.500,
+            'ń' => 0.500,
+            'ň' => 0.500,
+            'ņ' => 0.500,
+            '9' => 0.500,
+            '≠' => 0.549,
+            'ñ' => 0.500,
+            '#' => 0.500,
+            'o' => 0.500,
+            'ó' => 0.500,
+            'ô' => 0.500,
+            'ö' => 0.500,
+            'œ' => 0.722,
+            '˛' => 0.333,
+            'ò' => 0.500,
+            'ő' => 0.500,
+            'ō' => 0.500,
+            '1' => 0.500,
+            '½' => 0.750,
+            '¼' => 0.750,
+            '¹' => 0.300,
+            'ª' => 0.276,
+            'º' => 0.310,
+            'ø' => 0.500,
+            'õ' => 0.500,
+            'p' => 0.500,
+            '¶' => 0.453,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.476,
+            '%' => 0.833,
+            '.' => 0.250,
+            '·' => 0.250,
+            '‰' => 1.000,
+            '+' => 0.564,
+            '±' => 0.564,
+            'q' => 0.500,
+            '?' => 0.444,
+            '¿' => 0.444,
+            '"' => 0.408,
+            '„' => 0.444,
+            '“' => 0.444,
+            '”' => 0.444,
+            '‘' => 0.333,
+            '’' => 0.333,
+            '‚' => 0.333,
+            '\'' => 0.180,
+            'r' => 0.333,
+            'ŕ' => 0.333,
+            '√' => 0.453,
+            'ř' => 0.333,
+            'ŗ' => 0.333,
+            '®' => 0.760,
+            '˚' => 0.333,
+            's' => 0.389,
+            'ś' => 0.389,
+            'š' => 0.389,
+            'ş' => 0.389,
+            'ș' => 0.389,
+            '§' => 0.500,
+            ';' => 0.278,
+            '7' => 0.500,
+            '6' => 0.500,
+            '/' => 0.278,
+            ' ' => 0.250,
+            '£' => 0.500,
+            '∑' => 0.600,
+            't' => 0.278,
+            'ť' => 0.326,
+            'ţ' => 0.278,
+            'þ' => 0.500,
+            '3' => 0.500,
+            '¾' => 0.750,
+            '³' => 0.300,
+            '˜' => 0.333,
+            '™' => 0.980,
+            '2' => 0.500,
+            '²' => 0.300,
+            'u' => 0.500,
+            'ú' => 0.500,
+            'û' => 0.500,
+            'ü' => 0.500,
+            'ù' => 0.500,
+            'ű' => 0.500,
+            'ū' => 0.500,
+            '_' => 0.500,
+            'ų' => 0.500,
+            'ů' => 0.500,
+            'v' => 0.500,
+            'w' => 0.722,
+            'x' => 0.500,
+            'y' => 0.500,
+            'ý' => 0.500,
+            'ÿ' => 0.500,
+            '¥' => 0.500,
+            'z' => 0.444,
+            'ź' => 0.444,
+            'ž' => 0.444,
+            'ż' => 0.444,
+            '0' => 0.500,
+            _ => 0.0,
+        },
 
-        let mut CourierBold_widths: HashMap<char, f64> = HashMap::new();
-        CourierBold_widths.insert('A', 0.60);
-        CourierBold_widths.insert('Æ', 0.60);
-        CourierBold_widths.insert('Á', 0.60);
-        CourierBold_widths.insert('Ă', 0.60);
-        CourierBold_widths.insert('Â', 0.60);
-        CourierBold_widths.insert('Ä', 0.60);
-        CourierBold_widths.insert('À', 0.60);
-        CourierBold_widths.insert('Ā', 0.60);
-        CourierBold_widths.insert('Ą', 0.60);
-        CourierBold_widths.insert('Å', 0.60);
-        CourierBold_widths.insert('Ã', 0.60);
-        CourierBold_widths.insert('B', 0.60);
-        CourierBold_widths.insert('C', 0.60);
-        CourierBold_widths.insert('Ć', 0.60);
-        CourierBold_widths.insert('Č', 0.60);
-        CourierBold_widths.insert('Ç', 0.60);
-        CourierBold_widths.insert('D', 0.60);
-        CourierBold_widths.insert('Ď', 0.60);
-        CourierBold_widths.insert('Đ', 0.60);
-        CourierBold_widths.insert('∆', 0.60);
-        CourierBold_widths.insert('E', 0.60);
-        CourierBold_widths.insert('É', 0.60);
-        CourierBold_widths.insert('Ě', 0.60);
-        CourierBold_widths.insert('Ê', 0.60);
-        CourierBold_widths.insert('Ë', 0.60);
-        CourierBold_widths.insert('Ė', 0.60);
-        CourierBold_widths.insert('È', 0.60);
-        CourierBold_widths.insert('Ē', 0.60);
-        CourierBold_widths.insert('Ę', 0.60);
-        CourierBold_widths.insert('Ð', 0.60);
-        CourierBold_widths.insert('€', 0.60);
-        CourierBold_widths.insert('F', 0.60);
-        CourierBold_widths.insert('G', 0.60);
-        CourierBold_widths.insert('Ğ', 0.60);
-        CourierBold_widths.insert('Ģ', 0.60);
-        CourierBold_widths.insert('H', 0.60);
-        CourierBold_widths.insert('I', 0.60);
-        CourierBold_widths.insert('Í', 0.60);
-        CourierBold_widths.insert('Î', 0.60);
-        CourierBold_widths.insert('Ï', 0.60);
-        CourierBold_widths.insert('İ', 0.60);
-        CourierBold_widths.insert('Ì', 0.60);
-        CourierBold_widths.insert('Ī', 0.60);
-        CourierBold_widths.insert('Į', 0.60);
-        CourierBold_widths.insert('J', 0.60);
-        CourierBold_widths.insert('K', 0.60);
-        CourierBold_widths.insert('Ķ', 0.60);
-        CourierBold_widths.insert('L', 0.60);
-        CourierBold_widths.insert('Ĺ', 0.60);
-        CourierBold_widths.insert('Ľ', 0.60);
-        CourierBold_widths.insert('Ļ', 0.60);
-        CourierBold_widths.insert('Ł', 0.60);
-        CourierBold_widths.insert('M', 0.60);
-        CourierBold_widths.insert('N', 0.60);
-        CourierBold_widths.insert('Ń', 0.60);
-        CourierBold_widths.insert('Ň', 0.60);
-        CourierBold_widths.insert('Ņ', 0.60);
-        CourierBold_widths.insert('Ñ', 0.60);
-        CourierBold_widths.insert('O', 0.60);
-        CourierBold_widths.insert('Œ', 0.60);
-        CourierBold_widths.insert('Ó', 0.60);
-        CourierBold_widths.insert('Ô', 0.60);
-        CourierBold_widths.insert('Ö', 0.60);
-        CourierBold_widths.insert('Ò', 0.60);
-        CourierBold_widths.insert('Ő', 0.60);
-        CourierBold_widths.insert('Ō', 0.60);
-        CourierBold_widths.insert('Ø', 0.60);
-        CourierBold_widths.insert('Õ', 0.60);
-        CourierBold_widths.insert('P', 0.60);
-        CourierBold_widths.insert('Q', 0.60);
-        CourierBold_widths.insert('R', 0.60);
-        CourierBold_widths.insert('Ŕ', 0.60);
-        CourierBold_widths.insert('Ř', 0.60);
-        CourierBold_widths.insert('Ŗ', 0.60);
-        CourierBold_widths.insert('S', 0.60);
-        CourierBold_widths.insert('Ś', 0.60);
-        CourierBold_widths.insert('Š', 0.60);
-        CourierBold_widths.insert('Ş', 0.60);
-        CourierBold_widths.insert('Ș', 0.60);
-        CourierBold_widths.insert('T', 0.60);
-        CourierBold_widths.insert('Ť', 0.60);
-        CourierBold_widths.insert('Ţ', 0.60);
-        CourierBold_widths.insert('Þ', 0.60);
-        CourierBold_widths.insert('U', 0.60);
-        CourierBold_widths.insert('Ú', 0.60);
-        CourierBold_widths.insert('Û', 0.60);
-        CourierBold_widths.insert('Ü', 0.60);
-        CourierBold_widths.insert('Ù', 0.60);
-        CourierBold_widths.insert('Ű', 0.60);
-        CourierBold_widths.insert('Ū', 0.60);
-        CourierBold_widths.insert('Ų', 0.60);
-        CourierBold_widths.insert('Ů', 0.60);
-        CourierBold_widths.insert('V', 0.60);
-        CourierBold_widths.insert('W', 0.60);
-        CourierBold_widths.insert('X', 0.60);
-        CourierBold_widths.insert('Y', 0.60);
-        CourierBold_widths.insert('Ý', 0.60);
-        CourierBold_widths.insert('Ÿ', 0.60);
-        CourierBold_widths.insert('Z', 0.60);
-        CourierBold_widths.insert('Ź', 0.60);
-        CourierBold_widths.insert('Ž', 0.60);
-        CourierBold_widths.insert('Ż', 0.60);
-        CourierBold_widths.insert('a', 0.60);
-        CourierBold_widths.insert('á', 0.60);
-        CourierBold_widths.insert('ă', 0.60);
-        CourierBold_widths.insert('â', 0.60);
-        CourierBold_widths.insert('´', 0.60);
-        CourierBold_widths.insert('ä', 0.60);
-        CourierBold_widths.insert('æ', 0.60);
-        CourierBold_widths.insert('à', 0.60);
-        CourierBold_widths.insert('ā', 0.60);
-        CourierBold_widths.insert('&', 0.60);
-        CourierBold_widths.insert('ą', 0.60);
-        CourierBold_widths.insert('å', 0.60);
-        CourierBold_widths.insert('^', 0.60);
-        CourierBold_widths.insert('~', 0.60);
-        CourierBold_widths.insert('*', 0.60);
-        CourierBold_widths.insert('@', 0.60);
-        CourierBold_widths.insert('ã', 0.60);
-        CourierBold_widths.insert('b', 0.60);
-        CourierBold_widths.insert('\\', 0.60);
-        CourierBold_widths.insert('|', 0.60);
-        CourierBold_widths.insert('{', 0.60);
-        CourierBold_widths.insert('}', 0.60);
-        CourierBold_widths.insert('[', 0.60);
-        CourierBold_widths.insert(']', 0.60);
-        CourierBold_widths.insert('˘', 0.60);
-        CourierBold_widths.insert('¦', 0.60);
-        CourierBold_widths.insert('•', 0.60);
-        CourierBold_widths.insert('c', 0.60);
-        CourierBold_widths.insert('ć', 0.60);
-        CourierBold_widths.insert('ˇ', 0.60);
-        CourierBold_widths.insert('č', 0.60);
-        CourierBold_widths.insert('ç', 0.60);
-        CourierBold_widths.insert('¸', 0.60);
-        CourierBold_widths.insert('¢', 0.60);
-        CourierBold_widths.insert('ˆ', 0.60);
-        CourierBold_widths.insert(':', 0.60);
-        CourierBold_widths.insert(',', 0.60);
-        CourierBold_widths.insert('', 0.60);
-        CourierBold_widths.insert('©', 0.60);
-        CourierBold_widths.insert('¤', 0.60);
-        CourierBold_widths.insert('d', 0.60);
-        CourierBold_widths.insert('†', 0.60);
-        CourierBold_widths.insert('‡', 0.60);
-        CourierBold_widths.insert('ď', 0.60);
-        CourierBold_widths.insert('đ', 0.60);
-        CourierBold_widths.insert('°', 0.60);
-        CourierBold_widths.insert('¨', 0.60);
-        CourierBold_widths.insert('÷', 0.60);
-        CourierBold_widths.insert('$', 0.60);
-        CourierBold_widths.insert('˙', 0.60);
-        CourierBold_widths.insert('ı', 0.60);
-        CourierBold_widths.insert('e', 0.60);
-        CourierBold_widths.insert('é', 0.60);
-        CourierBold_widths.insert('ě', 0.60);
-        CourierBold_widths.insert('ê', 0.60);
-        CourierBold_widths.insert('ë', 0.60);
-        CourierBold_widths.insert('ė', 0.60);
-        CourierBold_widths.insert('è', 0.60);
-        CourierBold_widths.insert('8', 0.60);
-        CourierBold_widths.insert('…', 0.60);
-        CourierBold_widths.insert('ē', 0.60);
-        CourierBold_widths.insert('—', 0.60);
-        CourierBold_widths.insert('–', 0.60);
-        CourierBold_widths.insert('ę', 0.60);
-        CourierBold_widths.insert('=', 0.60);
-        CourierBold_widths.insert('ð', 0.60);
-        CourierBold_widths.insert('!', 0.60);
-        CourierBold_widths.insert('¡', 0.60);
-        CourierBold_widths.insert('f', 0.60);
-        CourierBold_widths.insert('ﬁ', 0.60);
-        CourierBold_widths.insert('5', 0.60);
-        CourierBold_widths.insert('ﬂ', 0.60);
-        CourierBold_widths.insert('ƒ', 0.60);
-        CourierBold_widths.insert('4', 0.60);
-        CourierBold_widths.insert('⁄', 0.60);
-        CourierBold_widths.insert('g', 0.60);
-        CourierBold_widths.insert('ğ', 0.60);
-        CourierBold_widths.insert('ģ', 0.60);
-        CourierBold_widths.insert('ß', 0.60);
-        CourierBold_widths.insert('`', 0.60);
-        CourierBold_widths.insert('>', 0.60);
-        CourierBold_widths.insert('≥', 0.60);
-        CourierBold_widths.insert('«', 0.60);
-        CourierBold_widths.insert('»', 0.60);
-        CourierBold_widths.insert('‹', 0.60);
-        CourierBold_widths.insert('›', 0.60);
-        CourierBold_widths.insert('h', 0.60);
-        CourierBold_widths.insert('˝', 0.60);
-        CourierBold_widths.insert('-', 0.60);
-        CourierBold_widths.insert('i', 0.60);
-        CourierBold_widths.insert('í', 0.60);
-        CourierBold_widths.insert('î', 0.60);
-        CourierBold_widths.insert('ï', 0.60);
-        CourierBold_widths.insert('ì', 0.60);
-        CourierBold_widths.insert('ī', 0.60);
-        CourierBold_widths.insert('į', 0.60);
-        CourierBold_widths.insert('j', 0.60);
-        CourierBold_widths.insert('k', 0.60);
-        CourierBold_widths.insert('ķ', 0.60);
-        CourierBold_widths.insert('l', 0.60);
-        CourierBold_widths.insert('ĺ', 0.60);
-        CourierBold_widths.insert('ľ', 0.60);
-        CourierBold_widths.insert('ļ', 0.60);
-        CourierBold_widths.insert('<', 0.60);
-        CourierBold_widths.insert('≤', 0.60);
-        CourierBold_widths.insert('¬', 0.60);
-        CourierBold_widths.insert('◊', 0.60);
-        CourierBold_widths.insert('ł', 0.60);
-        CourierBold_widths.insert('m', 0.60);
-        CourierBold_widths.insert('¯', 0.60);
-        CourierBold_widths.insert('−', 0.60);
-        CourierBold_widths.insert('µ', 0.60);
-        CourierBold_widths.insert('×', 0.60);
-        CourierBold_widths.insert('n', 0.60);
-        CourierBold_widths.insert('ń', 0.60);
-        CourierBold_widths.insert('ň', 0.60);
-        CourierBold_widths.insert('ņ', 0.60);
-        CourierBold_widths.insert('9', 0.60);
-        CourierBold_widths.insert('≠', 0.60);
-        CourierBold_widths.insert('ñ', 0.60);
-        CourierBold_widths.insert('#', 0.60);
-        CourierBold_widths.insert('o', 0.60);
-        CourierBold_widths.insert('ó', 0.60);
-        CourierBold_widths.insert('ô', 0.60);
-        CourierBold_widths.insert('ö', 0.60);
-        CourierBold_widths.insert('œ', 0.60);
-        CourierBold_widths.insert('˛', 0.60);
-        CourierBold_widths.insert('ò', 0.60);
-        CourierBold_widths.insert('ő', 0.60);
-        CourierBold_widths.insert('ō', 0.60);
-        CourierBold_widths.insert('1', 0.60);
-        CourierBold_widths.insert('½', 0.60);
-        CourierBold_widths.insert('¼', 0.60);
-        CourierBold_widths.insert('¹', 0.60);
-        CourierBold_widths.insert('ª', 0.60);
-        CourierBold_widths.insert('º', 0.60);
-        CourierBold_widths.insert('ø', 0.60);
-        CourierBold_widths.insert('õ', 0.60);
-        CourierBold_widths.insert('p', 0.60);
-        CourierBold_widths.insert('¶', 0.60);
-        CourierBold_widths.insert('(', 0.60);
-        CourierBold_widths.insert(')', 0.60);
-        CourierBold_widths.insert('∂', 0.60);
-        CourierBold_widths.insert('%', 0.60);
-        CourierBold_widths.insert('.', 0.60);
-        CourierBold_widths.insert('·', 0.60);
-        CourierBold_widths.insert('‰', 0.60);
-        CourierBold_widths.insert('+', 0.60);
-        CourierBold_widths.insert('±', 0.60);
-        CourierBold_widths.insert('q', 0.60);
-        CourierBold_widths.insert('?', 0.60);
-        CourierBold_widths.insert('¿', 0.60);
-        CourierBold_widths.insert('"', 0.60);
-        CourierBold_widths.insert('„', 0.60);
-        CourierBold_widths.insert('“', 0.60);
-        CourierBold_widths.insert('”', 0.60);
-        CourierBold_widths.insert('‘', 0.60);
-        CourierBold_widths.insert('’', 0.60);
-        CourierBold_widths.insert('‚', 0.60);
-        CourierBold_widths.insert('\'', 0.60);
-        CourierBold_widths.insert('r', 0.60);
-        CourierBold_widths.insert('ŕ', 0.60);
-        CourierBold_widths.insert('√', 0.60);
-        CourierBold_widths.insert('ř', 0.60);
-        CourierBold_widths.insert('ŗ', 0.60);
-        CourierBold_widths.insert('®', 0.60);
-        CourierBold_widths.insert('˚', 0.60);
-        CourierBold_widths.insert('s', 0.60);
-        CourierBold_widths.insert('ś', 0.60);
-        CourierBold_widths.insert('š', 0.60);
-        CourierBold_widths.insert('ş', 0.60);
-        CourierBold_widths.insert('ș', 0.60);
-        CourierBold_widths.insert('§', 0.60);
-        CourierBold_widths.insert(';', 0.60);
-        CourierBold_widths.insert('7', 0.60);
-        CourierBold_widths.insert('6', 0.60);
-        CourierBold_widths.insert('/', 0.60);
-        CourierBold_widths.insert(' ', 0.60);
-        CourierBold_widths.insert('£', 0.60);
-        CourierBold_widths.insert('∑', 0.60);
-        CourierBold_widths.insert('t', 0.60);
-        CourierBold_widths.insert('ť', 0.60);
-        CourierBold_widths.insert('ţ', 0.60);
-        CourierBold_widths.insert('þ', 0.60);
-        CourierBold_widths.insert('3', 0.60);
-        CourierBold_widths.insert('¾', 0.60);
-        CourierBold_widths.insert('³', 0.60);
-        CourierBold_widths.insert('˜', 0.60);
-        CourierBold_widths.insert('™', 0.60);
-        CourierBold_widths.insert('2', 0.60);
-        CourierBold_widths.insert('²', 0.60);
-        CourierBold_widths.insert('u', 0.60);
-        CourierBold_widths.insert('ú', 0.60);
-        CourierBold_widths.insert('û', 0.60);
-        CourierBold_widths.insert('ü', 0.60);
-        CourierBold_widths.insert('ù', 0.60);
-        CourierBold_widths.insert('ű', 0.60);
-        CourierBold_widths.insert('ū', 0.60);
-        CourierBold_widths.insert('_', 0.60);
-        CourierBold_widths.insert('ų', 0.60);
-        CourierBold_widths.insert('ů', 0.60);
-        CourierBold_widths.insert('v', 0.60);
-        CourierBold_widths.insert('w', 0.60);
-        CourierBold_widths.insert('x', 0.60);
-        CourierBold_widths.insert('y', 0.60);
-        CourierBold_widths.insert('ý', 0.60);
-        CourierBold_widths.insert('ÿ', 0.60);
-        CourierBold_widths.insert('¥', 0.60);
-        CourierBold_widths.insert('z', 0.60);
-        CourierBold_widths.insert('ź', 0.60);
-        CourierBold_widths.insert('ž', 0.60);
-        CourierBold_widths.insert('ż', 0.60);
-        CourierBold_widths.insert('0', 0.60);
+        &Font::Helvetica => match c {
+            'A' => 0.667,
+            'Æ' => 1.000,
+            'Á' => 0.667,
+            'Ă' => 0.667,
+            'Â' => 0.667,
+            'Ä' => 0.667,
+            'À' => 0.667,
+            'Ā' => 0.667,
+            'Ą' => 0.667,
+            'Å' => 0.667,
+            'Ã' => 0.667,
+            'B' => 0.667,
+            'C' => 0.722,
+            'Ć' => 0.722,
+            'Č' => 0.722,
+            'Ç' => 0.722,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.667,
+            'É' => 0.667,
+            'Ě' => 0.667,
+            'Ê' => 0.667,
+            'Ë' => 0.667,
+            'Ė' => 0.667,
+            'È' => 0.667,
+            'Ē' => 0.667,
+            'Ę' => 0.667,
+            'Ð' => 0.722,
+            '€' => 0.556,
+            'F' => 0.611,
+            'G' => 0.778,
+            'Ğ' => 0.778,
+            'Ģ' => 0.778,
+            'H' => 0.722,
+            'I' => 0.278,
+            'Í' => 0.278,
+            'Î' => 0.278,
+            'Ï' => 0.278,
+            'İ' => 0.278,
+            'Ì' => 0.278,
+            'Ī' => 0.278,
+            'Į' => 0.278,
+            'J' => 0.500,
+            'K' => 0.667,
+            'Ķ' => 0.667,
+            'L' => 0.556,
+            'Ĺ' => 0.556,
+            'Ľ' => 0.556,
+            'Ļ' => 0.556,
+            'Ł' => 0.556,
+            'M' => 0.833,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.778,
+            'Œ' => 1.000,
+            'Ó' => 0.778,
+            'Ô' => 0.778,
+            'Ö' => 0.778,
+            'Ò' => 0.778,
+            'Ő' => 0.778,
+            'Ō' => 0.778,
+            'Ø' => 0.778,
+            'Õ' => 0.778,
+            'P' => 0.667,
+            'Q' => 0.778,
+            'R' => 0.722,
+            'Ŕ' => 0.722,
+            'Ř' => 0.722,
+            'Ŗ' => 0.722,
+            'S' => 0.667,
+            'Ś' => 0.667,
+            'Š' => 0.667,
+            'Ş' => 0.667,
+            'Ș' => 0.667,
+            'T' => 0.611,
+            'Ť' => 0.611,
+            'Ţ' => 0.611,
+            'Þ' => 0.667,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.667,
+            'W' => 0.944,
+            'X' => 0.667,
+            'Y' => 0.667,
+            'Ý' => 0.667,
+            'Ÿ' => 0.667,
+            'Z' => 0.611,
+            'Ź' => 0.611,
+            'Ž' => 0.611,
+            'Ż' => 0.611,
+            'a' => 0.556,
+            'á' => 0.556,
+            'ă' => 0.556,
+            'â' => 0.556,
+            '´' => 0.333,
+            'ä' => 0.556,
+            'æ' => 0.889,
+            'à' => 0.556,
+            'ā' => 0.556,
+            '&' => 0.667,
+            'ą' => 0.556,
+            'å' => 0.556,
+            '^' => 0.469,
+            '~' => 0.584,
+            '*' => 0.389,
+            '@' => 1.015,
+            'ã' => 0.556,
+            'b' => 0.556,
+            '\\' => 0.278,
+            '|' => 0.260,
+            '{' => 0.334,
+            '}' => 0.334,
+            '[' => 0.278,
+            ']' => 0.278,
+            '˘' => 0.333,
+            '¦' => 0.260,
+            '•' => 0.350,
+            'c' => 0.500,
+            'ć' => 0.500,
+            'ˇ' => 0.333,
+            'č' => 0.500,
+            'ç' => 0.500,
+            '¸' => 0.333,
+            '¢' => 0.556,
+            'ˆ' => 0.333,
+            ':' => 0.278,
+            ',' => 0.278,
+            '' => 0.250,
+            '©' => 0.737,
+            '¤' => 0.556,
+            'd' => 0.556,
+            '†' => 0.556,
+            '‡' => 0.556,
+            'ď' => 0.643,
+            'đ' => 0.556,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.584,
+            '$' => 0.556,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.556,
+            'é' => 0.556,
+            'ě' => 0.556,
+            'ê' => 0.556,
+            'ë' => 0.556,
+            'ė' => 0.556,
+            'è' => 0.556,
+            '8' => 0.556,
+            '…' => 1.000,
+            'ē' => 0.556,
+            '—' => 1.000,
+            '–' => 0.556,
+            'ę' => 0.556,
+            '=' => 0.584,
+            'ð' => 0.556,
+            '!' => 0.278,
+            '¡' => 0.333,
+            'f' => 0.278,
+            'ﬁ' => 0.500,
+            '5' => 0.556,
+            'ﬂ' => 0.500,
+            'ƒ' => 0.556,
+            '4' => 0.556,
+            '⁄' => 0.167,
+            'g' => 0.556,
+            'ğ' => 0.556,
+            'ģ' => 0.556,
+            'ß' => 0.611,
+            '`' => 0.333,
+            '>' => 0.584,
+            '≥' => 0.549,
+            '«' => 0.556,
+            '»' => 0.556,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.556,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.222,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.222,
+            'j' => 0.222,
+            'k' => 0.500,
+            'ķ' => 0.500,
+            'l' => 0.222,
+            'ĺ' => 0.222,
+            'ľ' => 0.299,
+            'ļ' => 0.222,
+            '<' => 0.584,
+            '≤' => 0.549,
+            '¬' => 0.584,
+            '◊' => 0.471,
+            'ł' => 0.222,
+            'm' => 0.833,
+            '¯' => 0.333,
+            '−' => 0.584,
+            'µ' => 0.556,
+            '×' => 0.584,
+            'n' => 0.556,
+            'ń' => 0.556,
+            'ň' => 0.556,
+            'ņ' => 0.556,
+            '9' => 0.556,
+            '≠' => 0.549,
+            'ñ' => 0.556,
+            '#' => 0.556,
+            'o' => 0.556,
+            'ó' => 0.556,
+            'ô' => 0.556,
+            'ö' => 0.556,
+            'œ' => 0.944,
+            '˛' => 0.333,
+            'ò' => 0.556,
+            'ő' => 0.556,
+            'ō' => 0.556,
+            '1' => 0.556,
+            '½' => 0.834,
+            '¼' => 0.834,
+            '¹' => 0.333,
+            'ª' => 0.370,
+            'º' => 0.365,
+            'ø' => 0.611,
+            'õ' => 0.556,
+            'p' => 0.556,
+            '¶' => 0.537,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.476,
+            '%' => 0.889,
+            '.' => 0.278,
+            '·' => 0.278,
+            '‰' => 1.000,
+            '+' => 0.584,
+            '±' => 0.584,
+            'q' => 0.556,
+            '?' => 0.556,
+            '¿' => 0.611,
+            '"' => 0.355,
+            '„' => 0.333,
+            '“' => 0.333,
+            '”' => 0.333,
+            '‘' => 0.222,
+            '’' => 0.222,
+            '‚' => 0.222,
+            '\'' => 0.191,
+            'r' => 0.333,
+            'ŕ' => 0.333,
+            '√' => 0.453,
+            'ř' => 0.333,
+            'ŗ' => 0.333,
+            '®' => 0.737,
+            '˚' => 0.333,
+            's' => 0.500,
+            'ś' => 0.500,
+            'š' => 0.500,
+            'ş' => 0.500,
+            'ș' => 0.500,
+            '§' => 0.556,
+            ';' => 0.278,
+            '7' => 0.556,
+            '6' => 0.556,
+            '/' => 0.278,
+            ' ' => 0.278,
+            '£' => 0.556,
+            '∑' => 0.600,
+            't' => 0.278,
+            'ť' => 0.317,
+            'ţ' => 0.278,
+            'þ' => 0.556,
+            '3' => 0.556,
+            '¾' => 0.834,
+            '³' => 0.333,
+            '˜' => 0.333,
+            '™' => 1.000,
+            '2' => 0.556,
+            '²' => 0.333,
+            'u' => 0.556,
+            'ú' => 0.556,
+            'û' => 0.556,
+            'ü' => 0.556,
+            'ù' => 0.556,
+            'ű' => 0.556,
+            'ū' => 0.556,
+            '_' => 0.556,
+            'ų' => 0.556,
+            'ů' => 0.556,
+            'v' => 0.500,
+            'w' => 0.722,
+            'x' => 0.500,
+            'y' => 0.500,
+            'ý' => 0.500,
+            'ÿ' => 0.500,
+            '¥' => 0.556,
+            'z' => 0.500,
+            'ź' => 0.500,
+            'ž' => 0.500,
+            'ż' => 0.500,
+            '0' => 0.556,
+            _ => 0.0,
+        },
 
-        let mut CourierBoldOblique_widths: HashMap<char, f64> = HashMap::new();
-        CourierBoldOblique_widths.insert('A', 0.60);
-        CourierBoldOblique_widths.insert('Æ', 0.60);
-        CourierBoldOblique_widths.insert('Á', 0.60);
-        CourierBoldOblique_widths.insert('Ă', 0.60);
-        CourierBoldOblique_widths.insert('Â', 0.60);
-        CourierBoldOblique_widths.insert('Ä', 0.60);
-        CourierBoldOblique_widths.insert('À', 0.60);
-        CourierBoldOblique_widths.insert('Ā', 0.60);
-        CourierBoldOblique_widths.insert('Ą', 0.60);
-        CourierBoldOblique_widths.insert('Å', 0.60);
-        CourierBoldOblique_widths.insert('Ã', 0.60);
-        CourierBoldOblique_widths.insert('B', 0.60);
-        CourierBoldOblique_widths.insert('C', 0.60);
-        CourierBoldOblique_widths.insert('Ć', 0.60);
-        CourierBoldOblique_widths.insert('Č', 0.60);
-        CourierBoldOblique_widths.insert('Ç', 0.60);
-        CourierBoldOblique_widths.insert('D', 0.60);
-        CourierBoldOblique_widths.insert('Ď', 0.60);
-        CourierBoldOblique_widths.insert('Đ', 0.60);
-        CourierBoldOblique_widths.insert('∆', 0.60);
-        CourierBoldOblique_widths.insert('E', 0.60);
-        CourierBoldOblique_widths.insert('É', 0.60);
-        CourierBoldOblique_widths.insert('Ě', 0.60);
-        CourierBoldOblique_widths.insert('Ê', 0.60);
-        CourierBoldOblique_widths.insert('Ë', 0.60);
-        CourierBoldOblique_widths.insert('Ė', 0.60);
-        CourierBoldOblique_widths.insert('È', 0.60);
-        CourierBoldOblique_widths.insert('Ē', 0.60);
-        CourierBoldOblique_widths.insert('Ę', 0.60);
-        CourierBoldOblique_widths.insert('Ð', 0.60);
-        CourierBoldOblique_widths.insert('€', 0.60);
-        CourierBoldOblique_widths.insert('F', 0.60);
-        CourierBoldOblique_widths.insert('G', 0.60);
-        CourierBoldOblique_widths.insert('Ğ', 0.60);
-        CourierBoldOblique_widths.insert('Ģ', 0.60);
-        CourierBoldOblique_widths.insert('H', 0.60);
-        CourierBoldOblique_widths.insert('I', 0.60);
-        CourierBoldOblique_widths.insert('Í', 0.60);
-        CourierBoldOblique_widths.insert('Î', 0.60);
-        CourierBoldOblique_widths.insert('Ï', 0.60);
-        CourierBoldOblique_widths.insert('İ', 0.60);
-        CourierBoldOblique_widths.insert('Ì', 0.60);
-        CourierBoldOblique_widths.insert('Ī', 0.60);
-        CourierBoldOblique_widths.insert('Į', 0.60);
-        CourierBoldOblique_widths.insert('J', 0.60);
-        CourierBoldOblique_widths.insert('K', 0.60);
-        CourierBoldOblique_widths.insert('Ķ', 0.60);
-        CourierBoldOblique_widths.insert('L', 0.60);
-        CourierBoldOblique_widths.insert('Ĺ', 0.60);
-        CourierBoldOblique_widths.insert('Ľ', 0.60);
-        CourierBoldOblique_widths.insert('Ļ', 0.60);
-        CourierBoldOblique_widths.insert('Ł', 0.60);
-        CourierBoldOblique_widths.insert('M', 0.60);
-        CourierBoldOblique_widths.insert('N', 0.60);
-        CourierBoldOblique_widths.insert('Ń', 0.60);
-        CourierBoldOblique_widths.insert('Ň', 0.60);
-        CourierBoldOblique_widths.insert('Ņ', 0.60);
-        CourierBoldOblique_widths.insert('Ñ', 0.60);
-        CourierBoldOblique_widths.insert('O', 0.60);
-        CourierBoldOblique_widths.insert('Œ', 0.60);
-        CourierBoldOblique_widths.insert('Ó', 0.60);
-        CourierBoldOblique_widths.insert('Ô', 0.60);
-        CourierBoldOblique_widths.insert('Ö', 0.60);
-        CourierBoldOblique_widths.insert('Ò', 0.60);
-        CourierBoldOblique_widths.insert('Ő', 0.60);
-        CourierBoldOblique_widths.insert('Ō', 0.60);
-        CourierBoldOblique_widths.insert('Ø', 0.60);
-        CourierBoldOblique_widths.insert('Õ', 0.60);
-        CourierBoldOblique_widths.insert('P', 0.60);
-        CourierBoldOblique_widths.insert('Q', 0.60);
-        CourierBoldOblique_widths.insert('R', 0.60);
-        CourierBoldOblique_widths.insert('Ŕ', 0.60);
-        CourierBoldOblique_widths.insert('Ř', 0.60);
-        CourierBoldOblique_widths.insert('Ŗ', 0.60);
-        CourierBoldOblique_widths.insert('S', 0.60);
-        CourierBoldOblique_widths.insert('Ś', 0.60);
-        CourierBoldOblique_widths.insert('Š', 0.60);
-        CourierBoldOblique_widths.insert('Ş', 0.60);
-        CourierBoldOblique_widths.insert('Ș', 0.60);
-        CourierBoldOblique_widths.insert('T', 0.60);
-        CourierBoldOblique_widths.insert('Ť', 0.60);
-        CourierBoldOblique_widths.insert('Ţ', 0.60);
-        CourierBoldOblique_widths.insert('Þ', 0.60);
-        CourierBoldOblique_widths.insert('U', 0.60);
-        CourierBoldOblique_widths.insert('Ú', 0.60);
-        CourierBoldOblique_widths.insert('Û', 0.60);
-        CourierBoldOblique_widths.insert('Ü', 0.60);
-        CourierBoldOblique_widths.insert('Ù', 0.60);
-        CourierBoldOblique_widths.insert('Ű', 0.60);
-        CourierBoldOblique_widths.insert('Ū', 0.60);
-        CourierBoldOblique_widths.insert('Ų', 0.60);
-        CourierBoldOblique_widths.insert('Ů', 0.60);
-        CourierBoldOblique_widths.insert('V', 0.60);
-        CourierBoldOblique_widths.insert('W', 0.60);
-        CourierBoldOblique_widths.insert('X', 0.60);
-        CourierBoldOblique_widths.insert('Y', 0.60);
-        CourierBoldOblique_widths.insert('Ý', 0.60);
-        CourierBoldOblique_widths.insert('Ÿ', 0.60);
-        CourierBoldOblique_widths.insert('Z', 0.60);
-        CourierBoldOblique_widths.insert('Ź', 0.60);
-        CourierBoldOblique_widths.insert('Ž', 0.60);
-        CourierBoldOblique_widths.insert('Ż', 0.60);
-        CourierBoldOblique_widths.insert('a', 0.60);
-        CourierBoldOblique_widths.insert('á', 0.60);
-        CourierBoldOblique_widths.insert('ă', 0.60);
-        CourierBoldOblique_widths.insert('â', 0.60);
-        CourierBoldOblique_widths.insert('´', 0.60);
-        CourierBoldOblique_widths.insert('ä', 0.60);
-        CourierBoldOblique_widths.insert('æ', 0.60);
-        CourierBoldOblique_widths.insert('à', 0.60);
-        CourierBoldOblique_widths.insert('ā', 0.60);
-        CourierBoldOblique_widths.insert('&', 0.60);
-        CourierBoldOblique_widths.insert('ą', 0.60);
-        CourierBoldOblique_widths.insert('å', 0.60);
-        CourierBoldOblique_widths.insert('^', 0.60);
-        CourierBoldOblique_widths.insert('~', 0.60);
-        CourierBoldOblique_widths.insert('*', 0.60);
-        CourierBoldOblique_widths.insert('@', 0.60);
-        CourierBoldOblique_widths.insert('ã', 0.60);
-        CourierBoldOblique_widths.insert('b', 0.60);
-        CourierBoldOblique_widths.insert('\\', 0.60);
-        CourierBoldOblique_widths.insert('|', 0.60);
-        CourierBoldOblique_widths.insert('{', 0.60);
-        CourierBoldOblique_widths.insert('}', 0.60);
-        CourierBoldOblique_widths.insert('[', 0.60);
-        CourierBoldOblique_widths.insert(']', 0.60);
-        CourierBoldOblique_widths.insert('˘', 0.60);
-        CourierBoldOblique_widths.insert('¦', 0.60);
-        CourierBoldOblique_widths.insert('•', 0.60);
-        CourierBoldOblique_widths.insert('c', 0.60);
-        CourierBoldOblique_widths.insert('ć', 0.60);
-        CourierBoldOblique_widths.insert('ˇ', 0.60);
-        CourierBoldOblique_widths.insert('č', 0.60);
-        CourierBoldOblique_widths.insert('ç', 0.60);
-        CourierBoldOblique_widths.insert('¸', 0.60);
-        CourierBoldOblique_widths.insert('¢', 0.60);
-        CourierBoldOblique_widths.insert('ˆ', 0.60);
-        CourierBoldOblique_widths.insert(':', 0.60);
-        CourierBoldOblique_widths.insert(',', 0.60);
-        CourierBoldOblique_widths.insert('', 0.60);
-        CourierBoldOblique_widths.insert('©', 0.60);
-        CourierBoldOblique_widths.insert('¤', 0.60);
-        CourierBoldOblique_widths.insert('d', 0.60);
-        CourierBoldOblique_widths.insert('†', 0.60);
-        CourierBoldOblique_widths.insert('‡', 0.60);
-        CourierBoldOblique_widths.insert('ď', 0.60);
-        CourierBoldOblique_widths.insert('đ', 0.60);
-        CourierBoldOblique_widths.insert('°', 0.60);
-        CourierBoldOblique_widths.insert('¨', 0.60);
-        CourierBoldOblique_widths.insert('÷', 0.60);
-        CourierBoldOblique_widths.insert('$', 0.60);
-        CourierBoldOblique_widths.insert('˙', 0.60);
-        CourierBoldOblique_widths.insert('ı', 0.60);
-        CourierBoldOblique_widths.insert('e', 0.60);
-        CourierBoldOblique_widths.insert('é', 0.60);
-        CourierBoldOblique_widths.insert('ě', 0.60);
-        CourierBoldOblique_widths.insert('ê', 0.60);
-        CourierBoldOblique_widths.insert('ë', 0.60);
-        CourierBoldOblique_widths.insert('ė', 0.60);
-        CourierBoldOblique_widths.insert('è', 0.60);
-        CourierBoldOblique_widths.insert('8', 0.60);
-        CourierBoldOblique_widths.insert('…', 0.60);
-        CourierBoldOblique_widths.insert('ē', 0.60);
-        CourierBoldOblique_widths.insert('—', 0.60);
-        CourierBoldOblique_widths.insert('–', 0.60);
-        CourierBoldOblique_widths.insert('ę', 0.60);
-        CourierBoldOblique_widths.insert('=', 0.60);
-        CourierBoldOblique_widths.insert('ð', 0.60);
-        CourierBoldOblique_widths.insert('!', 0.60);
-        CourierBoldOblique_widths.insert('¡', 0.60);
-        CourierBoldOblique_widths.insert('f', 0.60);
-        CourierBoldOblique_widths.insert('ﬁ', 0.60);
-        CourierBoldOblique_widths.insert('5', 0.60);
-        CourierBoldOblique_widths.insert('ﬂ', 0.60);
-        CourierBoldOblique_widths.insert('ƒ', 0.60);
-        CourierBoldOblique_widths.insert('4', 0.60);
-        CourierBoldOblique_widths.insert('⁄', 0.60);
-        CourierBoldOblique_widths.insert('g', 0.60);
-        CourierBoldOblique_widths.insert('ğ', 0.60);
-        CourierBoldOblique_widths.insert('ģ', 0.60);
-        CourierBoldOblique_widths.insert('ß', 0.60);
-        CourierBoldOblique_widths.insert('`', 0.60);
-        CourierBoldOblique_widths.insert('>', 0.60);
-        CourierBoldOblique_widths.insert('≥', 0.60);
-        CourierBoldOblique_widths.insert('«', 0.60);
-        CourierBoldOblique_widths.insert('»', 0.60);
-        CourierBoldOblique_widths.insert('‹', 0.60);
-        CourierBoldOblique_widths.insert('›', 0.60);
-        CourierBoldOblique_widths.insert('h', 0.60);
-        CourierBoldOblique_widths.insert('˝', 0.60);
-        CourierBoldOblique_widths.insert('-', 0.60);
-        CourierBoldOblique_widths.insert('i', 0.60);
-        CourierBoldOblique_widths.insert('í', 0.60);
-        CourierBoldOblique_widths.insert('î', 0.60);
-        CourierBoldOblique_widths.insert('ï', 0.60);
-        CourierBoldOblique_widths.insert('ì', 0.60);
-        CourierBoldOblique_widths.insert('ī', 0.60);
-        CourierBoldOblique_widths.insert('į', 0.60);
-        CourierBoldOblique_widths.insert('j', 0.60);
-        CourierBoldOblique_widths.insert('k', 0.60);
-        CourierBoldOblique_widths.insert('ķ', 0.60);
-        CourierBoldOblique_widths.insert('l', 0.60);
-        CourierBoldOblique_widths.insert('ĺ', 0.60);
-        CourierBoldOblique_widths.insert('ľ', 0.60);
-        CourierBoldOblique_widths.insert('ļ', 0.60);
-        CourierBoldOblique_widths.insert('<', 0.60);
-        CourierBoldOblique_widths.insert('≤', 0.60);
-        CourierBoldOblique_widths.insert('¬', 0.60);
-        CourierBoldOblique_widths.insert('◊', 0.60);
-        CourierBoldOblique_widths.insert('ł', 0.60);
-        CourierBoldOblique_widths.insert('m', 0.60);
-        CourierBoldOblique_widths.insert('¯', 0.60);
-        CourierBoldOblique_widths.insert('−', 0.60);
-        CourierBoldOblique_widths.insert('µ', 0.60);
-        CourierBoldOblique_widths.insert('×', 0.60);
-        CourierBoldOblique_widths.insert('n', 0.60);
-        CourierBoldOblique_widths.insert('ń', 0.60);
-        CourierBoldOblique_widths.insert('ň', 0.60);
-        CourierBoldOblique_widths.insert('ņ', 0.60);
-        CourierBoldOblique_widths.insert('9', 0.60);
-        CourierBoldOblique_widths.insert('≠', 0.60);
-        CourierBoldOblique_widths.insert('ñ', 0.60);
-        CourierBoldOblique_widths.insert('#', 0.60);
-        CourierBoldOblique_widths.insert('o', 0.60);
-        CourierBoldOblique_widths.insert('ó', 0.60);
-        CourierBoldOblique_widths.insert('ô', 0.60);
-        CourierBoldOblique_widths.insert('ö', 0.60);
-        CourierBoldOblique_widths.insert('œ', 0.60);
-        CourierBoldOblique_widths.insert('˛', 0.60);
-        CourierBoldOblique_widths.insert('ò', 0.60);
-        CourierBoldOblique_widths.insert('ő', 0.60);
-        CourierBoldOblique_widths.insert('ō', 0.60);
-        CourierBoldOblique_widths.insert('1', 0.60);
-        CourierBoldOblique_widths.insert('½', 0.60);
-        CourierBoldOblique_widths.insert('¼', 0.60);
-        CourierBoldOblique_widths.insert('¹', 0.60);
-        CourierBoldOblique_widths.insert('ª', 0.60);
-        CourierBoldOblique_widths.insert('º', 0.60);
-        CourierBoldOblique_widths.insert('ø', 0.60);
-        CourierBoldOblique_widths.insert('õ', 0.60);
-        CourierBoldOblique_widths.insert('p', 0.60);
-        CourierBoldOblique_widths.insert('¶', 0.60);
-        CourierBoldOblique_widths.insert('(', 0.60);
-        CourierBoldOblique_widths.insert(')', 0.60);
-        CourierBoldOblique_widths.insert('∂', 0.60);
-        CourierBoldOblique_widths.insert('%', 0.60);
-        CourierBoldOblique_widths.insert('.', 0.60);
-        CourierBoldOblique_widths.insert('·', 0.60);
-        CourierBoldOblique_widths.insert('‰', 0.60);
-        CourierBoldOblique_widths.insert('+', 0.60);
-        CourierBoldOblique_widths.insert('±', 0.60);
-        CourierBoldOblique_widths.insert('q', 0.60);
-        CourierBoldOblique_widths.insert('?', 0.60);
-        CourierBoldOblique_widths.insert('¿', 0.60);
-        CourierBoldOblique_widths.insert('"', 0.60);
-        CourierBoldOblique_widths.insert('„', 0.60);
-        CourierBoldOblique_widths.insert('“', 0.60);
-        CourierBoldOblique_widths.insert('”', 0.60);
-        CourierBoldOblique_widths.insert('‘', 0.60);
-        CourierBoldOblique_widths.insert('’', 0.60);
-        CourierBoldOblique_widths.insert('‚', 0.60);
-        CourierBoldOblique_widths.insert('\'', 0.60);
-        CourierBoldOblique_widths.insert('r', 0.60);
-        CourierBoldOblique_widths.insert('ŕ', 0.60);
-        CourierBoldOblique_widths.insert('√', 0.60);
-        CourierBoldOblique_widths.insert('ř', 0.60);
-        CourierBoldOblique_widths.insert('ŗ', 0.60);
-        CourierBoldOblique_widths.insert('®', 0.60);
-        CourierBoldOblique_widths.insert('˚', 0.60);
-        CourierBoldOblique_widths.insert('s', 0.60);
-        CourierBoldOblique_widths.insert('ś', 0.60);
-        CourierBoldOblique_widths.insert('š', 0.60);
-        CourierBoldOblique_widths.insert('ş', 0.60);
-        CourierBoldOblique_widths.insert('ș', 0.60);
-        CourierBoldOblique_widths.insert('§', 0.60);
-        CourierBoldOblique_widths.insert(';', 0.60);
-        CourierBoldOblique_widths.insert('7', 0.60);
-        CourierBoldOblique_widths.insert('6', 0.60);
-        CourierBoldOblique_widths.insert('/', 0.60);
-        CourierBoldOblique_widths.insert(' ', 0.60);
-        CourierBoldOblique_widths.insert('£', 0.60);
-        CourierBoldOblique_widths.insert('∑', 0.60);
-        CourierBoldOblique_widths.insert('t', 0.60);
-        CourierBoldOblique_widths.insert('ť', 0.60);
-        CourierBoldOblique_widths.insert('ţ', 0.60);
-        CourierBoldOblique_widths.insert('þ', 0.60);
-        CourierBoldOblique_widths.insert('3', 0.60);
-        CourierBoldOblique_widths.insert('¾', 0.60);
-        CourierBoldOblique_widths.insert('³', 0.60);
-        CourierBoldOblique_widths.insert('˜', 0.60);
-        CourierBoldOblique_widths.insert('™', 0.60);
-        CourierBoldOblique_widths.insert('2', 0.60);
-        CourierBoldOblique_widths.insert('²', 0.60);
-        CourierBoldOblique_widths.insert('u', 0.60);
-        CourierBoldOblique_widths.insert('ú', 0.60);
-        CourierBoldOblique_widths.insert('û', 0.60);
-        CourierBoldOblique_widths.insert('ü', 0.60);
-        CourierBoldOblique_widths.insert('ù', 0.60);
-        CourierBoldOblique_widths.insert('ű', 0.60);
-        CourierBoldOblique_widths.insert('ū', 0.60);
-        CourierBoldOblique_widths.insert('_', 0.60);
-        CourierBoldOblique_widths.insert('ų', 0.60);
-        CourierBoldOblique_widths.insert('ů', 0.60);
-        CourierBoldOblique_widths.insert('v', 0.60);
-        CourierBoldOblique_widths.insert('w', 0.60);
-        CourierBoldOblique_widths.insert('x', 0.60);
-        CourierBoldOblique_widths.insert('y', 0.60);
-        CourierBoldOblique_widths.insert('ý', 0.60);
-        CourierBoldOblique_widths.insert('ÿ', 0.60);
-        CourierBoldOblique_widths.insert('¥', 0.60);
-        CourierBoldOblique_widths.insert('z', 0.60);
-        CourierBoldOblique_widths.insert('ź', 0.60);
-        CourierBoldOblique_widths.insert('ž', 0.60);
-        CourierBoldOblique_widths.insert('ż', 0.60);
-        CourierBoldOblique_widths.insert('0', 0.60);
+        &Font::CourierBoldOblique => match c {
+            'A' => 0.600,
+            'Æ' => 0.600,
+            'Á' => 0.600,
+            'Ă' => 0.600,
+            'Â' => 0.600,
+            'Ä' => 0.600,
+            'À' => 0.600,
+            'Ā' => 0.600,
+            'Ą' => 0.600,
+            'Å' => 0.600,
+            'Ã' => 0.600,
+            'B' => 0.600,
+            'C' => 0.600,
+            'Ć' => 0.600,
+            'Č' => 0.600,
+            'Ç' => 0.600,
+            'D' => 0.600,
+            'Ď' => 0.600,
+            'Đ' => 0.600,
+            '∆' => 0.600,
+            'E' => 0.600,
+            'É' => 0.600,
+            'Ě' => 0.600,
+            'Ê' => 0.600,
+            'Ë' => 0.600,
+            'Ė' => 0.600,
+            'È' => 0.600,
+            'Ē' => 0.600,
+            'Ę' => 0.600,
+            'Ð' => 0.600,
+            '€' => 0.600,
+            'F' => 0.600,
+            'G' => 0.600,
+            'Ğ' => 0.600,
+            'Ģ' => 0.600,
+            'H' => 0.600,
+            'I' => 0.600,
+            'Í' => 0.600,
+            'Î' => 0.600,
+            'Ï' => 0.600,
+            'İ' => 0.600,
+            'Ì' => 0.600,
+            'Ī' => 0.600,
+            'Į' => 0.600,
+            'J' => 0.600,
+            'K' => 0.600,
+            'Ķ' => 0.600,
+            'L' => 0.600,
+            'Ĺ' => 0.600,
+            'Ľ' => 0.600,
+            'Ļ' => 0.600,
+            'Ł' => 0.600,
+            'M' => 0.600,
+            'N' => 0.600,
+            'Ń' => 0.600,
+            'Ň' => 0.600,
+            'Ņ' => 0.600,
+            'Ñ' => 0.600,
+            'O' => 0.600,
+            'Œ' => 0.600,
+            'Ó' => 0.600,
+            'Ô' => 0.600,
+            'Ö' => 0.600,
+            'Ò' => 0.600,
+            'Ő' => 0.600,
+            'Ō' => 0.600,
+            'Ø' => 0.600,
+            'Õ' => 0.600,
+            'P' => 0.600,
+            'Q' => 0.600,
+            'R' => 0.600,
+            'Ŕ' => 0.600,
+            'Ř' => 0.600,
+            'Ŗ' => 0.600,
+            'S' => 0.600,
+            'Ś' => 0.600,
+            'Š' => 0.600,
+            'Ş' => 0.600,
+            'Ș' => 0.600,
+            'T' => 0.600,
+            'Ť' => 0.600,
+            'Ţ' => 0.600,
+            'Þ' => 0.600,
+            'U' => 0.600,
+            'Ú' => 0.600,
+            'Û' => 0.600,
+            'Ü' => 0.600,
+            'Ù' => 0.600,
+            'Ű' => 0.600,
+            'Ū' => 0.600,
+            'Ų' => 0.600,
+            'Ů' => 0.600,
+            'V' => 0.600,
+            'W' => 0.600,
+            'X' => 0.600,
+            'Y' => 0.600,
+            'Ý' => 0.600,
+            'Ÿ' => 0.600,
+            'Z' => 0.600,
+            'Ź' => 0.600,
+            'Ž' => 0.600,
+            'Ż' => 0.600,
+            'a' => 0.600,
+            'á' => 0.600,
+            'ă' => 0.600,
+            'â' => 0.600,
+            '´' => 0.600,
+            'ä' => 0.600,
+            'æ' => 0.600,
+            'à' => 0.600,
+            'ā' => 0.600,
+            '&' => 0.600,
+            'ą' => 0.600,
+            'å' => 0.600,
+            '^' => 0.600,
+            '~' => 0.600,
+            '*' => 0.600,
+            '@' => 0.600,
+            'ã' => 0.600,
+            'b' => 0.600,
+            '\\' => 0.600,
+            '|' => 0.600,
+            '{' => 0.600,
+            '}' => 0.600,
+            '[' => 0.600,
+            ']' => 0.600,
+            '˘' => 0.600,
+            '¦' => 0.600,
+            '•' => 0.600,
+            'c' => 0.600,
+            'ć' => 0.600,
+            'ˇ' => 0.600,
+            'č' => 0.600,
+            'ç' => 0.600,
+            '¸' => 0.600,
+            '¢' => 0.600,
+            'ˆ' => 0.600,
+            ':' => 0.600,
+            ',' => 0.600,
+            '' => 0.600,
+            '©' => 0.600,
+            '¤' => 0.600,
+            'd' => 0.600,
+            '†' => 0.600,
+            '‡' => 0.600,
+            'ď' => 0.600,
+            'đ' => 0.600,
+            '°' => 0.600,
+            '¨' => 0.600,
+            '÷' => 0.600,
+            '$' => 0.600,
+            '˙' => 0.600,
+            'ı' => 0.600,
+            'e' => 0.600,
+            'é' => 0.600,
+            'ě' => 0.600,
+            'ê' => 0.600,
+            'ë' => 0.600,
+            'ė' => 0.600,
+            'è' => 0.600,
+            '8' => 0.600,
+            '…' => 0.600,
+            'ē' => 0.600,
+            '—' => 0.600,
+            '–' => 0.600,
+            'ę' => 0.600,
+            '=' => 0.600,
+            'ð' => 0.600,
+            '!' => 0.600,
+            '¡' => 0.600,
+            'f' => 0.600,
+            'ﬁ' => 0.600,
+            '5' => 0.600,
+            'ﬂ' => 0.600,
+            'ƒ' => 0.600,
+            '4' => 0.600,
+            '⁄' => 0.600,
+            'g' => 0.600,
+            'ğ' => 0.600,
+            'ģ' => 0.600,
+            'ß' => 0.600,
+            '`' => 0.600,
+            '>' => 0.600,
+            '≥' => 0.600,
+            '«' => 0.600,
+            '»' => 0.600,
+            '‹' => 0.600,
+            '›' => 0.600,
+            'h' => 0.600,
+            '˝' => 0.600,
+            '-' => 0.600,
+            'i' => 0.600,
+            'í' => 0.600,
+            'î' => 0.600,
+            'ï' => 0.600,
+            'ì' => 0.600,
+            'ī' => 0.600,
+            'į' => 0.600,
+            'j' => 0.600,
+            'k' => 0.600,
+            'ķ' => 0.600,
+            'l' => 0.600,
+            'ĺ' => 0.600,
+            'ľ' => 0.600,
+            'ļ' => 0.600,
+            '<' => 0.600,
+            '≤' => 0.600,
+            '¬' => 0.600,
+            '◊' => 0.600,
+            'ł' => 0.600,
+            'm' => 0.600,
+            '¯' => 0.600,
+            '−' => 0.600,
+            'µ' => 0.600,
+            '×' => 0.600,
+            'n' => 0.600,
+            'ń' => 0.600,
+            'ň' => 0.600,
+            'ņ' => 0.600,
+            '9' => 0.600,
+            '≠' => 0.600,
+            'ñ' => 0.600,
+            '#' => 0.600,
+            'o' => 0.600,
+            'ó' => 0.600,
+            'ô' => 0.600,
+            'ö' => 0.600,
+            'œ' => 0.600,
+            '˛' => 0.600,
+            'ò' => 0.600,
+            'ő' => 0.600,
+            'ō' => 0.600,
+            '1' => 0.600,
+            '½' => 0.600,
+            '¼' => 0.600,
+            '¹' => 0.600,
+            'ª' => 0.600,
+            'º' => 0.600,
+            'ø' => 0.600,
+            'õ' => 0.600,
+            'p' => 0.600,
+            '¶' => 0.600,
+            '(' => 0.600,
+            ')' => 0.600,
+            '∂' => 0.600,
+            '%' => 0.600,
+            '.' => 0.600,
+            '·' => 0.600,
+            '‰' => 0.600,
+            '+' => 0.600,
+            '±' => 0.600,
+            'q' => 0.600,
+            '?' => 0.600,
+            '¿' => 0.600,
+            '"' => 0.600,
+            '„' => 0.600,
+            '“' => 0.600,
+            '”' => 0.600,
+            '‘' => 0.600,
+            '’' => 0.600,
+            '‚' => 0.600,
+            '\'' => 0.600,
+            'r' => 0.600,
+            'ŕ' => 0.600,
+            '√' => 0.600,
+            'ř' => 0.600,
+            'ŗ' => 0.600,
+            '®' => 0.600,
+            '˚' => 0.600,
+            's' => 0.600,
+            'ś' => 0.600,
+            'š' => 0.600,
+            'ş' => 0.600,
+            'ș' => 0.600,
+            '§' => 0.600,
+            ';' => 0.600,
+            '7' => 0.600,
+            '6' => 0.600,
+            '/' => 0.600,
+            ' ' => 0.600,
+            '£' => 0.600,
+            '∑' => 0.600,
+            't' => 0.600,
+            'ť' => 0.600,
+            'ţ' => 0.600,
+            'þ' => 0.600,
+            '3' => 0.600,
+            '¾' => 0.600,
+            '³' => 0.600,
+            '˜' => 0.600,
+            '™' => 0.600,
+            '2' => 0.600,
+            '²' => 0.600,
+            'u' => 0.600,
+            'ú' => 0.600,
+            'û' => 0.600,
+            'ü' => 0.600,
+            'ù' => 0.600,
+            'ű' => 0.600,
+            'ū' => 0.600,
+            '_' => 0.600,
+            'ų' => 0.600,
+            'ů' => 0.600,
+            'v' => 0.600,
+            'w' => 0.600,
+            'x' => 0.600,
+            'y' => 0.600,
+            'ý' => 0.600,
+            'ÿ' => 0.600,
+            '¥' => 0.600,
+            'z' => 0.600,
+            'ź' => 0.600,
+            'ž' => 0.600,
+            'ż' => 0.600,
+            '0' => 0.600,
+            _ => 0.0,
+        },
 
-        let mut TimesBoldItalic_widths: HashMap<char, f64> = HashMap::new();
-        TimesBoldItalic_widths.insert('A', 0.67);
-        TimesBoldItalic_widths.insert('Æ', 0.94);
-        TimesBoldItalic_widths.insert('Á', 0.67);
-        TimesBoldItalic_widths.insert('Ă', 0.67);
-        TimesBoldItalic_widths.insert('Â', 0.67);
-        TimesBoldItalic_widths.insert('Ä', 0.67);
-        TimesBoldItalic_widths.insert('À', 0.67);
-        TimesBoldItalic_widths.insert('Ā', 0.67);
-        TimesBoldItalic_widths.insert('Ą', 0.67);
-        TimesBoldItalic_widths.insert('Å', 0.67);
-        TimesBoldItalic_widths.insert('Ã', 0.67);
-        TimesBoldItalic_widths.insert('B', 0.67);
-        TimesBoldItalic_widths.insert('C', 0.67);
-        TimesBoldItalic_widths.insert('Ć', 0.67);
-        TimesBoldItalic_widths.insert('Č', 0.67);
-        TimesBoldItalic_widths.insert('Ç', 0.67);
-        TimesBoldItalic_widths.insert('D', 0.72);
-        TimesBoldItalic_widths.insert('Ď', 0.72);
-        TimesBoldItalic_widths.insert('Đ', 0.72);
-        TimesBoldItalic_widths.insert('∆', 0.61);
-        TimesBoldItalic_widths.insert('E', 0.67);
-        TimesBoldItalic_widths.insert('É', 0.67);
-        TimesBoldItalic_widths.insert('Ě', 0.67);
-        TimesBoldItalic_widths.insert('Ê', 0.67);
-        TimesBoldItalic_widths.insert('Ë', 0.67);
-        TimesBoldItalic_widths.insert('Ė', 0.67);
-        TimesBoldItalic_widths.insert('È', 0.67);
-        TimesBoldItalic_widths.insert('Ē', 0.67);
-        TimesBoldItalic_widths.insert('Ę', 0.67);
-        TimesBoldItalic_widths.insert('Ð', 0.72);
-        TimesBoldItalic_widths.insert('€', 0.50);
-        TimesBoldItalic_widths.insert('F', 0.67);
-        TimesBoldItalic_widths.insert('G', 0.72);
-        TimesBoldItalic_widths.insert('Ğ', 0.72);
-        TimesBoldItalic_widths.insert('Ģ', 0.72);
-        TimesBoldItalic_widths.insert('H', 0.78);
-        TimesBoldItalic_widths.insert('I', 0.39);
-        TimesBoldItalic_widths.insert('Í', 0.39);
-        TimesBoldItalic_widths.insert('Î', 0.39);
-        TimesBoldItalic_widths.insert('Ï', 0.39);
-        TimesBoldItalic_widths.insert('İ', 0.39);
-        TimesBoldItalic_widths.insert('Ì', 0.39);
-        TimesBoldItalic_widths.insert('Ī', 0.39);
-        TimesBoldItalic_widths.insert('Į', 0.39);
-        TimesBoldItalic_widths.insert('J', 0.50);
-        TimesBoldItalic_widths.insert('K', 0.67);
-        TimesBoldItalic_widths.insert('Ķ', 0.67);
-        TimesBoldItalic_widths.insert('L', 0.61);
-        TimesBoldItalic_widths.insert('Ĺ', 0.61);
-        TimesBoldItalic_widths.insert('Ľ', 0.61);
-        TimesBoldItalic_widths.insert('Ļ', 0.61);
-        TimesBoldItalic_widths.insert('Ł', 0.61);
-        TimesBoldItalic_widths.insert('M', 0.89);
-        TimesBoldItalic_widths.insert('N', 0.72);
-        TimesBoldItalic_widths.insert('Ń', 0.72);
-        TimesBoldItalic_widths.insert('Ň', 0.72);
-        TimesBoldItalic_widths.insert('Ņ', 0.72);
-        TimesBoldItalic_widths.insert('Ñ', 0.72);
-        TimesBoldItalic_widths.insert('O', 0.72);
-        TimesBoldItalic_widths.insert('Œ', 0.94);
-        TimesBoldItalic_widths.insert('Ó', 0.72);
-        TimesBoldItalic_widths.insert('Ô', 0.72);
-        TimesBoldItalic_widths.insert('Ö', 0.72);
-        TimesBoldItalic_widths.insert('Ò', 0.72);
-        TimesBoldItalic_widths.insert('Ő', 0.72);
-        TimesBoldItalic_widths.insert('Ō', 0.72);
-        TimesBoldItalic_widths.insert('Ø', 0.72);
-        TimesBoldItalic_widths.insert('Õ', 0.72);
-        TimesBoldItalic_widths.insert('P', 0.61);
-        TimesBoldItalic_widths.insert('Q', 0.72);
-        TimesBoldItalic_widths.insert('R', 0.67);
-        TimesBoldItalic_widths.insert('Ŕ', 0.67);
-        TimesBoldItalic_widths.insert('Ř', 0.67);
-        TimesBoldItalic_widths.insert('Ŗ', 0.67);
-        TimesBoldItalic_widths.insert('S', 0.56);
-        TimesBoldItalic_widths.insert('Ś', 0.56);
-        TimesBoldItalic_widths.insert('Š', 0.56);
-        TimesBoldItalic_widths.insert('Ş', 0.56);
-        TimesBoldItalic_widths.insert('Ș', 0.56);
-        TimesBoldItalic_widths.insert('T', 0.61);
-        TimesBoldItalic_widths.insert('Ť', 0.61);
-        TimesBoldItalic_widths.insert('Ţ', 0.61);
-        TimesBoldItalic_widths.insert('Þ', 0.61);
-        TimesBoldItalic_widths.insert('U', 0.72);
-        TimesBoldItalic_widths.insert('Ú', 0.72);
-        TimesBoldItalic_widths.insert('Û', 0.72);
-        TimesBoldItalic_widths.insert('Ü', 0.72);
-        TimesBoldItalic_widths.insert('Ù', 0.72);
-        TimesBoldItalic_widths.insert('Ű', 0.72);
-        TimesBoldItalic_widths.insert('Ū', 0.72);
-        TimesBoldItalic_widths.insert('Ų', 0.72);
-        TimesBoldItalic_widths.insert('Ů', 0.72);
-        TimesBoldItalic_widths.insert('V', 0.67);
-        TimesBoldItalic_widths.insert('W', 0.89);
-        TimesBoldItalic_widths.insert('X', 0.67);
-        TimesBoldItalic_widths.insert('Y', 0.61);
-        TimesBoldItalic_widths.insert('Ý', 0.61);
-        TimesBoldItalic_widths.insert('Ÿ', 0.61);
-        TimesBoldItalic_widths.insert('Z', 0.61);
-        TimesBoldItalic_widths.insert('Ź', 0.61);
-        TimesBoldItalic_widths.insert('Ž', 0.61);
-        TimesBoldItalic_widths.insert('Ż', 0.61);
-        TimesBoldItalic_widths.insert('a', 0.50);
-        TimesBoldItalic_widths.insert('á', 0.50);
-        TimesBoldItalic_widths.insert('ă', 0.50);
-        TimesBoldItalic_widths.insert('â', 0.50);
-        TimesBoldItalic_widths.insert('´', 0.33);
-        TimesBoldItalic_widths.insert('ä', 0.50);
-        TimesBoldItalic_widths.insert('æ', 0.72);
-        TimesBoldItalic_widths.insert('à', 0.50);
-        TimesBoldItalic_widths.insert('ā', 0.50);
-        TimesBoldItalic_widths.insert('&', 0.78);
-        TimesBoldItalic_widths.insert('ą', 0.50);
-        TimesBoldItalic_widths.insert('å', 0.50);
-        TimesBoldItalic_widths.insert('^', 0.57);
-        TimesBoldItalic_widths.insert('~', 0.57);
-        TimesBoldItalic_widths.insert('*', 0.50);
-        TimesBoldItalic_widths.insert('@', 0.83);
-        TimesBoldItalic_widths.insert('ã', 0.50);
-        TimesBoldItalic_widths.insert('b', 0.50);
-        TimesBoldItalic_widths.insert('\\', 0.28);
-        TimesBoldItalic_widths.insert('|', 0.22);
-        TimesBoldItalic_widths.insert('{', 0.35);
-        TimesBoldItalic_widths.insert('}', 0.35);
-        TimesBoldItalic_widths.insert('[', 0.33);
-        TimesBoldItalic_widths.insert(']', 0.33);
-        TimesBoldItalic_widths.insert('˘', 0.33);
-        TimesBoldItalic_widths.insert('¦', 0.22);
-        TimesBoldItalic_widths.insert('•', 0.35);
-        TimesBoldItalic_widths.insert('c', 0.44);
-        TimesBoldItalic_widths.insert('ć', 0.44);
-        TimesBoldItalic_widths.insert('ˇ', 0.33);
-        TimesBoldItalic_widths.insert('č', 0.44);
-        TimesBoldItalic_widths.insert('ç', 0.44);
-        TimesBoldItalic_widths.insert('¸', 0.33);
-        TimesBoldItalic_widths.insert('¢', 0.50);
-        TimesBoldItalic_widths.insert('ˆ', 0.33);
-        TimesBoldItalic_widths.insert(':', 0.33);
-        TimesBoldItalic_widths.insert(',', 0.25);
-        TimesBoldItalic_widths.insert('', 0.25);
-        TimesBoldItalic_widths.insert('©', 0.75);
-        TimesBoldItalic_widths.insert('¤', 0.50);
-        TimesBoldItalic_widths.insert('d', 0.50);
-        TimesBoldItalic_widths.insert('†', 0.50);
-        TimesBoldItalic_widths.insert('‡', 0.50);
-        TimesBoldItalic_widths.insert('ď', 0.61);
-        TimesBoldItalic_widths.insert('đ', 0.50);
-        TimesBoldItalic_widths.insert('°', 0.40);
-        TimesBoldItalic_widths.insert('¨', 0.33);
-        TimesBoldItalic_widths.insert('÷', 0.57);
-        TimesBoldItalic_widths.insert('$', 0.50);
-        TimesBoldItalic_widths.insert('˙', 0.33);
-        TimesBoldItalic_widths.insert('ı', 0.28);
-        TimesBoldItalic_widths.insert('e', 0.44);
-        TimesBoldItalic_widths.insert('é', 0.44);
-        TimesBoldItalic_widths.insert('ě', 0.44);
-        TimesBoldItalic_widths.insert('ê', 0.44);
-        TimesBoldItalic_widths.insert('ë', 0.44);
-        TimesBoldItalic_widths.insert('ė', 0.44);
-        TimesBoldItalic_widths.insert('è', 0.44);
-        TimesBoldItalic_widths.insert('8', 0.50);
-        TimesBoldItalic_widths.insert('…', 1.00);
-        TimesBoldItalic_widths.insert('ē', 0.44);
-        TimesBoldItalic_widths.insert('—', 1.00);
-        TimesBoldItalic_widths.insert('–', 0.50);
-        TimesBoldItalic_widths.insert('ę', 0.44);
-        TimesBoldItalic_widths.insert('=', 0.57);
-        TimesBoldItalic_widths.insert('ð', 0.50);
-        TimesBoldItalic_widths.insert('!', 0.39);
-        TimesBoldItalic_widths.insert('¡', 0.39);
-        TimesBoldItalic_widths.insert('f', 0.33);
-        TimesBoldItalic_widths.insert('ﬁ', 0.56);
-        TimesBoldItalic_widths.insert('5', 0.50);
-        TimesBoldItalic_widths.insert('ﬂ', 0.56);
-        TimesBoldItalic_widths.insert('ƒ', 0.50);
-        TimesBoldItalic_widths.insert('4', 0.50);
-        TimesBoldItalic_widths.insert('⁄', 0.17);
-        TimesBoldItalic_widths.insert('g', 0.50);
-        TimesBoldItalic_widths.insert('ğ', 0.50);
-        TimesBoldItalic_widths.insert('ģ', 0.50);
-        TimesBoldItalic_widths.insert('ß', 0.50);
-        TimesBoldItalic_widths.insert('`', 0.33);
-        TimesBoldItalic_widths.insert('>', 0.57);
-        TimesBoldItalic_widths.insert('≥', 0.55);
-        TimesBoldItalic_widths.insert('«', 0.50);
-        TimesBoldItalic_widths.insert('»', 0.50);
-        TimesBoldItalic_widths.insert('‹', 0.33);
-        TimesBoldItalic_widths.insert('›', 0.33);
-        TimesBoldItalic_widths.insert('h', 0.56);
-        TimesBoldItalic_widths.insert('˝', 0.33);
-        TimesBoldItalic_widths.insert('-', 0.33);
-        TimesBoldItalic_widths.insert('i', 0.28);
-        TimesBoldItalic_widths.insert('í', 0.28);
-        TimesBoldItalic_widths.insert('î', 0.28);
-        TimesBoldItalic_widths.insert('ï', 0.28);
-        TimesBoldItalic_widths.insert('ì', 0.28);
-        TimesBoldItalic_widths.insert('ī', 0.28);
-        TimesBoldItalic_widths.insert('į', 0.28);
-        TimesBoldItalic_widths.insert('j', 0.28);
-        TimesBoldItalic_widths.insert('k', 0.50);
-        TimesBoldItalic_widths.insert('ķ', 0.50);
-        TimesBoldItalic_widths.insert('l', 0.28);
-        TimesBoldItalic_widths.insert('ĺ', 0.28);
-        TimesBoldItalic_widths.insert('ľ', 0.38);
-        TimesBoldItalic_widths.insert('ļ', 0.28);
-        TimesBoldItalic_widths.insert('<', 0.57);
-        TimesBoldItalic_widths.insert('≤', 0.55);
-        TimesBoldItalic_widths.insert('¬', 0.61);
-        TimesBoldItalic_widths.insert('◊', 0.49);
-        TimesBoldItalic_widths.insert('ł', 0.28);
-        TimesBoldItalic_widths.insert('m', 0.78);
-        TimesBoldItalic_widths.insert('¯', 0.33);
-        TimesBoldItalic_widths.insert('−', 0.61);
-        TimesBoldItalic_widths.insert('µ', 0.58);
-        TimesBoldItalic_widths.insert('×', 0.57);
-        TimesBoldItalic_widths.insert('n', 0.56);
-        TimesBoldItalic_widths.insert('ń', 0.56);
-        TimesBoldItalic_widths.insert('ň', 0.56);
-        TimesBoldItalic_widths.insert('ņ', 0.56);
-        TimesBoldItalic_widths.insert('9', 0.50);
-        TimesBoldItalic_widths.insert('≠', 0.55);
-        TimesBoldItalic_widths.insert('ñ', 0.56);
-        TimesBoldItalic_widths.insert('#', 0.50);
-        TimesBoldItalic_widths.insert('o', 0.50);
-        TimesBoldItalic_widths.insert('ó', 0.50);
-        TimesBoldItalic_widths.insert('ô', 0.50);
-        TimesBoldItalic_widths.insert('ö', 0.50);
-        TimesBoldItalic_widths.insert('œ', 0.72);
-        TimesBoldItalic_widths.insert('˛', 0.33);
-        TimesBoldItalic_widths.insert('ò', 0.50);
-        TimesBoldItalic_widths.insert('ő', 0.50);
-        TimesBoldItalic_widths.insert('ō', 0.50);
-        TimesBoldItalic_widths.insert('1', 0.50);
-        TimesBoldItalic_widths.insert('½', 0.75);
-        TimesBoldItalic_widths.insert('¼', 0.75);
-        TimesBoldItalic_widths.insert('¹', 0.30);
-        TimesBoldItalic_widths.insert('ª', 0.27);
-        TimesBoldItalic_widths.insert('º', 0.30);
-        TimesBoldItalic_widths.insert('ø', 0.50);
-        TimesBoldItalic_widths.insert('õ', 0.50);
-        TimesBoldItalic_widths.insert('p', 0.50);
-        TimesBoldItalic_widths.insert('¶', 0.50);
-        TimesBoldItalic_widths.insert('(', 0.33);
-        TimesBoldItalic_widths.insert(')', 0.33);
-        TimesBoldItalic_widths.insert('∂', 0.49);
-        TimesBoldItalic_widths.insert('%', 0.83);
-        TimesBoldItalic_widths.insert('.', 0.25);
-        TimesBoldItalic_widths.insert('·', 0.25);
-        TimesBoldItalic_widths.insert('‰', 1.00);
-        TimesBoldItalic_widths.insert('+', 0.57);
-        TimesBoldItalic_widths.insert('±', 0.57);
-        TimesBoldItalic_widths.insert('q', 0.50);
-        TimesBoldItalic_widths.insert('?', 0.50);
-        TimesBoldItalic_widths.insert('¿', 0.50);
-        TimesBoldItalic_widths.insert('"', 0.56);
-        TimesBoldItalic_widths.insert('„', 0.50);
-        TimesBoldItalic_widths.insert('“', 0.50);
-        TimesBoldItalic_widths.insert('”', 0.50);
-        TimesBoldItalic_widths.insert('‘', 0.33);
-        TimesBoldItalic_widths.insert('’', 0.33);
-        TimesBoldItalic_widths.insert('‚', 0.33);
-        TimesBoldItalic_widths.insert('\'', 0.28);
-        TimesBoldItalic_widths.insert('r', 0.39);
-        TimesBoldItalic_widths.insert('ŕ', 0.39);
-        TimesBoldItalic_widths.insert('√', 0.55);
-        TimesBoldItalic_widths.insert('ř', 0.39);
-        TimesBoldItalic_widths.insert('ŗ', 0.39);
-        TimesBoldItalic_widths.insert('®', 0.75);
-        TimesBoldItalic_widths.insert('˚', 0.33);
-        TimesBoldItalic_widths.insert('s', 0.39);
-        TimesBoldItalic_widths.insert('ś', 0.39);
-        TimesBoldItalic_widths.insert('š', 0.39);
-        TimesBoldItalic_widths.insert('ş', 0.39);
-        TimesBoldItalic_widths.insert('ș', 0.39);
-        TimesBoldItalic_widths.insert('§', 0.50);
-        TimesBoldItalic_widths.insert(';', 0.33);
-        TimesBoldItalic_widths.insert('7', 0.50);
-        TimesBoldItalic_widths.insert('6', 0.50);
-        TimesBoldItalic_widths.insert('/', 0.28);
-        TimesBoldItalic_widths.insert(' ', 0.25);
-        TimesBoldItalic_widths.insert('£', 0.50);
-        TimesBoldItalic_widths.insert('∑', 0.60);
-        TimesBoldItalic_widths.insert('t', 0.28);
-        TimesBoldItalic_widths.insert('ť', 0.37);
-        TimesBoldItalic_widths.insert('ţ', 0.28);
-        TimesBoldItalic_widths.insert('þ', 0.50);
-        TimesBoldItalic_widths.insert('3', 0.50);
-        TimesBoldItalic_widths.insert('¾', 0.75);
-        TimesBoldItalic_widths.insert('³', 0.30);
-        TimesBoldItalic_widths.insert('˜', 0.33);
-        TimesBoldItalic_widths.insert('™', 1.00);
-        TimesBoldItalic_widths.insert('2', 0.50);
-        TimesBoldItalic_widths.insert('²', 0.30);
-        TimesBoldItalic_widths.insert('u', 0.56);
-        TimesBoldItalic_widths.insert('ú', 0.56);
-        TimesBoldItalic_widths.insert('û', 0.56);
-        TimesBoldItalic_widths.insert('ü', 0.56);
-        TimesBoldItalic_widths.insert('ù', 0.56);
-        TimesBoldItalic_widths.insert('ű', 0.56);
-        TimesBoldItalic_widths.insert('ū', 0.56);
-        TimesBoldItalic_widths.insert('_', 0.50);
-        TimesBoldItalic_widths.insert('ų', 0.56);
-        TimesBoldItalic_widths.insert('ů', 0.56);
-        TimesBoldItalic_widths.insert('v', 0.44);
-        TimesBoldItalic_widths.insert('w', 0.67);
-        TimesBoldItalic_widths.insert('x', 0.50);
-        TimesBoldItalic_widths.insert('y', 0.44);
-        TimesBoldItalic_widths.insert('ý', 0.44);
-        TimesBoldItalic_widths.insert('ÿ', 0.44);
-        TimesBoldItalic_widths.insert('¥', 0.50);
-        TimesBoldItalic_widths.insert('z', 0.39);
-        TimesBoldItalic_widths.insert('ź', 0.39);
-        TimesBoldItalic_widths.insert('ž', 0.39);
-        TimesBoldItalic_widths.insert('ż', 0.39);
-        TimesBoldItalic_widths.insert('0', 0.50);
+        &Font::HelveticaBoldOblique => match c {
+            'A' => 0.722,
+            'Æ' => 1.000,
+            'Á' => 0.722,
+            'Ă' => 0.722,
+            'Â' => 0.722,
+            'Ä' => 0.722,
+            'À' => 0.722,
+            'Ā' => 0.722,
+            'Ą' => 0.722,
+            'Å' => 0.722,
+            'Ã' => 0.722,
+            'B' => 0.722,
+            'C' => 0.722,
+            'Ć' => 0.722,
+            'Č' => 0.722,
+            'Ç' => 0.722,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.667,
+            'É' => 0.667,
+            'Ě' => 0.667,
+            'Ê' => 0.667,
+            'Ë' => 0.667,
+            'Ė' => 0.667,
+            'È' => 0.667,
+            'Ē' => 0.667,
+            'Ę' => 0.667,
+            'Ð' => 0.722,
+            '€' => 0.556,
+            'F' => 0.611,
+            'G' => 0.778,
+            'Ğ' => 0.778,
+            'Ģ' => 0.778,
+            'H' => 0.722,
+            'I' => 0.278,
+            'Í' => 0.278,
+            'Î' => 0.278,
+            'Ï' => 0.278,
+            'İ' => 0.278,
+            'Ì' => 0.278,
+            'Ī' => 0.278,
+            'Į' => 0.278,
+            'J' => 0.556,
+            'K' => 0.722,
+            'Ķ' => 0.722,
+            'L' => 0.611,
+            'Ĺ' => 0.611,
+            'Ľ' => 0.611,
+            'Ļ' => 0.611,
+            'Ł' => 0.611,
+            'M' => 0.833,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.778,
+            'Œ' => 1.000,
+            'Ó' => 0.778,
+            'Ô' => 0.778,
+            'Ö' => 0.778,
+            'Ò' => 0.778,
+            'Ő' => 0.778,
+            'Ō' => 0.778,
+            'Ø' => 0.778,
+            'Õ' => 0.778,
+            'P' => 0.667,
+            'Q' => 0.778,
+            'R' => 0.722,
+            'Ŕ' => 0.722,
+            'Ř' => 0.722,
+            'Ŗ' => 0.722,
+            'S' => 0.667,
+            'Ś' => 0.667,
+            'Š' => 0.667,
+            'Ş' => 0.667,
+            'Ș' => 0.667,
+            'T' => 0.611,
+            'Ť' => 0.611,
+            'Ţ' => 0.611,
+            'Þ' => 0.667,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.667,
+            'W' => 0.944,
+            'X' => 0.667,
+            'Y' => 0.667,
+            'Ý' => 0.667,
+            'Ÿ' => 0.667,
+            'Z' => 0.611,
+            'Ź' => 0.611,
+            'Ž' => 0.611,
+            'Ż' => 0.611,
+            'a' => 0.556,
+            'á' => 0.556,
+            'ă' => 0.556,
+            'â' => 0.556,
+            '´' => 0.333,
+            'ä' => 0.556,
+            'æ' => 0.889,
+            'à' => 0.556,
+            'ā' => 0.556,
+            '&' => 0.722,
+            'ą' => 0.556,
+            'å' => 0.556,
+            '^' => 0.584,
+            '~' => 0.584,
+            '*' => 0.389,
+            '@' => 0.975,
+            'ã' => 0.556,
+            'b' => 0.611,
+            '\\' => 0.278,
+            '|' => 0.280,
+            '{' => 0.389,
+            '}' => 0.389,
+            '[' => 0.333,
+            ']' => 0.333,
+            '˘' => 0.333,
+            '¦' => 0.280,
+            '•' => 0.350,
+            'c' => 0.556,
+            'ć' => 0.556,
+            'ˇ' => 0.333,
+            'č' => 0.556,
+            'ç' => 0.556,
+            '¸' => 0.333,
+            '¢' => 0.556,
+            'ˆ' => 0.333,
+            ':' => 0.333,
+            ',' => 0.278,
+            '' => 0.250,
+            '©' => 0.737,
+            '¤' => 0.556,
+            'd' => 0.611,
+            '†' => 0.556,
+            '‡' => 0.556,
+            'ď' => 0.743,
+            'đ' => 0.611,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.584,
+            '$' => 0.556,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.556,
+            'é' => 0.556,
+            'ě' => 0.556,
+            'ê' => 0.556,
+            'ë' => 0.556,
+            'ė' => 0.556,
+            'è' => 0.556,
+            '8' => 0.556,
+            '…' => 1.000,
+            'ē' => 0.556,
+            '—' => 1.000,
+            '–' => 0.556,
+            'ę' => 0.556,
+            '=' => 0.584,
+            'ð' => 0.611,
+            '!' => 0.333,
+            '¡' => 0.333,
+            'f' => 0.333,
+            'ﬁ' => 0.611,
+            '5' => 0.556,
+            'ﬂ' => 0.611,
+            'ƒ' => 0.556,
+            '4' => 0.556,
+            '⁄' => 0.167,
+            'g' => 0.611,
+            'ğ' => 0.611,
+            'ģ' => 0.611,
+            'ß' => 0.611,
+            '`' => 0.333,
+            '>' => 0.584,
+            '≥' => 0.549,
+            '«' => 0.556,
+            '»' => 0.556,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.611,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.278,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.278,
+            'j' => 0.278,
+            'k' => 0.556,
+            'ķ' => 0.556,
+            'l' => 0.278,
+            'ĺ' => 0.278,
+            'ľ' => 0.400,
+            'ļ' => 0.278,
+            '<' => 0.584,
+            '≤' => 0.549,
+            '¬' => 0.584,
+            '◊' => 0.494,
+            'ł' => 0.278,
+            'm' => 0.889,
+            '¯' => 0.333,
+            '−' => 0.584,
+            'µ' => 0.611,
+            '×' => 0.584,
+            'n' => 0.611,
+            'ń' => 0.611,
+            'ň' => 0.611,
+            'ņ' => 0.611,
+            '9' => 0.556,
+            '≠' => 0.549,
+            'ñ' => 0.611,
+            '#' => 0.556,
+            'o' => 0.611,
+            'ó' => 0.611,
+            'ô' => 0.611,
+            'ö' => 0.611,
+            'œ' => 0.944,
+            '˛' => 0.333,
+            'ò' => 0.611,
+            'ő' => 0.611,
+            'ō' => 0.611,
+            '1' => 0.556,
+            '½' => 0.834,
+            '¼' => 0.834,
+            '¹' => 0.333,
+            'ª' => 0.370,
+            'º' => 0.365,
+            'ø' => 0.611,
+            'õ' => 0.611,
+            'p' => 0.611,
+            '¶' => 0.556,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.494,
+            '%' => 0.889,
+            '.' => 0.278,
+            '·' => 0.278,
+            '‰' => 1.000,
+            '+' => 0.584,
+            '±' => 0.584,
+            'q' => 0.611,
+            '?' => 0.611,
+            '¿' => 0.611,
+            '"' => 0.474,
+            '„' => 0.500,
+            '“' => 0.500,
+            '”' => 0.500,
+            '‘' => 0.278,
+            '’' => 0.278,
+            '‚' => 0.278,
+            '\'' => 0.238,
+            'r' => 0.389,
+            'ŕ' => 0.389,
+            '√' => 0.549,
+            'ř' => 0.389,
+            'ŗ' => 0.389,
+            '®' => 0.737,
+            '˚' => 0.333,
+            's' => 0.556,
+            'ś' => 0.556,
+            'š' => 0.556,
+            'ş' => 0.556,
+            'ș' => 0.556,
+            '§' => 0.556,
+            ';' => 0.333,
+            '7' => 0.556,
+            '6' => 0.556,
+            '/' => 0.278,
+            ' ' => 0.278,
+            '£' => 0.556,
+            '∑' => 0.600,
+            't' => 0.333,
+            'ť' => 0.389,
+            'ţ' => 0.333,
+            'þ' => 0.611,
+            '3' => 0.556,
+            '¾' => 0.834,
+            '³' => 0.333,
+            '˜' => 0.333,
+            '™' => 1.000,
+            '2' => 0.556,
+            '²' => 0.333,
+            'u' => 0.611,
+            'ú' => 0.611,
+            'û' => 0.611,
+            'ü' => 0.611,
+            'ù' => 0.611,
+            'ű' => 0.611,
+            'ū' => 0.611,
+            '_' => 0.556,
+            'ų' => 0.611,
+            'ů' => 0.611,
+            'v' => 0.556,
+            'w' => 0.778,
+            'x' => 0.556,
+            'y' => 0.556,
+            'ý' => 0.556,
+            'ÿ' => 0.556,
+            '¥' => 0.556,
+            'z' => 0.500,
+            'ź' => 0.500,
+            'ž' => 0.500,
+            'ż' => 0.500,
+            '0' => 0.556,
+            _ => 0.0,
+        },
 
-        let mut Helvetica_widths: HashMap<char, f64> = HashMap::new();
-        Helvetica_widths.insert('A', 0.67);
-        Helvetica_widths.insert('Æ', 1.00);
-        Helvetica_widths.insert('Á', 0.67);
-        Helvetica_widths.insert('Ă', 0.67);
-        Helvetica_widths.insert('Â', 0.67);
-        Helvetica_widths.insert('Ä', 0.67);
-        Helvetica_widths.insert('À', 0.67);
-        Helvetica_widths.insert('Ā', 0.67);
-        Helvetica_widths.insert('Ą', 0.67);
-        Helvetica_widths.insert('Å', 0.67);
-        Helvetica_widths.insert('Ã', 0.67);
-        Helvetica_widths.insert('B', 0.67);
-        Helvetica_widths.insert('C', 0.72);
-        Helvetica_widths.insert('Ć', 0.72);
-        Helvetica_widths.insert('Č', 0.72);
-        Helvetica_widths.insert('Ç', 0.72);
-        Helvetica_widths.insert('D', 0.72);
-        Helvetica_widths.insert('Ď', 0.72);
-        Helvetica_widths.insert('Đ', 0.72);
-        Helvetica_widths.insert('∆', 0.61);
-        Helvetica_widths.insert('E', 0.67);
-        Helvetica_widths.insert('É', 0.67);
-        Helvetica_widths.insert('Ě', 0.67);
-        Helvetica_widths.insert('Ê', 0.67);
-        Helvetica_widths.insert('Ë', 0.67);
-        Helvetica_widths.insert('Ė', 0.67);
-        Helvetica_widths.insert('È', 0.67);
-        Helvetica_widths.insert('Ē', 0.67);
-        Helvetica_widths.insert('Ę', 0.67);
-        Helvetica_widths.insert('Ð', 0.72);
-        Helvetica_widths.insert('€', 0.56);
-        Helvetica_widths.insert('F', 0.61);
-        Helvetica_widths.insert('G', 0.78);
-        Helvetica_widths.insert('Ğ', 0.78);
-        Helvetica_widths.insert('Ģ', 0.78);
-        Helvetica_widths.insert('H', 0.72);
-        Helvetica_widths.insert('I', 0.28);
-        Helvetica_widths.insert('Í', 0.28);
-        Helvetica_widths.insert('Î', 0.28);
-        Helvetica_widths.insert('Ï', 0.28);
-        Helvetica_widths.insert('İ', 0.28);
-        Helvetica_widths.insert('Ì', 0.28);
-        Helvetica_widths.insert('Ī', 0.28);
-        Helvetica_widths.insert('Į', 0.28);
-        Helvetica_widths.insert('J', 0.50);
-        Helvetica_widths.insert('K', 0.67);
-        Helvetica_widths.insert('Ķ', 0.67);
-        Helvetica_widths.insert('L', 0.56);
-        Helvetica_widths.insert('Ĺ', 0.56);
-        Helvetica_widths.insert('Ľ', 0.56);
-        Helvetica_widths.insert('Ļ', 0.56);
-        Helvetica_widths.insert('Ł', 0.56);
-        Helvetica_widths.insert('M', 0.83);
-        Helvetica_widths.insert('N', 0.72);
-        Helvetica_widths.insert('Ń', 0.72);
-        Helvetica_widths.insert('Ň', 0.72);
-        Helvetica_widths.insert('Ņ', 0.72);
-        Helvetica_widths.insert('Ñ', 0.72);
-        Helvetica_widths.insert('O', 0.78);
-        Helvetica_widths.insert('Œ', 1.00);
-        Helvetica_widths.insert('Ó', 0.78);
-        Helvetica_widths.insert('Ô', 0.78);
-        Helvetica_widths.insert('Ö', 0.78);
-        Helvetica_widths.insert('Ò', 0.78);
-        Helvetica_widths.insert('Ő', 0.78);
-        Helvetica_widths.insert('Ō', 0.78);
-        Helvetica_widths.insert('Ø', 0.78);
-        Helvetica_widths.insert('Õ', 0.78);
-        Helvetica_widths.insert('P', 0.67);
-        Helvetica_widths.insert('Q', 0.78);
-        Helvetica_widths.insert('R', 0.72);
-        Helvetica_widths.insert('Ŕ', 0.72);
-        Helvetica_widths.insert('Ř', 0.72);
-        Helvetica_widths.insert('Ŗ', 0.72);
-        Helvetica_widths.insert('S', 0.67);
-        Helvetica_widths.insert('Ś', 0.67);
-        Helvetica_widths.insert('Š', 0.67);
-        Helvetica_widths.insert('Ş', 0.67);
-        Helvetica_widths.insert('Ș', 0.67);
-        Helvetica_widths.insert('T', 0.61);
-        Helvetica_widths.insert('Ť', 0.61);
-        Helvetica_widths.insert('Ţ', 0.61);
-        Helvetica_widths.insert('Þ', 0.67);
-        Helvetica_widths.insert('U', 0.72);
-        Helvetica_widths.insert('Ú', 0.72);
-        Helvetica_widths.insert('Û', 0.72);
-        Helvetica_widths.insert('Ü', 0.72);
-        Helvetica_widths.insert('Ù', 0.72);
-        Helvetica_widths.insert('Ű', 0.72);
-        Helvetica_widths.insert('Ū', 0.72);
-        Helvetica_widths.insert('Ų', 0.72);
-        Helvetica_widths.insert('Ů', 0.72);
-        Helvetica_widths.insert('V', 0.67);
-        Helvetica_widths.insert('W', 0.94);
-        Helvetica_widths.insert('X', 0.67);
-        Helvetica_widths.insert('Y', 0.67);
-        Helvetica_widths.insert('Ý', 0.67);
-        Helvetica_widths.insert('Ÿ', 0.67);
-        Helvetica_widths.insert('Z', 0.61);
-        Helvetica_widths.insert('Ź', 0.61);
-        Helvetica_widths.insert('Ž', 0.61);
-        Helvetica_widths.insert('Ż', 0.61);
-        Helvetica_widths.insert('a', 0.56);
-        Helvetica_widths.insert('á', 0.56);
-        Helvetica_widths.insert('ă', 0.56);
-        Helvetica_widths.insert('â', 0.56);
-        Helvetica_widths.insert('´', 0.33);
-        Helvetica_widths.insert('ä', 0.56);
-        Helvetica_widths.insert('æ', 0.89);
-        Helvetica_widths.insert('à', 0.56);
-        Helvetica_widths.insert('ā', 0.56);
-        Helvetica_widths.insert('&', 0.67);
-        Helvetica_widths.insert('ą', 0.56);
-        Helvetica_widths.insert('å', 0.56);
-        Helvetica_widths.insert('^', 0.47);
-        Helvetica_widths.insert('~', 0.58);
-        Helvetica_widths.insert('*', 0.39);
-        Helvetica_widths.insert('@', 1.01);
-        Helvetica_widths.insert('ã', 0.56);
-        Helvetica_widths.insert('b', 0.56);
-        Helvetica_widths.insert('\\', 0.28);
-        Helvetica_widths.insert('|', 0.26);
-        Helvetica_widths.insert('{', 0.33);
-        Helvetica_widths.insert('}', 0.33);
-        Helvetica_widths.insert('[', 0.28);
-        Helvetica_widths.insert(']', 0.28);
-        Helvetica_widths.insert('˘', 0.33);
-        Helvetica_widths.insert('¦', 0.26);
-        Helvetica_widths.insert('•', 0.35);
-        Helvetica_widths.insert('c', 0.50);
-        Helvetica_widths.insert('ć', 0.50);
-        Helvetica_widths.insert('ˇ', 0.33);
-        Helvetica_widths.insert('č', 0.50);
-        Helvetica_widths.insert('ç', 0.50);
-        Helvetica_widths.insert('¸', 0.33);
-        Helvetica_widths.insert('¢', 0.56);
-        Helvetica_widths.insert('ˆ', 0.33);
-        Helvetica_widths.insert(':', 0.28);
-        Helvetica_widths.insert(',', 0.28);
-        Helvetica_widths.insert('', 0.25);
-        Helvetica_widths.insert('©', 0.74);
-        Helvetica_widths.insert('¤', 0.56);
-        Helvetica_widths.insert('d', 0.56);
-        Helvetica_widths.insert('†', 0.56);
-        Helvetica_widths.insert('‡', 0.56);
-        Helvetica_widths.insert('ď', 0.64);
-        Helvetica_widths.insert('đ', 0.56);
-        Helvetica_widths.insert('°', 0.40);
-        Helvetica_widths.insert('¨', 0.33);
-        Helvetica_widths.insert('÷', 0.58);
-        Helvetica_widths.insert('$', 0.56);
-        Helvetica_widths.insert('˙', 0.33);
-        Helvetica_widths.insert('ı', 0.28);
-        Helvetica_widths.insert('e', 0.56);
-        Helvetica_widths.insert('é', 0.56);
-        Helvetica_widths.insert('ě', 0.56);
-        Helvetica_widths.insert('ê', 0.56);
-        Helvetica_widths.insert('ë', 0.56);
-        Helvetica_widths.insert('ė', 0.56);
-        Helvetica_widths.insert('è', 0.56);
-        Helvetica_widths.insert('8', 0.56);
-        Helvetica_widths.insert('…', 1.00);
-        Helvetica_widths.insert('ē', 0.56);
-        Helvetica_widths.insert('—', 1.00);
-        Helvetica_widths.insert('–', 0.56);
-        Helvetica_widths.insert('ę', 0.56);
-        Helvetica_widths.insert('=', 0.58);
-        Helvetica_widths.insert('ð', 0.56);
-        Helvetica_widths.insert('!', 0.28);
-        Helvetica_widths.insert('¡', 0.33);
-        Helvetica_widths.insert('f', 0.28);
-        Helvetica_widths.insert('ﬁ', 0.50);
-        Helvetica_widths.insert('5', 0.56);
-        Helvetica_widths.insert('ﬂ', 0.50);
-        Helvetica_widths.insert('ƒ', 0.56);
-        Helvetica_widths.insert('4', 0.56);
-        Helvetica_widths.insert('⁄', 0.17);
-        Helvetica_widths.insert('g', 0.56);
-        Helvetica_widths.insert('ğ', 0.56);
-        Helvetica_widths.insert('ģ', 0.56);
-        Helvetica_widths.insert('ß', 0.61);
-        Helvetica_widths.insert('`', 0.33);
-        Helvetica_widths.insert('>', 0.58);
-        Helvetica_widths.insert('≥', 0.55);
-        Helvetica_widths.insert('«', 0.56);
-        Helvetica_widths.insert('»', 0.56);
-        Helvetica_widths.insert('‹', 0.33);
-        Helvetica_widths.insert('›', 0.33);
-        Helvetica_widths.insert('h', 0.56);
-        Helvetica_widths.insert('˝', 0.33);
-        Helvetica_widths.insert('-', 0.33);
-        Helvetica_widths.insert('i', 0.22);
-        Helvetica_widths.insert('í', 0.28);
-        Helvetica_widths.insert('î', 0.28);
-        Helvetica_widths.insert('ï', 0.28);
-        Helvetica_widths.insert('ì', 0.28);
-        Helvetica_widths.insert('ī', 0.28);
-        Helvetica_widths.insert('į', 0.22);
-        Helvetica_widths.insert('j', 0.22);
-        Helvetica_widths.insert('k', 0.50);
-        Helvetica_widths.insert('ķ', 0.50);
-        Helvetica_widths.insert('l', 0.22);
-        Helvetica_widths.insert('ĺ', 0.22);
-        Helvetica_widths.insert('ľ', 0.30);
-        Helvetica_widths.insert('ļ', 0.22);
-        Helvetica_widths.insert('<', 0.58);
-        Helvetica_widths.insert('≤', 0.55);
-        Helvetica_widths.insert('¬', 0.58);
-        Helvetica_widths.insert('◊', 0.47);
-        Helvetica_widths.insert('ł', 0.22);
-        Helvetica_widths.insert('m', 0.83);
-        Helvetica_widths.insert('¯', 0.33);
-        Helvetica_widths.insert('−', 0.58);
-        Helvetica_widths.insert('µ', 0.56);
-        Helvetica_widths.insert('×', 0.58);
-        Helvetica_widths.insert('n', 0.56);
-        Helvetica_widths.insert('ń', 0.56);
-        Helvetica_widths.insert('ň', 0.56);
-        Helvetica_widths.insert('ņ', 0.56);
-        Helvetica_widths.insert('9', 0.56);
-        Helvetica_widths.insert('≠', 0.55);
-        Helvetica_widths.insert('ñ', 0.56);
-        Helvetica_widths.insert('#', 0.56);
-        Helvetica_widths.insert('o', 0.56);
-        Helvetica_widths.insert('ó', 0.56);
-        Helvetica_widths.insert('ô', 0.56);
-        Helvetica_widths.insert('ö', 0.56);
-        Helvetica_widths.insert('œ', 0.94);
-        Helvetica_widths.insert('˛', 0.33);
-        Helvetica_widths.insert('ò', 0.56);
-        Helvetica_widths.insert('ő', 0.56);
-        Helvetica_widths.insert('ō', 0.56);
-        Helvetica_widths.insert('1', 0.56);
-        Helvetica_widths.insert('½', 0.83);
-        Helvetica_widths.insert('¼', 0.83);
-        Helvetica_widths.insert('¹', 0.33);
-        Helvetica_widths.insert('ª', 0.37);
-        Helvetica_widths.insert('º', 0.36);
-        Helvetica_widths.insert('ø', 0.61);
-        Helvetica_widths.insert('õ', 0.56);
-        Helvetica_widths.insert('p', 0.56);
-        Helvetica_widths.insert('¶', 0.54);
-        Helvetica_widths.insert('(', 0.33);
-        Helvetica_widths.insert(')', 0.33);
-        Helvetica_widths.insert('∂', 0.48);
-        Helvetica_widths.insert('%', 0.89);
-        Helvetica_widths.insert('.', 0.28);
-        Helvetica_widths.insert('·', 0.28);
-        Helvetica_widths.insert('‰', 1.00);
-        Helvetica_widths.insert('+', 0.58);
-        Helvetica_widths.insert('±', 0.58);
-        Helvetica_widths.insert('q', 0.56);
-        Helvetica_widths.insert('?', 0.56);
-        Helvetica_widths.insert('¿', 0.61);
-        Helvetica_widths.insert('"', 0.35);
-        Helvetica_widths.insert('„', 0.33);
-        Helvetica_widths.insert('“', 0.33);
-        Helvetica_widths.insert('”', 0.33);
-        Helvetica_widths.insert('‘', 0.22);
-        Helvetica_widths.insert('’', 0.22);
-        Helvetica_widths.insert('‚', 0.22);
-        Helvetica_widths.insert('\'', 0.19);
-        Helvetica_widths.insert('r', 0.33);
-        Helvetica_widths.insert('ŕ', 0.33);
-        Helvetica_widths.insert('√', 0.45);
-        Helvetica_widths.insert('ř', 0.33);
-        Helvetica_widths.insert('ŗ', 0.33);
-        Helvetica_widths.insert('®', 0.74);
-        Helvetica_widths.insert('˚', 0.33);
-        Helvetica_widths.insert('s', 0.50);
-        Helvetica_widths.insert('ś', 0.50);
-        Helvetica_widths.insert('š', 0.50);
-        Helvetica_widths.insert('ş', 0.50);
-        Helvetica_widths.insert('ș', 0.50);
-        Helvetica_widths.insert('§', 0.56);
-        Helvetica_widths.insert(';', 0.28);
-        Helvetica_widths.insert('7', 0.56);
-        Helvetica_widths.insert('6', 0.56);
-        Helvetica_widths.insert('/', 0.28);
-        Helvetica_widths.insert(' ', 0.28);
-        Helvetica_widths.insert('£', 0.56);
-        Helvetica_widths.insert('∑', 0.60);
-        Helvetica_widths.insert('t', 0.28);
-        Helvetica_widths.insert('ť', 0.32);
-        Helvetica_widths.insert('ţ', 0.28);
-        Helvetica_widths.insert('þ', 0.56);
-        Helvetica_widths.insert('3', 0.56);
-        Helvetica_widths.insert('¾', 0.83);
-        Helvetica_widths.insert('³', 0.33);
-        Helvetica_widths.insert('˜', 0.33);
-        Helvetica_widths.insert('™', 1.00);
-        Helvetica_widths.insert('2', 0.56);
-        Helvetica_widths.insert('²', 0.33);
-        Helvetica_widths.insert('u', 0.56);
-        Helvetica_widths.insert('ú', 0.56);
-        Helvetica_widths.insert('û', 0.56);
-        Helvetica_widths.insert('ü', 0.56);
-        Helvetica_widths.insert('ù', 0.56);
-        Helvetica_widths.insert('ű', 0.56);
-        Helvetica_widths.insert('ū', 0.56);
-        Helvetica_widths.insert('_', 0.56);
-        Helvetica_widths.insert('ų', 0.56);
-        Helvetica_widths.insert('ů', 0.56);
-        Helvetica_widths.insert('v', 0.50);
-        Helvetica_widths.insert('w', 0.72);
-        Helvetica_widths.insert('x', 0.50);
-        Helvetica_widths.insert('y', 0.50);
-        Helvetica_widths.insert('ý', 0.50);
-        Helvetica_widths.insert('ÿ', 0.50);
-        Helvetica_widths.insert('¥', 0.56);
-        Helvetica_widths.insert('z', 0.50);
-        Helvetica_widths.insert('ź', 0.50);
-        Helvetica_widths.insert('ž', 0.50);
-        Helvetica_widths.insert('ż', 0.50);
-        Helvetica_widths.insert('0', 0.56);
+        &Font::Courier => match c {
+            'A' => 0.600,
+            'Æ' => 0.600,
+            'Á' => 0.600,
+            'Ă' => 0.600,
+            'Â' => 0.600,
+            'Ä' => 0.600,
+            'À' => 0.600,
+            'Ā' => 0.600,
+            'Ą' => 0.600,
+            'Å' => 0.600,
+            'Ã' => 0.600,
+            'B' => 0.600,
+            'C' => 0.600,
+            'Ć' => 0.600,
+            'Č' => 0.600,
+            'Ç' => 0.600,
+            'D' => 0.600,
+            'Ď' => 0.600,
+            'Đ' => 0.600,
+            '∆' => 0.600,
+            'E' => 0.600,
+            'É' => 0.600,
+            'Ě' => 0.600,
+            'Ê' => 0.600,
+            'Ë' => 0.600,
+            'Ė' => 0.600,
+            'È' => 0.600,
+            'Ē' => 0.600,
+            'Ę' => 0.600,
+            'Ð' => 0.600,
+            '€' => 0.600,
+            'F' => 0.600,
+            'G' => 0.600,
+            'Ğ' => 0.600,
+            'Ģ' => 0.600,
+            'H' => 0.600,
+            'I' => 0.600,
+            'Í' => 0.600,
+            'Î' => 0.600,
+            'Ï' => 0.600,
+            'İ' => 0.600,
+            'Ì' => 0.600,
+            'Ī' => 0.600,
+            'Į' => 0.600,
+            'J' => 0.600,
+            'K' => 0.600,
+            'Ķ' => 0.600,
+            'L' => 0.600,
+            'Ĺ' => 0.600,
+            'Ľ' => 0.600,
+            'Ļ' => 0.600,
+            'Ł' => 0.600,
+            'M' => 0.600,
+            'N' => 0.600,
+            'Ń' => 0.600,
+            'Ň' => 0.600,
+            'Ņ' => 0.600,
+            'Ñ' => 0.600,
+            'O' => 0.600,
+            'Œ' => 0.600,
+            'Ó' => 0.600,
+            'Ô' => 0.600,
+            'Ö' => 0.600,
+            'Ò' => 0.600,
+            'Ő' => 0.600,
+            'Ō' => 0.600,
+            'Ø' => 0.600,
+            'Õ' => 0.600,
+            'P' => 0.600,
+            'Q' => 0.600,
+            'R' => 0.600,
+            'Ŕ' => 0.600,
+            'Ř' => 0.600,
+            'Ŗ' => 0.600,
+            'S' => 0.600,
+            'Ś' => 0.600,
+            'Š' => 0.600,
+            'Ş' => 0.600,
+            'Ș' => 0.600,
+            'T' => 0.600,
+            'Ť' => 0.600,
+            'Ţ' => 0.600,
+            'Þ' => 0.600,
+            'U' => 0.600,
+            'Ú' => 0.600,
+            'Û' => 0.600,
+            'Ü' => 0.600,
+            'Ù' => 0.600,
+            'Ű' => 0.600,
+            'Ū' => 0.600,
+            'Ų' => 0.600,
+            'Ů' => 0.600,
+            'V' => 0.600,
+            'W' => 0.600,
+            'X' => 0.600,
+            'Y' => 0.600,
+            'Ý' => 0.600,
+            'Ÿ' => 0.600,
+            'Z' => 0.600,
+            'Ź' => 0.600,
+            'Ž' => 0.600,
+            'Ż' => 0.600,
+            'a' => 0.600,
+            'á' => 0.600,
+            'ă' => 0.600,
+            'â' => 0.600,
+            '´' => 0.600,
+            'ä' => 0.600,
+            'æ' => 0.600,
+            'à' => 0.600,
+            'ā' => 0.600,
+            '&' => 0.600,
+            'ą' => 0.600,
+            'å' => 0.600,
+            '^' => 0.600,
+            '~' => 0.600,
+            '*' => 0.600,
+            '@' => 0.600,
+            'ã' => 0.600,
+            'b' => 0.600,
+            '\\' => 0.600,
+            '|' => 0.600,
+            '{' => 0.600,
+            '}' => 0.600,
+            '[' => 0.600,
+            ']' => 0.600,
+            '˘' => 0.600,
+            '¦' => 0.600,
+            '•' => 0.600,
+            'c' => 0.600,
+            'ć' => 0.600,
+            'ˇ' => 0.600,
+            'č' => 0.600,
+            'ç' => 0.600,
+            '¸' => 0.600,
+            '¢' => 0.600,
+            'ˆ' => 0.600,
+            ':' => 0.600,
+            ',' => 0.600,
+            '' => 0.600,
+            '©' => 0.600,
+            '¤' => 0.600,
+            'd' => 0.600,
+            '†' => 0.600,
+            '‡' => 0.600,
+            'ď' => 0.600,
+            'đ' => 0.600,
+            '°' => 0.600,
+            '¨' => 0.600,
+            '÷' => 0.600,
+            '$' => 0.600,
+            '˙' => 0.600,
+            'ı' => 0.600,
+            'e' => 0.600,
+            'é' => 0.600,
+            'ě' => 0.600,
+            'ê' => 0.600,
+            'ë' => 0.600,
+            'ė' => 0.600,
+            'è' => 0.600,
+            '8' => 0.600,
+            '…' => 0.600,
+            'ē' => 0.600,
+            '—' => 0.600,
+            '–' => 0.600,
+            'ę' => 0.600,
+            '=' => 0.600,
+            'ð' => 0.600,
+            '!' => 0.600,
+            '¡' => 0.600,
+            'f' => 0.600,
+            'ﬁ' => 0.600,
+            '5' => 0.600,
+            'ﬂ' => 0.600,
+            'ƒ' => 0.600,
+            '4' => 0.600,
+            '⁄' => 0.600,
+            'g' => 0.600,
+            'ğ' => 0.600,
+            'ģ' => 0.600,
+            'ß' => 0.600,
+            '`' => 0.600,
+            '>' => 0.600,
+            '≥' => 0.600,
+            '«' => 0.600,
+            '»' => 0.600,
+            '‹' => 0.600,
+            '›' => 0.600,
+            'h' => 0.600,
+            '˝' => 0.600,
+            '-' => 0.600,
+            'i' => 0.600,
+            'í' => 0.600,
+            'î' => 0.600,
+            'ï' => 0.600,
+            'ì' => 0.600,
+            'ī' => 0.600,
+            'į' => 0.600,
+            'j' => 0.600,
+            'k' => 0.600,
+            'ķ' => 0.600,
+            'l' => 0.600,
+            'ĺ' => 0.600,
+            'ľ' => 0.600,
+            'ļ' => 0.600,
+            '<' => 0.600,
+            '≤' => 0.600,
+            '¬' => 0.600,
+            '◊' => 0.600,
+            'ł' => 0.600,
+            'm' => 0.600,
+            '¯' => 0.600,
+            '−' => 0.600,
+            'µ' => 0.600,
+            '×' => 0.600,
+            'n' => 0.600,
+            'ń' => 0.600,
+            'ň' => 0.600,
+            'ņ' => 0.600,
+            '9' => 0.600,
+            '≠' => 0.600,
+            'ñ' => 0.600,
+            '#' => 0.600,
+            'o' => 0.600,
+            'ó' => 0.600,
+            'ô' => 0.600,
+            'ö' => 0.600,
+            'œ' => 0.600,
+            '˛' => 0.600,
+            'ò' => 0.600,
+            'ő' => 0.600,
+            'ō' => 0.600,
+            '1' => 0.600,
+            '½' => 0.600,
+            '¼' => 0.600,
+            '¹' => 0.600,
+            'ª' => 0.600,
+            'º' => 0.600,
+            'ø' => 0.600,
+            'õ' => 0.600,
+            'p' => 0.600,
+            '¶' => 0.600,
+            '(' => 0.600,
+            ')' => 0.600,
+            '∂' => 0.600,
+            '%' => 0.600,
+            '.' => 0.600,
+            '·' => 0.600,
+            '‰' => 0.600,
+            '+' => 0.600,
+            '±' => 0.600,
+            'q' => 0.600,
+            '?' => 0.600,
+            '¿' => 0.600,
+            '"' => 0.600,
+            '„' => 0.600,
+            '“' => 0.600,
+            '”' => 0.600,
+            '‘' => 0.600,
+            '’' => 0.600,
+            '‚' => 0.600,
+            '\'' => 0.600,
+            'r' => 0.600,
+            'ŕ' => 0.600,
+            '√' => 0.600,
+            'ř' => 0.600,
+            'ŗ' => 0.600,
+            '®' => 0.600,
+            '˚' => 0.600,
+            's' => 0.600,
+            'ś' => 0.600,
+            'š' => 0.600,
+            'ş' => 0.600,
+            'ș' => 0.600,
+            '§' => 0.600,
+            ';' => 0.600,
+            '7' => 0.600,
+            '6' => 0.600,
+            '/' => 0.600,
+            ' ' => 0.600,
+            '£' => 0.600,
+            '∑' => 0.600,
+            't' => 0.600,
+            'ť' => 0.600,
+            'ţ' => 0.600,
+            'þ' => 0.600,
+            '3' => 0.600,
+            '¾' => 0.600,
+            '³' => 0.600,
+            '˜' => 0.600,
+            '™' => 0.600,
+            '2' => 0.600,
+            '²' => 0.600,
+            'u' => 0.600,
+            'ú' => 0.600,
+            'û' => 0.600,
+            'ü' => 0.600,
+            'ù' => 0.600,
+            'ű' => 0.600,
+            'ū' => 0.600,
+            '_' => 0.600,
+            'ų' => 0.600,
+            'ů' => 0.600,
+            'v' => 0.600,
+            'w' => 0.600,
+            'x' => 0.600,
+            'y' => 0.600,
+            'ý' => 0.600,
+            'ÿ' => 0.600,
+            '¥' => 0.600,
+            'z' => 0.600,
+            'ź' => 0.600,
+            'ž' => 0.600,
+            'ż' => 0.600,
+            '0' => 0.600,
+            _ => 0.0,
+        },
 
-        let mut Symbol_widths: HashMap<char, f64> = HashMap::new();
-        Symbol_widths.insert('Α', 0.72);
-        Symbol_widths.insert('Β', 0.67);
-        Symbol_widths.insert('Χ', 0.72);
-        Symbol_widths.insert('∆', 0.61);
-        Symbol_widths.insert('Ε', 0.61);
-        Symbol_widths.insert('Η', 0.72);
-        Symbol_widths.insert('€', 0.75);
-        Symbol_widths.insert('Γ', 0.60);
-        Symbol_widths.insert('ℑ', 0.69);
-        Symbol_widths.insert('Ι', 0.33);
-        Symbol_widths.insert('Κ', 0.72);
-        Symbol_widths.insert('Λ', 0.69);
-        Symbol_widths.insert('Μ', 0.89);
-        Symbol_widths.insert('Ν', 0.72);
-        Symbol_widths.insert('Ω', 0.77);
-        Symbol_widths.insert('Ο', 0.72);
-        Symbol_widths.insert('Φ', 0.76);
-        Symbol_widths.insert('Π', 0.77);
-        Symbol_widths.insert('Ψ', 0.80);
-        Symbol_widths.insert('ℜ', 0.80);
-        Symbol_widths.insert('Ρ', 0.56);
-        Symbol_widths.insert('Σ', 0.59);
-        Symbol_widths.insert('Τ', 0.61);
-        Symbol_widths.insert('Θ', 0.74);
-        Symbol_widths.insert('Υ', 0.69);
-        Symbol_widths.insert('ϒ', 0.62);
-        Symbol_widths.insert('Ξ', 0.65);
-        Symbol_widths.insert('Ζ', 0.61);
-        Symbol_widths.insert('ℵ', 0.82);
-        Symbol_widths.insert('α', 0.63);
-        Symbol_widths.insert('&', 0.78);
-        Symbol_widths.insert('∠', 0.77);
-        Symbol_widths.insert('〈', 0.33);
-        Symbol_widths.insert('〉', 0.33);
-        Symbol_widths.insert('', 0.79);
-        Symbol_widths.insert('≈', 0.55);
-        Symbol_widths.insert('↔', 1.04);
-        Symbol_widths.insert('⇔', 1.04);
-        Symbol_widths.insert('⇓', 0.60);
-        Symbol_widths.insert('⇐', 0.99);
-        Symbol_widths.insert('⇒', 0.99);
-        Symbol_widths.insert('⇑', 0.60);
-        Symbol_widths.insert('↓', 0.60);
-        Symbol_widths.insert('', 1.00);
-        Symbol_widths.insert('←', 0.99);
-        Symbol_widths.insert('→', 0.99);
-        Symbol_widths.insert('↑', 0.60);
-        Symbol_widths.insert('', 0.60);
-        Symbol_widths.insert('∗', 0.50);
-        Symbol_widths.insert('|', 0.20);
-        Symbol_widths.insert('β', 0.55);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('{', 0.48);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('}', 0.48);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('', 0.49);
-        Symbol_widths.insert('[', 0.33);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert(']', 0.33);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('•', 0.46);
-        Symbol_widths.insert('↵', 0.66);
-        Symbol_widths.insert('χ', 0.55);
-        Symbol_widths.insert('⊗', 0.77);
-        Symbol_widths.insert('⊕', 0.77);
-        Symbol_widths.insert('♣', 0.75);
-        Symbol_widths.insert(':', 0.28);
-        Symbol_widths.insert(',', 0.25);
-        Symbol_widths.insert('≅', 0.55);
-        Symbol_widths.insert('', 0.79);
-        Symbol_widths.insert('', 0.79);
-        Symbol_widths.insert('°', 0.40);
-        Symbol_widths.insert('δ', 0.49);
-        Symbol_widths.insert('♦', 0.75);
-        Symbol_widths.insert('÷', 0.55);
-        Symbol_widths.insert('⋅', 0.25);
-        Symbol_widths.insert('8', 0.50);
-        Symbol_widths.insert('∈', 0.71);
-        Symbol_widths.insert('…', 1.00);
-        Symbol_widths.insert('∅', 0.82);
-        Symbol_widths.insert('ε', 0.44);
-        Symbol_widths.insert('=', 0.55);
-        Symbol_widths.insert('≡', 0.55);
-        Symbol_widths.insert('η', 0.60);
-        Symbol_widths.insert('!', 0.33);
-        Symbol_widths.insert('∃', 0.55);
-        Symbol_widths.insert('5', 0.50);
-        Symbol_widths.insert('ƒ', 0.50);
-        Symbol_widths.insert('4', 0.50);
-        Symbol_widths.insert('⁄', 0.17);
-        Symbol_widths.insert('γ', 0.41);
-        Symbol_widths.insert('∇', 0.71);
-        Symbol_widths.insert('>', 0.55);
-        Symbol_widths.insert('≥', 0.55);
-        Symbol_widths.insert('♥', 0.75);
-        Symbol_widths.insert('∞', 0.71);
-        Symbol_widths.insert('∫', 0.27);
-        Symbol_widths.insert('⌡', 0.69);
-        Symbol_widths.insert('', 0.69);
-        Symbol_widths.insert('⌠', 0.69);
-        Symbol_widths.insert('∩', 0.77);
-        Symbol_widths.insert('ι', 0.33);
-        Symbol_widths.insert('κ', 0.55);
-        Symbol_widths.insert('λ', 0.55);
-        Symbol_widths.insert('<', 0.55);
-        Symbol_widths.insert('≤', 0.55);
-        Symbol_widths.insert('∧', 0.60);
-        Symbol_widths.insert('¬', 0.71);
-        Symbol_widths.insert('∨', 0.60);
-        Symbol_widths.insert('◊', 0.49);
-        Symbol_widths.insert('−', 0.55);
-        Symbol_widths.insert('′', 0.25);
-        Symbol_widths.insert('µ', 0.58);
-        Symbol_widths.insert('×', 0.55);
-        Symbol_widths.insert('9', 0.50);
-        Symbol_widths.insert('∉', 0.71);
-        Symbol_widths.insert('≠', 0.55);
-        Symbol_widths.insert('⊄', 0.71);
-        Symbol_widths.insert('ν', 0.52);
-        Symbol_widths.insert('#', 0.50);
-        Symbol_widths.insert('ω', 0.69);
-        Symbol_widths.insert('ϖ', 0.71);
-        Symbol_widths.insert('ο', 0.55);
-        Symbol_widths.insert('1', 0.50);
-        Symbol_widths.insert('(', 0.33);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert(')', 0.33);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('', 0.38);
-        Symbol_widths.insert('∂', 0.49);
-        Symbol_widths.insert('%', 0.83);
-        Symbol_widths.insert('.', 0.25);
-        Symbol_widths.insert('⊥', 0.66);
-        Symbol_widths.insert('φ', 0.52);
-        Symbol_widths.insert('ϕ', 0.60);
-        Symbol_widths.insert('π', 0.55);
-        Symbol_widths.insert('+', 0.55);
-        Symbol_widths.insert('±', 0.55);
-        Symbol_widths.insert('∏', 0.82);
-        Symbol_widths.insert('⊂', 0.71);
-        Symbol_widths.insert('⊃', 0.71);
-        Symbol_widths.insert('∝', 0.71);
-        Symbol_widths.insert('ψ', 0.69);
-        Symbol_widths.insert('?', 0.44);
-        Symbol_widths.insert('√', 0.55);
-        Symbol_widths.insert('', 0.50);
-        Symbol_widths.insert('⊆', 0.71);
-        Symbol_widths.insert('⊇', 0.71);
-        Symbol_widths.insert('', 0.79);
-        Symbol_widths.insert('', 0.79);
-        Symbol_widths.insert('ρ', 0.55);
-        Symbol_widths.insert('″', 0.41);
-        Symbol_widths.insert(';', 0.28);
-        Symbol_widths.insert('7', 0.50);
-        Symbol_widths.insert('σ', 0.60);
-        Symbol_widths.insert('ς', 0.44);
-        Symbol_widths.insert('∼', 0.55);
-        Symbol_widths.insert('6', 0.50);
-        Symbol_widths.insert('/', 0.28);
-        Symbol_widths.insert(' ', 0.25);
-        Symbol_widths.insert('♠', 0.75);
-        Symbol_widths.insert('∋', 0.44);
-        Symbol_widths.insert('∑', 0.71);
-        Symbol_widths.insert('τ', 0.44);
-        Symbol_widths.insert('∴', 0.86);
-        Symbol_widths.insert('θ', 0.52);
-        Symbol_widths.insert('ϑ', 0.63);
-        Symbol_widths.insert('3', 0.50);
-        Symbol_widths.insert('', 0.79);
-        Symbol_widths.insert('', 0.89);
-        Symbol_widths.insert('2', 0.50);
-        Symbol_widths.insert('_', 0.50);
-        Symbol_widths.insert('∪', 0.77);
-        Symbol_widths.insert('∀', 0.71);
-        Symbol_widths.insert('υ', 0.58);
-        Symbol_widths.insert('℘', 0.99);
-        Symbol_widths.insert('ξ', 0.49);
-        Symbol_widths.insert('0', 0.50);
-        Symbol_widths.insert('ζ', 0.49);
+        &Font::Symbol => match c {
+            'Α' => 0.722,
+            'Β' => 0.667,
+            'Χ' => 0.722,
+            '∆' => 0.612,
+            'Ε' => 0.611,
+            'Η' => 0.722,
+            '€' => 0.750,
+            'Γ' => 0.603,
+            'ℑ' => 0.686,
+            'Ι' => 0.333,
+            'Κ' => 0.722,
+            'Λ' => 0.686,
+            'Μ' => 0.889,
+            'Ν' => 0.722,
+            'Ω' => 0.768,
+            'Ο' => 0.722,
+            'Φ' => 0.763,
+            'Π' => 0.768,
+            'Ψ' => 0.795,
+            'ℜ' => 0.795,
+            'Ρ' => 0.556,
+            'Σ' => 0.592,
+            'Τ' => 0.611,
+            'Θ' => 0.741,
+            'Υ' => 0.690,
+            'ϒ' => 0.620,
+            'Ξ' => 0.645,
+            'Ζ' => 0.611,
+            'ℵ' => 0.823,
+            'α' => 0.631,
+            '&' => 0.778,
+            '∠' => 0.768,
+            '〈' => 0.329,
+            '〉' => 0.329,
+            '' => 0.790,
+            '≈' => 0.549,
+            '↔' => 1.042,
+            '⇔' => 1.042,
+            '⇓' => 0.603,
+            '⇐' => 0.987,
+            '⇒' => 0.987,
+            '⇑' => 0.603,
+            '↓' => 0.603,
+            '' => 1.000,
+            '←' => 0.987,
+            '→' => 0.987,
+            '↑' => 0.603,
+            '' => 0.603,
+            '∗' => 0.500,
+            '|' => 0.200,
+            'β' => 0.549,
+            '' => 0.494,
+            '{' => 0.480,
+            '' => 0.494,
+            '' => 0.494,
+            '' => 0.494,
+            '}' => 0.480,
+            '' => 0.494,
+            '' => 0.494,
+            '' => 0.494,
+            '[' => 0.333,
+            '' => 0.384,
+            '' => 0.384,
+            '' => 0.384,
+            ']' => 0.333,
+            '' => 0.384,
+            '' => 0.384,
+            '' => 0.384,
+            '•' => 0.460,
+            '↵' => 0.658,
+            'χ' => 0.549,
+            '⊗' => 0.768,
+            '⊕' => 0.768,
+            '♣' => 0.753,
+            ':' => 0.278,
+            ',' => 0.250,
+            '≅' => 0.549,
+            '' => 0.790,
+            '' => 0.790,
+            '°' => 0.400,
+            'δ' => 0.494,
+            '♦' => 0.753,
+            '÷' => 0.549,
+            '⋅' => 0.250,
+            '8' => 0.500,
+            '∈' => 0.713,
+            '…' => 1.000,
+            '∅' => 0.823,
+            'ε' => 0.439,
+            '=' => 0.549,
+            '≡' => 0.549,
+            'η' => 0.603,
+            '!' => 0.333,
+            '∃' => 0.549,
+            '5' => 0.500,
+            'ƒ' => 0.500,
+            '4' => 0.500,
+            '⁄' => 0.167,
+            'γ' => 0.411,
+            '∇' => 0.713,
+            '>' => 0.549,
+            '≥' => 0.549,
+            '♥' => 0.753,
+            '∞' => 0.713,
+            '∫' => 0.274,
+            '⌡' => 0.686,
+            '' => 0.686,
+            '⌠' => 0.686,
+            '∩' => 0.768,
+            'ι' => 0.329,
+            'κ' => 0.549,
+            'λ' => 0.549,
+            '<' => 0.549,
+            '≤' => 0.549,
+            '∧' => 0.603,
+            '¬' => 0.713,
+            '∨' => 0.603,
+            '◊' => 0.494,
+            '−' => 0.549,
+            '′' => 0.247,
+            'µ' => 0.576,
+            '×' => 0.549,
+            '9' => 0.500,
+            '∉' => 0.713,
+            '≠' => 0.549,
+            '⊄' => 0.713,
+            'ν' => 0.521,
+            '#' => 0.500,
+            'ω' => 0.686,
+            'ϖ' => 0.713,
+            'ο' => 0.549,
+            '1' => 0.500,
+            '(' => 0.333,
+            '' => 0.384,
+            '' => 0.384,
+            '' => 0.384,
+            ')' => 0.333,
+            '' => 0.384,
+            '' => 0.384,
+            '' => 0.384,
+            '∂' => 0.494,
+            '%' => 0.833,
+            '.' => 0.250,
+            '⊥' => 0.658,
+            'φ' => 0.521,
+            'ϕ' => 0.603,
+            'π' => 0.549,
+            '+' => 0.549,
+            '±' => 0.549,
+            '∏' => 0.823,
+            '⊂' => 0.713,
+            '⊃' => 0.713,
+            '∝' => 0.713,
+            'ψ' => 0.686,
+            '?' => 0.444,
+            '√' => 0.549,
+            '' => 0.500,
+            '⊆' => 0.713,
+            '⊇' => 0.713,
+            '' => 0.790,
+            '' => 0.790,
+            'ρ' => 0.549,
+            '″' => 0.411,
+            ';' => 0.278,
+            '7' => 0.500,
+            'σ' => 0.603,
+            'ς' => 0.439,
+            '∼' => 0.549,
+            '6' => 0.500,
+            '/' => 0.278,
+            ' ' => 0.250,
+            '♠' => 0.753,
+            '∋' => 0.439,
+            '∑' => 0.713,
+            'τ' => 0.439,
+            '∴' => 0.863,
+            'θ' => 0.521,
+            'ϑ' => 0.631,
+            '3' => 0.500,
+            '' => 0.786,
+            '' => 0.890,
+            '2' => 0.500,
+            '_' => 0.500,
+            '∪' => 0.768,
+            '∀' => 0.713,
+            'υ' => 0.576,
+            '℘' => 0.987,
+            'ξ' => 0.493,
+            '0' => 0.500,
+            'ζ' => 0.494,
+            _ => 0.0,
+        },
 
-        let mut TimesItalic_widths: HashMap<char, f64> = HashMap::new();
-        TimesItalic_widths.insert('A', 0.61);
-        TimesItalic_widths.insert('Æ', 0.89);
-        TimesItalic_widths.insert('Á', 0.61);
-        TimesItalic_widths.insert('Ă', 0.61);
-        TimesItalic_widths.insert('Â', 0.61);
-        TimesItalic_widths.insert('Ä', 0.61);
-        TimesItalic_widths.insert('À', 0.61);
-        TimesItalic_widths.insert('Ā', 0.61);
-        TimesItalic_widths.insert('Ą', 0.61);
-        TimesItalic_widths.insert('Å', 0.61);
-        TimesItalic_widths.insert('Ã', 0.61);
-        TimesItalic_widths.insert('B', 0.61);
-        TimesItalic_widths.insert('C', 0.67);
-        TimesItalic_widths.insert('Ć', 0.67);
-        TimesItalic_widths.insert('Č', 0.67);
-        TimesItalic_widths.insert('Ç', 0.67);
-        TimesItalic_widths.insert('D', 0.72);
-        TimesItalic_widths.insert('Ď', 0.72);
-        TimesItalic_widths.insert('Đ', 0.72);
-        TimesItalic_widths.insert('∆', 0.61);
-        TimesItalic_widths.insert('E', 0.61);
-        TimesItalic_widths.insert('É', 0.61);
-        TimesItalic_widths.insert('Ě', 0.61);
-        TimesItalic_widths.insert('Ê', 0.61);
-        TimesItalic_widths.insert('Ë', 0.61);
-        TimesItalic_widths.insert('Ė', 0.61);
-        TimesItalic_widths.insert('È', 0.61);
-        TimesItalic_widths.insert('Ē', 0.61);
-        TimesItalic_widths.insert('Ę', 0.61);
-        TimesItalic_widths.insert('Ð', 0.72);
-        TimesItalic_widths.insert('€', 0.50);
-        TimesItalic_widths.insert('F', 0.61);
-        TimesItalic_widths.insert('G', 0.72);
-        TimesItalic_widths.insert('Ğ', 0.72);
-        TimesItalic_widths.insert('Ģ', 0.72);
-        TimesItalic_widths.insert('H', 0.72);
-        TimesItalic_widths.insert('I', 0.33);
-        TimesItalic_widths.insert('Í', 0.33);
-        TimesItalic_widths.insert('Î', 0.33);
-        TimesItalic_widths.insert('Ï', 0.33);
-        TimesItalic_widths.insert('İ', 0.33);
-        TimesItalic_widths.insert('Ì', 0.33);
-        TimesItalic_widths.insert('Ī', 0.33);
-        TimesItalic_widths.insert('Į', 0.33);
-        TimesItalic_widths.insert('J', 0.44);
-        TimesItalic_widths.insert('K', 0.67);
-        TimesItalic_widths.insert('Ķ', 0.67);
-        TimesItalic_widths.insert('L', 0.56);
-        TimesItalic_widths.insert('Ĺ', 0.56);
-        TimesItalic_widths.insert('Ľ', 0.61);
-        TimesItalic_widths.insert('Ļ', 0.56);
-        TimesItalic_widths.insert('Ł', 0.56);
-        TimesItalic_widths.insert('M', 0.83);
-        TimesItalic_widths.insert('N', 0.67);
-        TimesItalic_widths.insert('Ń', 0.67);
-        TimesItalic_widths.insert('Ň', 0.67);
-        TimesItalic_widths.insert('Ņ', 0.67);
-        TimesItalic_widths.insert('Ñ', 0.67);
-        TimesItalic_widths.insert('O', 0.72);
-        TimesItalic_widths.insert('Œ', 0.94);
-        TimesItalic_widths.insert('Ó', 0.72);
-        TimesItalic_widths.insert('Ô', 0.72);
-        TimesItalic_widths.insert('Ö', 0.72);
-        TimesItalic_widths.insert('Ò', 0.72);
-        TimesItalic_widths.insert('Ő', 0.72);
-        TimesItalic_widths.insert('Ō', 0.72);
-        TimesItalic_widths.insert('Ø', 0.72);
-        TimesItalic_widths.insert('Õ', 0.72);
-        TimesItalic_widths.insert('P', 0.61);
-        TimesItalic_widths.insert('Q', 0.72);
-        TimesItalic_widths.insert('R', 0.61);
-        TimesItalic_widths.insert('Ŕ', 0.61);
-        TimesItalic_widths.insert('Ř', 0.61);
-        TimesItalic_widths.insert('Ŗ', 0.61);
-        TimesItalic_widths.insert('S', 0.50);
-        TimesItalic_widths.insert('Ś', 0.50);
-        TimesItalic_widths.insert('Š', 0.50);
-        TimesItalic_widths.insert('Ş', 0.50);
-        TimesItalic_widths.insert('Ș', 0.50);
-        TimesItalic_widths.insert('T', 0.56);
-        TimesItalic_widths.insert('Ť', 0.56);
-        TimesItalic_widths.insert('Ţ', 0.56);
-        TimesItalic_widths.insert('Þ', 0.61);
-        TimesItalic_widths.insert('U', 0.72);
-        TimesItalic_widths.insert('Ú', 0.72);
-        TimesItalic_widths.insert('Û', 0.72);
-        TimesItalic_widths.insert('Ü', 0.72);
-        TimesItalic_widths.insert('Ù', 0.72);
-        TimesItalic_widths.insert('Ű', 0.72);
-        TimesItalic_widths.insert('Ū', 0.72);
-        TimesItalic_widths.insert('Ų', 0.72);
-        TimesItalic_widths.insert('Ů', 0.72);
-        TimesItalic_widths.insert('V', 0.61);
-        TimesItalic_widths.insert('W', 0.83);
-        TimesItalic_widths.insert('X', 0.61);
-        TimesItalic_widths.insert('Y', 0.56);
-        TimesItalic_widths.insert('Ý', 0.56);
-        TimesItalic_widths.insert('Ÿ', 0.56);
-        TimesItalic_widths.insert('Z', 0.56);
-        TimesItalic_widths.insert('Ź', 0.56);
-        TimesItalic_widths.insert('Ž', 0.56);
-        TimesItalic_widths.insert('Ż', 0.56);
-        TimesItalic_widths.insert('a', 0.50);
-        TimesItalic_widths.insert('á', 0.50);
-        TimesItalic_widths.insert('ă', 0.50);
-        TimesItalic_widths.insert('â', 0.50);
-        TimesItalic_widths.insert('´', 0.33);
-        TimesItalic_widths.insert('ä', 0.50);
-        TimesItalic_widths.insert('æ', 0.67);
-        TimesItalic_widths.insert('à', 0.50);
-        TimesItalic_widths.insert('ā', 0.50);
-        TimesItalic_widths.insert('&', 0.78);
-        TimesItalic_widths.insert('ą', 0.50);
-        TimesItalic_widths.insert('å', 0.50);
-        TimesItalic_widths.insert('^', 0.42);
-        TimesItalic_widths.insert('~', 0.54);
-        TimesItalic_widths.insert('*', 0.50);
-        TimesItalic_widths.insert('@', 0.92);
-        TimesItalic_widths.insert('ã', 0.50);
-        TimesItalic_widths.insert('b', 0.50);
-        TimesItalic_widths.insert('\\', 0.28);
-        TimesItalic_widths.insert('|', 0.28);
-        TimesItalic_widths.insert('{', 0.40);
-        TimesItalic_widths.insert('}', 0.40);
-        TimesItalic_widths.insert('[', 0.39);
-        TimesItalic_widths.insert(']', 0.39);
-        TimesItalic_widths.insert('˘', 0.33);
-        TimesItalic_widths.insert('¦', 0.28);
-        TimesItalic_widths.insert('•', 0.35);
-        TimesItalic_widths.insert('c', 0.44);
-        TimesItalic_widths.insert('ć', 0.44);
-        TimesItalic_widths.insert('ˇ', 0.33);
-        TimesItalic_widths.insert('č', 0.44);
-        TimesItalic_widths.insert('ç', 0.44);
-        TimesItalic_widths.insert('¸', 0.33);
-        TimesItalic_widths.insert('¢', 0.50);
-        TimesItalic_widths.insert('ˆ', 0.33);
-        TimesItalic_widths.insert(':', 0.33);
-        TimesItalic_widths.insert(',', 0.25);
-        TimesItalic_widths.insert('', 0.25);
-        TimesItalic_widths.insert('©', 0.76);
-        TimesItalic_widths.insert('¤', 0.50);
-        TimesItalic_widths.insert('d', 0.50);
-        TimesItalic_widths.insert('†', 0.50);
-        TimesItalic_widths.insert('‡', 0.50);
-        TimesItalic_widths.insert('ď', 0.54);
-        TimesItalic_widths.insert('đ', 0.50);
-        TimesItalic_widths.insert('°', 0.40);
-        TimesItalic_widths.insert('¨', 0.33);
-        TimesItalic_widths.insert('÷', 0.68);
-        TimesItalic_widths.insert('$', 0.50);
-        TimesItalic_widths.insert('˙', 0.33);
-        TimesItalic_widths.insert('ı', 0.28);
-        TimesItalic_widths.insert('e', 0.44);
-        TimesItalic_widths.insert('é', 0.44);
-        TimesItalic_widths.insert('ě', 0.44);
-        TimesItalic_widths.insert('ê', 0.44);
-        TimesItalic_widths.insert('ë', 0.44);
-        TimesItalic_widths.insert('ė', 0.44);
-        TimesItalic_widths.insert('è', 0.44);
-        TimesItalic_widths.insert('8', 0.50);
-        TimesItalic_widths.insert('…', 0.89);
-        TimesItalic_widths.insert('ē', 0.44);
-        TimesItalic_widths.insert('—', 0.89);
-        TimesItalic_widths.insert('–', 0.50);
-        TimesItalic_widths.insert('ę', 0.44);
-        TimesItalic_widths.insert('=', 0.68);
-        TimesItalic_widths.insert('ð', 0.50);
-        TimesItalic_widths.insert('!', 0.33);
-        TimesItalic_widths.insert('¡', 0.39);
-        TimesItalic_widths.insert('f', 0.28);
-        TimesItalic_widths.insert('ﬁ', 0.50);
-        TimesItalic_widths.insert('5', 0.50);
-        TimesItalic_widths.insert('ﬂ', 0.50);
-        TimesItalic_widths.insert('ƒ', 0.50);
-        TimesItalic_widths.insert('4', 0.50);
-        TimesItalic_widths.insert('⁄', 0.17);
-        TimesItalic_widths.insert('g', 0.50);
-        TimesItalic_widths.insert('ğ', 0.50);
-        TimesItalic_widths.insert('ģ', 0.50);
-        TimesItalic_widths.insert('ß', 0.50);
-        TimesItalic_widths.insert('`', 0.33);
-        TimesItalic_widths.insert('>', 0.68);
-        TimesItalic_widths.insert('≥', 0.55);
-        TimesItalic_widths.insert('«', 0.50);
-        TimesItalic_widths.insert('»', 0.50);
-        TimesItalic_widths.insert('‹', 0.33);
-        TimesItalic_widths.insert('›', 0.33);
-        TimesItalic_widths.insert('h', 0.50);
-        TimesItalic_widths.insert('˝', 0.33);
-        TimesItalic_widths.insert('-', 0.33);
-        TimesItalic_widths.insert('i', 0.28);
-        TimesItalic_widths.insert('í', 0.28);
-        TimesItalic_widths.insert('î', 0.28);
-        TimesItalic_widths.insert('ï', 0.28);
-        TimesItalic_widths.insert('ì', 0.28);
-        TimesItalic_widths.insert('ī', 0.28);
-        TimesItalic_widths.insert('į', 0.28);
-        TimesItalic_widths.insert('j', 0.28);
-        TimesItalic_widths.insert('k', 0.44);
-        TimesItalic_widths.insert('ķ', 0.44);
-        TimesItalic_widths.insert('l', 0.28);
-        TimesItalic_widths.insert('ĺ', 0.28);
-        TimesItalic_widths.insert('ľ', 0.30);
-        TimesItalic_widths.insert('ļ', 0.28);
-        TimesItalic_widths.insert('<', 0.68);
-        TimesItalic_widths.insert('≤', 0.55);
-        TimesItalic_widths.insert('¬', 0.68);
-        TimesItalic_widths.insert('◊', 0.47);
-        TimesItalic_widths.insert('ł', 0.28);
-        TimesItalic_widths.insert('m', 0.72);
-        TimesItalic_widths.insert('¯', 0.33);
-        TimesItalic_widths.insert('−', 0.68);
-        TimesItalic_widths.insert('µ', 0.50);
-        TimesItalic_widths.insert('×', 0.68);
-        TimesItalic_widths.insert('n', 0.50);
-        TimesItalic_widths.insert('ń', 0.50);
-        TimesItalic_widths.insert('ň', 0.50);
-        TimesItalic_widths.insert('ņ', 0.50);
-        TimesItalic_widths.insert('9', 0.50);
-        TimesItalic_widths.insert('≠', 0.55);
-        TimesItalic_widths.insert('ñ', 0.50);
-        TimesItalic_widths.insert('#', 0.50);
-        TimesItalic_widths.insert('o', 0.50);
-        TimesItalic_widths.insert('ó', 0.50);
-        TimesItalic_widths.insert('ô', 0.50);
-        TimesItalic_widths.insert('ö', 0.50);
-        TimesItalic_widths.insert('œ', 0.67);
-        TimesItalic_widths.insert('˛', 0.33);
-        TimesItalic_widths.insert('ò', 0.50);
-        TimesItalic_widths.insert('ő', 0.50);
-        TimesItalic_widths.insert('ō', 0.50);
-        TimesItalic_widths.insert('1', 0.50);
-        TimesItalic_widths.insert('½', 0.75);
-        TimesItalic_widths.insert('¼', 0.75);
-        TimesItalic_widths.insert('¹', 0.30);
-        TimesItalic_widths.insert('ª', 0.28);
-        TimesItalic_widths.insert('º', 0.31);
-        TimesItalic_widths.insert('ø', 0.50);
-        TimesItalic_widths.insert('õ', 0.50);
-        TimesItalic_widths.insert('p', 0.50);
-        TimesItalic_widths.insert('¶', 0.52);
-        TimesItalic_widths.insert('(', 0.33);
-        TimesItalic_widths.insert(')', 0.33);
-        TimesItalic_widths.insert('∂', 0.48);
-        TimesItalic_widths.insert('%', 0.83);
-        TimesItalic_widths.insert('.', 0.25);
-        TimesItalic_widths.insert('·', 0.25);
-        TimesItalic_widths.insert('‰', 1.00);
-        TimesItalic_widths.insert('+', 0.68);
-        TimesItalic_widths.insert('±', 0.68);
-        TimesItalic_widths.insert('q', 0.50);
-        TimesItalic_widths.insert('?', 0.50);
-        TimesItalic_widths.insert('¿', 0.50);
-        TimesItalic_widths.insert('"', 0.42);
-        TimesItalic_widths.insert('„', 0.56);
-        TimesItalic_widths.insert('“', 0.56);
-        TimesItalic_widths.insert('”', 0.56);
-        TimesItalic_widths.insert('‘', 0.33);
-        TimesItalic_widths.insert('’', 0.33);
-        TimesItalic_widths.insert('‚', 0.33);
-        TimesItalic_widths.insert('\'', 0.21);
-        TimesItalic_widths.insert('r', 0.39);
-        TimesItalic_widths.insert('ŕ', 0.39);
-        TimesItalic_widths.insert('√', 0.45);
-        TimesItalic_widths.insert('ř', 0.39);
-        TimesItalic_widths.insert('ŗ', 0.39);
-        TimesItalic_widths.insert('®', 0.76);
-        TimesItalic_widths.insert('˚', 0.33);
-        TimesItalic_widths.insert('s', 0.39);
-        TimesItalic_widths.insert('ś', 0.39);
-        TimesItalic_widths.insert('š', 0.39);
-        TimesItalic_widths.insert('ş', 0.39);
-        TimesItalic_widths.insert('ș', 0.39);
-        TimesItalic_widths.insert('§', 0.50);
-        TimesItalic_widths.insert(';', 0.33);
-        TimesItalic_widths.insert('7', 0.50);
-        TimesItalic_widths.insert('6', 0.50);
-        TimesItalic_widths.insert('/', 0.28);
-        TimesItalic_widths.insert(' ', 0.25);
-        TimesItalic_widths.insert('£', 0.50);
-        TimesItalic_widths.insert('∑', 0.60);
-        TimesItalic_widths.insert('t', 0.28);
-        TimesItalic_widths.insert('ť', 0.30);
-        TimesItalic_widths.insert('ţ', 0.28);
-        TimesItalic_widths.insert('þ', 0.50);
-        TimesItalic_widths.insert('3', 0.50);
-        TimesItalic_widths.insert('¾', 0.75);
-        TimesItalic_widths.insert('³', 0.30);
-        TimesItalic_widths.insert('˜', 0.33);
-        TimesItalic_widths.insert('™', 0.98);
-        TimesItalic_widths.insert('2', 0.50);
-        TimesItalic_widths.insert('²', 0.30);
-        TimesItalic_widths.insert('u', 0.50);
-        TimesItalic_widths.insert('ú', 0.50);
-        TimesItalic_widths.insert('û', 0.50);
-        TimesItalic_widths.insert('ü', 0.50);
-        TimesItalic_widths.insert('ù', 0.50);
-        TimesItalic_widths.insert('ű', 0.50);
-        TimesItalic_widths.insert('ū', 0.50);
-        TimesItalic_widths.insert('_', 0.50);
-        TimesItalic_widths.insert('ų', 0.50);
-        TimesItalic_widths.insert('ů', 0.50);
-        TimesItalic_widths.insert('v', 0.44);
-        TimesItalic_widths.insert('w', 0.67);
-        TimesItalic_widths.insert('x', 0.44);
-        TimesItalic_widths.insert('y', 0.44);
-        TimesItalic_widths.insert('ý', 0.44);
-        TimesItalic_widths.insert('ÿ', 0.44);
-        TimesItalic_widths.insert('¥', 0.50);
-        TimesItalic_widths.insert('z', 0.39);
-        TimesItalic_widths.insert('ź', 0.39);
-        TimesItalic_widths.insert('ž', 0.39);
-        TimesItalic_widths.insert('ż', 0.39);
-        TimesItalic_widths.insert('0', 0.50);
+        &Font::HelveticaOblique => match c {
+            'A' => 0.667,
+            'Æ' => 1.000,
+            'Á' => 0.667,
+            'Ă' => 0.667,
+            'Â' => 0.667,
+            'Ä' => 0.667,
+            'À' => 0.667,
+            'Ā' => 0.667,
+            'Ą' => 0.667,
+            'Å' => 0.667,
+            'Ã' => 0.667,
+            'B' => 0.667,
+            'C' => 0.722,
+            'Ć' => 0.722,
+            'Č' => 0.722,
+            'Ç' => 0.722,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.667,
+            'É' => 0.667,
+            'Ě' => 0.667,
+            'Ê' => 0.667,
+            'Ë' => 0.667,
+            'Ė' => 0.667,
+            'È' => 0.667,
+            'Ē' => 0.667,
+            'Ę' => 0.667,
+            'Ð' => 0.722,
+            '€' => 0.556,
+            'F' => 0.611,
+            'G' => 0.778,
+            'Ğ' => 0.778,
+            'Ģ' => 0.778,
+            'H' => 0.722,
+            'I' => 0.278,
+            'Í' => 0.278,
+            'Î' => 0.278,
+            'Ï' => 0.278,
+            'İ' => 0.278,
+            'Ì' => 0.278,
+            'Ī' => 0.278,
+            'Į' => 0.278,
+            'J' => 0.500,
+            'K' => 0.667,
+            'Ķ' => 0.667,
+            'L' => 0.556,
+            'Ĺ' => 0.556,
+            'Ľ' => 0.556,
+            'Ļ' => 0.556,
+            'Ł' => 0.556,
+            'M' => 0.833,
+            'N' => 0.722,
+            'Ń' => 0.722,
+            'Ň' => 0.722,
+            'Ņ' => 0.722,
+            'Ñ' => 0.722,
+            'O' => 0.778,
+            'Œ' => 1.000,
+            'Ó' => 0.778,
+            'Ô' => 0.778,
+            'Ö' => 0.778,
+            'Ò' => 0.778,
+            'Ő' => 0.778,
+            'Ō' => 0.778,
+            'Ø' => 0.778,
+            'Õ' => 0.778,
+            'P' => 0.667,
+            'Q' => 0.778,
+            'R' => 0.722,
+            'Ŕ' => 0.722,
+            'Ř' => 0.722,
+            'Ŗ' => 0.722,
+            'S' => 0.667,
+            'Ś' => 0.667,
+            'Š' => 0.667,
+            'Ş' => 0.667,
+            'Ș' => 0.667,
+            'T' => 0.611,
+            'Ť' => 0.611,
+            'Ţ' => 0.611,
+            'Þ' => 0.667,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.667,
+            'W' => 0.944,
+            'X' => 0.667,
+            'Y' => 0.667,
+            'Ý' => 0.667,
+            'Ÿ' => 0.667,
+            'Z' => 0.611,
+            'Ź' => 0.611,
+            'Ž' => 0.611,
+            'Ż' => 0.611,
+            'a' => 0.556,
+            'á' => 0.556,
+            'ă' => 0.556,
+            'â' => 0.556,
+            '´' => 0.333,
+            'ä' => 0.556,
+            'æ' => 0.889,
+            'à' => 0.556,
+            'ā' => 0.556,
+            '&' => 0.667,
+            'ą' => 0.556,
+            'å' => 0.556,
+            '^' => 0.469,
+            '~' => 0.584,
+            '*' => 0.389,
+            '@' => 1.015,
+            'ã' => 0.556,
+            'b' => 0.556,
+            '\\' => 0.278,
+            '|' => 0.260,
+            '{' => 0.334,
+            '}' => 0.334,
+            '[' => 0.278,
+            ']' => 0.278,
+            '˘' => 0.333,
+            '¦' => 0.260,
+            '•' => 0.350,
+            'c' => 0.500,
+            'ć' => 0.500,
+            'ˇ' => 0.333,
+            'č' => 0.500,
+            'ç' => 0.500,
+            '¸' => 0.333,
+            '¢' => 0.556,
+            'ˆ' => 0.333,
+            ':' => 0.278,
+            ',' => 0.278,
+            '' => 0.250,
+            '©' => 0.737,
+            '¤' => 0.556,
+            'd' => 0.556,
+            '†' => 0.556,
+            '‡' => 0.556,
+            'ď' => 0.643,
+            'đ' => 0.556,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.584,
+            '$' => 0.556,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.556,
+            'é' => 0.556,
+            'ě' => 0.556,
+            'ê' => 0.556,
+            'ë' => 0.556,
+            'ė' => 0.556,
+            'è' => 0.556,
+            '8' => 0.556,
+            '…' => 1.000,
+            'ē' => 0.556,
+            '—' => 1.000,
+            '–' => 0.556,
+            'ę' => 0.556,
+            '=' => 0.584,
+            'ð' => 0.556,
+            '!' => 0.278,
+            '¡' => 0.333,
+            'f' => 0.278,
+            'ﬁ' => 0.500,
+            '5' => 0.556,
+            'ﬂ' => 0.500,
+            'ƒ' => 0.556,
+            '4' => 0.556,
+            '⁄' => 0.167,
+            'g' => 0.556,
+            'ğ' => 0.556,
+            'ģ' => 0.556,
+            'ß' => 0.611,
+            '`' => 0.333,
+            '>' => 0.584,
+            '≥' => 0.549,
+            '«' => 0.556,
+            '»' => 0.556,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.556,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.222,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.222,
+            'j' => 0.222,
+            'k' => 0.500,
+            'ķ' => 0.500,
+            'l' => 0.222,
+            'ĺ' => 0.222,
+            'ľ' => 0.299,
+            'ļ' => 0.222,
+            '<' => 0.584,
+            '≤' => 0.549,
+            '¬' => 0.584,
+            '◊' => 0.471,
+            'ł' => 0.222,
+            'm' => 0.833,
+            '¯' => 0.333,
+            '−' => 0.584,
+            'µ' => 0.556,
+            '×' => 0.584,
+            'n' => 0.556,
+            'ń' => 0.556,
+            'ň' => 0.556,
+            'ņ' => 0.556,
+            '9' => 0.556,
+            '≠' => 0.549,
+            'ñ' => 0.556,
+            '#' => 0.556,
+            'o' => 0.556,
+            'ó' => 0.556,
+            'ô' => 0.556,
+            'ö' => 0.556,
+            'œ' => 0.944,
+            '˛' => 0.333,
+            'ò' => 0.556,
+            'ő' => 0.556,
+            'ō' => 0.556,
+            '1' => 0.556,
+            '½' => 0.834,
+            '¼' => 0.834,
+            '¹' => 0.333,
+            'ª' => 0.370,
+            'º' => 0.365,
+            'ø' => 0.611,
+            'õ' => 0.556,
+            'p' => 0.556,
+            '¶' => 0.537,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.476,
+            '%' => 0.889,
+            '.' => 0.278,
+            '·' => 0.278,
+            '‰' => 1.000,
+            '+' => 0.584,
+            '±' => 0.584,
+            'q' => 0.556,
+            '?' => 0.556,
+            '¿' => 0.611,
+            '"' => 0.355,
+            '„' => 0.333,
+            '“' => 0.333,
+            '”' => 0.333,
+            '‘' => 0.222,
+            '’' => 0.222,
+            '‚' => 0.222,
+            '\'' => 0.191,
+            'r' => 0.333,
+            'ŕ' => 0.333,
+            '√' => 0.453,
+            'ř' => 0.333,
+            'ŗ' => 0.333,
+            '®' => 0.737,
+            '˚' => 0.333,
+            's' => 0.500,
+            'ś' => 0.500,
+            'š' => 0.500,
+            'ş' => 0.500,
+            'ș' => 0.500,
+            '§' => 0.556,
+            ';' => 0.278,
+            '7' => 0.556,
+            '6' => 0.556,
+            '/' => 0.278,
+            ' ' => 0.278,
+            '£' => 0.556,
+            '∑' => 0.600,
+            't' => 0.278,
+            'ť' => 0.317,
+            'ţ' => 0.278,
+            'þ' => 0.556,
+            '3' => 0.556,
+            '¾' => 0.834,
+            '³' => 0.333,
+            '˜' => 0.333,
+            '™' => 1.000,
+            '2' => 0.556,
+            '²' => 0.333,
+            'u' => 0.556,
+            'ú' => 0.556,
+            'û' => 0.556,
+            'ü' => 0.556,
+            'ù' => 0.556,
+            'ű' => 0.556,
+            'ū' => 0.556,
+            '_' => 0.556,
+            'ų' => 0.556,
+            'ů' => 0.556,
+            'v' => 0.500,
+            'w' => 0.722,
+            'x' => 0.500,
+            'y' => 0.500,
+            'ý' => 0.500,
+            'ÿ' => 0.500,
+            '¥' => 0.556,
+            'z' => 0.500,
+            'ź' => 0.500,
+            'ž' => 0.500,
+            'ż' => 0.500,
+            '0' => 0.556,
+            _ => 0.0,
+        },
 
-        let mut TimesBold_widths: HashMap<char, f64> = HashMap::new();
-        TimesBold_widths.insert('A', 0.72);
-        TimesBold_widths.insert('Æ', 1.00);
-        TimesBold_widths.insert('Á', 0.72);
-        TimesBold_widths.insert('Ă', 0.72);
-        TimesBold_widths.insert('Â', 0.72);
-        TimesBold_widths.insert('Ä', 0.72);
-        TimesBold_widths.insert('À', 0.72);
-        TimesBold_widths.insert('Ā', 0.72);
-        TimesBold_widths.insert('Ą', 0.72);
-        TimesBold_widths.insert('Å', 0.72);
-        TimesBold_widths.insert('Ã', 0.72);
-        TimesBold_widths.insert('B', 0.67);
-        TimesBold_widths.insert('C', 0.72);
-        TimesBold_widths.insert('Ć', 0.72);
-        TimesBold_widths.insert('Č', 0.72);
-        TimesBold_widths.insert('Ç', 0.72);
-        TimesBold_widths.insert('D', 0.72);
-        TimesBold_widths.insert('Ď', 0.72);
-        TimesBold_widths.insert('Đ', 0.72);
-        TimesBold_widths.insert('∆', 0.61);
-        TimesBold_widths.insert('E', 0.67);
-        TimesBold_widths.insert('É', 0.67);
-        TimesBold_widths.insert('Ě', 0.67);
-        TimesBold_widths.insert('Ê', 0.67);
-        TimesBold_widths.insert('Ë', 0.67);
-        TimesBold_widths.insert('Ė', 0.67);
-        TimesBold_widths.insert('È', 0.67);
-        TimesBold_widths.insert('Ē', 0.67);
-        TimesBold_widths.insert('Ę', 0.67);
-        TimesBold_widths.insert('Ð', 0.72);
-        TimesBold_widths.insert('€', 0.50);
-        TimesBold_widths.insert('F', 0.61);
-        TimesBold_widths.insert('G', 0.78);
-        TimesBold_widths.insert('Ğ', 0.78);
-        TimesBold_widths.insert('Ģ', 0.78);
-        TimesBold_widths.insert('H', 0.78);
-        TimesBold_widths.insert('I', 0.39);
-        TimesBold_widths.insert('Í', 0.39);
-        TimesBold_widths.insert('Î', 0.39);
-        TimesBold_widths.insert('Ï', 0.39);
-        TimesBold_widths.insert('İ', 0.39);
-        TimesBold_widths.insert('Ì', 0.39);
-        TimesBold_widths.insert('Ī', 0.39);
-        TimesBold_widths.insert('Į', 0.39);
-        TimesBold_widths.insert('J', 0.50);
-        TimesBold_widths.insert('K', 0.78);
-        TimesBold_widths.insert('Ķ', 0.78);
-        TimesBold_widths.insert('L', 0.67);
-        TimesBold_widths.insert('Ĺ', 0.67);
-        TimesBold_widths.insert('Ľ', 0.67);
-        TimesBold_widths.insert('Ļ', 0.67);
-        TimesBold_widths.insert('Ł', 0.67);
-        TimesBold_widths.insert('M', 0.94);
-        TimesBold_widths.insert('N', 0.72);
-        TimesBold_widths.insert('Ń', 0.72);
-        TimesBold_widths.insert('Ň', 0.72);
-        TimesBold_widths.insert('Ņ', 0.72);
-        TimesBold_widths.insert('Ñ', 0.72);
-        TimesBold_widths.insert('O', 0.78);
-        TimesBold_widths.insert('Œ', 1.00);
-        TimesBold_widths.insert('Ó', 0.78);
-        TimesBold_widths.insert('Ô', 0.78);
-        TimesBold_widths.insert('Ö', 0.78);
-        TimesBold_widths.insert('Ò', 0.78);
-        TimesBold_widths.insert('Ő', 0.78);
-        TimesBold_widths.insert('Ō', 0.78);
-        TimesBold_widths.insert('Ø', 0.78);
-        TimesBold_widths.insert('Õ', 0.78);
-        TimesBold_widths.insert('P', 0.61);
-        TimesBold_widths.insert('Q', 0.78);
-        TimesBold_widths.insert('R', 0.72);
-        TimesBold_widths.insert('Ŕ', 0.72);
-        TimesBold_widths.insert('Ř', 0.72);
-        TimesBold_widths.insert('Ŗ', 0.72);
-        TimesBold_widths.insert('S', 0.56);
-        TimesBold_widths.insert('Ś', 0.56);
-        TimesBold_widths.insert('Š', 0.56);
-        TimesBold_widths.insert('Ş', 0.56);
-        TimesBold_widths.insert('Ș', 0.56);
-        TimesBold_widths.insert('T', 0.67);
-        TimesBold_widths.insert('Ť', 0.67);
-        TimesBold_widths.insert('Ţ', 0.67);
-        TimesBold_widths.insert('Þ', 0.61);
-        TimesBold_widths.insert('U', 0.72);
-        TimesBold_widths.insert('Ú', 0.72);
-        TimesBold_widths.insert('Û', 0.72);
-        TimesBold_widths.insert('Ü', 0.72);
-        TimesBold_widths.insert('Ù', 0.72);
-        TimesBold_widths.insert('Ű', 0.72);
-        TimesBold_widths.insert('Ū', 0.72);
-        TimesBold_widths.insert('Ų', 0.72);
-        TimesBold_widths.insert('Ů', 0.72);
-        TimesBold_widths.insert('V', 0.72);
-        TimesBold_widths.insert('W', 1.00);
-        TimesBold_widths.insert('X', 0.72);
-        TimesBold_widths.insert('Y', 0.72);
-        TimesBold_widths.insert('Ý', 0.72);
-        TimesBold_widths.insert('Ÿ', 0.72);
-        TimesBold_widths.insert('Z', 0.67);
-        TimesBold_widths.insert('Ź', 0.67);
-        TimesBold_widths.insert('Ž', 0.67);
-        TimesBold_widths.insert('Ż', 0.67);
-        TimesBold_widths.insert('a', 0.50);
-        TimesBold_widths.insert('á', 0.50);
-        TimesBold_widths.insert('ă', 0.50);
-        TimesBold_widths.insert('â', 0.50);
-        TimesBold_widths.insert('´', 0.33);
-        TimesBold_widths.insert('ä', 0.50);
-        TimesBold_widths.insert('æ', 0.72);
-        TimesBold_widths.insert('à', 0.50);
-        TimesBold_widths.insert('ā', 0.50);
-        TimesBold_widths.insert('&', 0.83);
-        TimesBold_widths.insert('ą', 0.50);
-        TimesBold_widths.insert('å', 0.50);
-        TimesBold_widths.insert('^', 0.58);
-        TimesBold_widths.insert('~', 0.52);
-        TimesBold_widths.insert('*', 0.50);
-        TimesBold_widths.insert('@', 0.93);
-        TimesBold_widths.insert('ã', 0.50);
-        TimesBold_widths.insert('b', 0.56);
-        TimesBold_widths.insert('\\', 0.28);
-        TimesBold_widths.insert('|', 0.22);
-        TimesBold_widths.insert('{', 0.39);
-        TimesBold_widths.insert('}', 0.39);
-        TimesBold_widths.insert('[', 0.33);
-        TimesBold_widths.insert(']', 0.33);
-        TimesBold_widths.insert('˘', 0.33);
-        TimesBold_widths.insert('¦', 0.22);
-        TimesBold_widths.insert('•', 0.35);
-        TimesBold_widths.insert('c', 0.44);
-        TimesBold_widths.insert('ć', 0.44);
-        TimesBold_widths.insert('ˇ', 0.33);
-        TimesBold_widths.insert('č', 0.44);
-        TimesBold_widths.insert('ç', 0.44);
-        TimesBold_widths.insert('¸', 0.33);
-        TimesBold_widths.insert('¢', 0.50);
-        TimesBold_widths.insert('ˆ', 0.33);
-        TimesBold_widths.insert(':', 0.33);
-        TimesBold_widths.insert(',', 0.25);
-        TimesBold_widths.insert('', 0.25);
-        TimesBold_widths.insert('©', 0.75);
-        TimesBold_widths.insert('¤', 0.50);
-        TimesBold_widths.insert('d', 0.56);
-        TimesBold_widths.insert('†', 0.50);
-        TimesBold_widths.insert('‡', 0.50);
-        TimesBold_widths.insert('ď', 0.67);
-        TimesBold_widths.insert('đ', 0.56);
-        TimesBold_widths.insert('°', 0.40);
-        TimesBold_widths.insert('¨', 0.33);
-        TimesBold_widths.insert('÷', 0.57);
-        TimesBold_widths.insert('$', 0.50);
-        TimesBold_widths.insert('˙', 0.33);
-        TimesBold_widths.insert('ı', 0.28);
-        TimesBold_widths.insert('e', 0.44);
-        TimesBold_widths.insert('é', 0.44);
-        TimesBold_widths.insert('ě', 0.44);
-        TimesBold_widths.insert('ê', 0.44);
-        TimesBold_widths.insert('ë', 0.44);
-        TimesBold_widths.insert('ė', 0.44);
-        TimesBold_widths.insert('è', 0.44);
-        TimesBold_widths.insert('8', 0.50);
-        TimesBold_widths.insert('…', 1.00);
-        TimesBold_widths.insert('ē', 0.44);
-        TimesBold_widths.insert('—', 1.00);
-        TimesBold_widths.insert('–', 0.50);
-        TimesBold_widths.insert('ę', 0.44);
-        TimesBold_widths.insert('=', 0.57);
-        TimesBold_widths.insert('ð', 0.50);
-        TimesBold_widths.insert('!', 0.33);
-        TimesBold_widths.insert('¡', 0.33);
-        TimesBold_widths.insert('f', 0.33);
-        TimesBold_widths.insert('ﬁ', 0.56);
-        TimesBold_widths.insert('5', 0.50);
-        TimesBold_widths.insert('ﬂ', 0.56);
-        TimesBold_widths.insert('ƒ', 0.50);
-        TimesBold_widths.insert('4', 0.50);
-        TimesBold_widths.insert('⁄', 0.17);
-        TimesBold_widths.insert('g', 0.50);
-        TimesBold_widths.insert('ğ', 0.50);
-        TimesBold_widths.insert('ģ', 0.50);
-        TimesBold_widths.insert('ß', 0.56);
-        TimesBold_widths.insert('`', 0.33);
-        TimesBold_widths.insert('>', 0.57);
-        TimesBold_widths.insert('≥', 0.55);
-        TimesBold_widths.insert('«', 0.50);
-        TimesBold_widths.insert('»', 0.50);
-        TimesBold_widths.insert('‹', 0.33);
-        TimesBold_widths.insert('›', 0.33);
-        TimesBold_widths.insert('h', 0.56);
-        TimesBold_widths.insert('˝', 0.33);
-        TimesBold_widths.insert('-', 0.33);
-        TimesBold_widths.insert('i', 0.28);
-        TimesBold_widths.insert('í', 0.28);
-        TimesBold_widths.insert('î', 0.28);
-        TimesBold_widths.insert('ï', 0.28);
-        TimesBold_widths.insert('ì', 0.28);
-        TimesBold_widths.insert('ī', 0.28);
-        TimesBold_widths.insert('į', 0.28);
-        TimesBold_widths.insert('j', 0.33);
-        TimesBold_widths.insert('k', 0.56);
-        TimesBold_widths.insert('ķ', 0.56);
-        TimesBold_widths.insert('l', 0.28);
-        TimesBold_widths.insert('ĺ', 0.28);
-        TimesBold_widths.insert('ľ', 0.39);
-        TimesBold_widths.insert('ļ', 0.28);
-        TimesBold_widths.insert('<', 0.57);
-        TimesBold_widths.insert('≤', 0.55);
-        TimesBold_widths.insert('¬', 0.57);
-        TimesBold_widths.insert('◊', 0.49);
-        TimesBold_widths.insert('ł', 0.28);
-        TimesBold_widths.insert('m', 0.83);
-        TimesBold_widths.insert('¯', 0.33);
-        TimesBold_widths.insert('−', 0.57);
-        TimesBold_widths.insert('µ', 0.56);
-        TimesBold_widths.insert('×', 0.57);
-        TimesBold_widths.insert('n', 0.56);
-        TimesBold_widths.insert('ń', 0.56);
-        TimesBold_widths.insert('ň', 0.56);
-        TimesBold_widths.insert('ņ', 0.56);
-        TimesBold_widths.insert('9', 0.50);
-        TimesBold_widths.insert('≠', 0.55);
-        TimesBold_widths.insert('ñ', 0.56);
-        TimesBold_widths.insert('#', 0.50);
-        TimesBold_widths.insert('o', 0.50);
-        TimesBold_widths.insert('ó', 0.50);
-        TimesBold_widths.insert('ô', 0.50);
-        TimesBold_widths.insert('ö', 0.50);
-        TimesBold_widths.insert('œ', 0.72);
-        TimesBold_widths.insert('˛', 0.33);
-        TimesBold_widths.insert('ò', 0.50);
-        TimesBold_widths.insert('ő', 0.50);
-        TimesBold_widths.insert('ō', 0.50);
-        TimesBold_widths.insert('1', 0.50);
-        TimesBold_widths.insert('½', 0.75);
-        TimesBold_widths.insert('¼', 0.75);
-        TimesBold_widths.insert('¹', 0.30);
-        TimesBold_widths.insert('ª', 0.30);
-        TimesBold_widths.insert('º', 0.33);
-        TimesBold_widths.insert('ø', 0.50);
-        TimesBold_widths.insert('õ', 0.50);
-        TimesBold_widths.insert('p', 0.56);
-        TimesBold_widths.insert('¶', 0.54);
-        TimesBold_widths.insert('(', 0.33);
-        TimesBold_widths.insert(')', 0.33);
-        TimesBold_widths.insert('∂', 0.49);
-        TimesBold_widths.insert('%', 1.00);
-        TimesBold_widths.insert('.', 0.25);
-        TimesBold_widths.insert('·', 0.25);
-        TimesBold_widths.insert('‰', 1.00);
-        TimesBold_widths.insert('+', 0.57);
-        TimesBold_widths.insert('±', 0.57);
-        TimesBold_widths.insert('q', 0.56);
-        TimesBold_widths.insert('?', 0.50);
-        TimesBold_widths.insert('¿', 0.50);
-        TimesBold_widths.insert('"', 0.56);
-        TimesBold_widths.insert('„', 0.50);
-        TimesBold_widths.insert('“', 0.50);
-        TimesBold_widths.insert('”', 0.50);
-        TimesBold_widths.insert('‘', 0.33);
-        TimesBold_widths.insert('’', 0.33);
-        TimesBold_widths.insert('‚', 0.33);
-        TimesBold_widths.insert('\'', 0.28);
-        TimesBold_widths.insert('r', 0.44);
-        TimesBold_widths.insert('ŕ', 0.44);
-        TimesBold_widths.insert('√', 0.55);
-        TimesBold_widths.insert('ř', 0.44);
-        TimesBold_widths.insert('ŗ', 0.44);
-        TimesBold_widths.insert('®', 0.75);
-        TimesBold_widths.insert('˚', 0.33);
-        TimesBold_widths.insert('s', 0.39);
-        TimesBold_widths.insert('ś', 0.39);
-        TimesBold_widths.insert('š', 0.39);
-        TimesBold_widths.insert('ş', 0.39);
-        TimesBold_widths.insert('ș', 0.39);
-        TimesBold_widths.insert('§', 0.50);
-        TimesBold_widths.insert(';', 0.33);
-        TimesBold_widths.insert('7', 0.50);
-        TimesBold_widths.insert('6', 0.50);
-        TimesBold_widths.insert('/', 0.28);
-        TimesBold_widths.insert(' ', 0.25);
-        TimesBold_widths.insert('£', 0.50);
-        TimesBold_widths.insert('∑', 0.60);
-        TimesBold_widths.insert('t', 0.33);
-        TimesBold_widths.insert('ť', 0.42);
-        TimesBold_widths.insert('ţ', 0.33);
-        TimesBold_widths.insert('þ', 0.56);
-        TimesBold_widths.insert('3', 0.50);
-        TimesBold_widths.insert('¾', 0.75);
-        TimesBold_widths.insert('³', 0.30);
-        TimesBold_widths.insert('˜', 0.33);
-        TimesBold_widths.insert('™', 1.00);
-        TimesBold_widths.insert('2', 0.50);
-        TimesBold_widths.insert('²', 0.30);
-        TimesBold_widths.insert('u', 0.56);
-        TimesBold_widths.insert('ú', 0.56);
-        TimesBold_widths.insert('û', 0.56);
-        TimesBold_widths.insert('ü', 0.56);
-        TimesBold_widths.insert('ù', 0.56);
-        TimesBold_widths.insert('ű', 0.56);
-        TimesBold_widths.insert('ū', 0.56);
-        TimesBold_widths.insert('_', 0.50);
-        TimesBold_widths.insert('ų', 0.56);
-        TimesBold_widths.insert('ů', 0.56);
-        TimesBold_widths.insert('v', 0.50);
-        TimesBold_widths.insert('w', 0.72);
-        TimesBold_widths.insert('x', 0.50);
-        TimesBold_widths.insert('y', 0.50);
-        TimesBold_widths.insert('ý', 0.50);
-        TimesBold_widths.insert('ÿ', 0.50);
-        TimesBold_widths.insert('¥', 0.50);
-        TimesBold_widths.insert('z', 0.44);
-        TimesBold_widths.insert('ź', 0.44);
-        TimesBold_widths.insert('ž', 0.44);
-        TimesBold_widths.insert('ż', 0.44);
-        TimesBold_widths.insert('0', 0.50);
+        &Font::TimesItalic => match c {
+            'A' => 0.611,
+            'Æ' => 0.889,
+            'Á' => 0.611,
+            'Ă' => 0.611,
+            'Â' => 0.611,
+            'Ä' => 0.611,
+            'À' => 0.611,
+            'Ā' => 0.611,
+            'Ą' => 0.611,
+            'Å' => 0.611,
+            'Ã' => 0.611,
+            'B' => 0.611,
+            'C' => 0.667,
+            'Ć' => 0.667,
+            'Č' => 0.667,
+            'Ç' => 0.667,
+            'D' => 0.722,
+            'Ď' => 0.722,
+            'Đ' => 0.722,
+            '∆' => 0.612,
+            'E' => 0.611,
+            'É' => 0.611,
+            'Ě' => 0.611,
+            'Ê' => 0.611,
+            'Ë' => 0.611,
+            'Ė' => 0.611,
+            'È' => 0.611,
+            'Ē' => 0.611,
+            'Ę' => 0.611,
+            'Ð' => 0.722,
+            '€' => 0.500,
+            'F' => 0.611,
+            'G' => 0.722,
+            'Ğ' => 0.722,
+            'Ģ' => 0.722,
+            'H' => 0.722,
+            'I' => 0.333,
+            'Í' => 0.333,
+            'Î' => 0.333,
+            'Ï' => 0.333,
+            'İ' => 0.333,
+            'Ì' => 0.333,
+            'Ī' => 0.333,
+            'Į' => 0.333,
+            'J' => 0.444,
+            'K' => 0.667,
+            'Ķ' => 0.667,
+            'L' => 0.556,
+            'Ĺ' => 0.556,
+            'Ľ' => 0.611,
+            'Ļ' => 0.556,
+            'Ł' => 0.556,
+            'M' => 0.833,
+            'N' => 0.667,
+            'Ń' => 0.667,
+            'Ň' => 0.667,
+            'Ņ' => 0.667,
+            'Ñ' => 0.667,
+            'O' => 0.722,
+            'Œ' => 0.944,
+            'Ó' => 0.722,
+            'Ô' => 0.722,
+            'Ö' => 0.722,
+            'Ò' => 0.722,
+            'Ő' => 0.722,
+            'Ō' => 0.722,
+            'Ø' => 0.722,
+            'Õ' => 0.722,
+            'P' => 0.611,
+            'Q' => 0.722,
+            'R' => 0.611,
+            'Ŕ' => 0.611,
+            'Ř' => 0.611,
+            'Ŗ' => 0.611,
+            'S' => 0.500,
+            'Ś' => 0.500,
+            'Š' => 0.500,
+            'Ş' => 0.500,
+            'Ș' => 0.500,
+            'T' => 0.556,
+            'Ť' => 0.556,
+            'Ţ' => 0.556,
+            'Þ' => 0.611,
+            'U' => 0.722,
+            'Ú' => 0.722,
+            'Û' => 0.722,
+            'Ü' => 0.722,
+            'Ù' => 0.722,
+            'Ű' => 0.722,
+            'Ū' => 0.722,
+            'Ų' => 0.722,
+            'Ů' => 0.722,
+            'V' => 0.611,
+            'W' => 0.833,
+            'X' => 0.611,
+            'Y' => 0.556,
+            'Ý' => 0.556,
+            'Ÿ' => 0.556,
+            'Z' => 0.556,
+            'Ź' => 0.556,
+            'Ž' => 0.556,
+            'Ż' => 0.556,
+            'a' => 0.500,
+            'á' => 0.500,
+            'ă' => 0.500,
+            'â' => 0.500,
+            '´' => 0.333,
+            'ä' => 0.500,
+            'æ' => 0.667,
+            'à' => 0.500,
+            'ā' => 0.500,
+            '&' => 0.778,
+            'ą' => 0.500,
+            'å' => 0.500,
+            '^' => 0.422,
+            '~' => 0.541,
+            '*' => 0.500,
+            '@' => 0.920,
+            'ã' => 0.500,
+            'b' => 0.500,
+            '\\' => 0.278,
+            '|' => 0.275,
+            '{' => 0.400,
+            '}' => 0.400,
+            '[' => 0.389,
+            ']' => 0.389,
+            '˘' => 0.333,
+            '¦' => 0.275,
+            '•' => 0.350,
+            'c' => 0.444,
+            'ć' => 0.444,
+            'ˇ' => 0.333,
+            'č' => 0.444,
+            'ç' => 0.444,
+            '¸' => 0.333,
+            '¢' => 0.500,
+            'ˆ' => 0.333,
+            ':' => 0.333,
+            ',' => 0.250,
+            '' => 0.250,
+            '©' => 0.760,
+            '¤' => 0.500,
+            'd' => 0.500,
+            '†' => 0.500,
+            '‡' => 0.500,
+            'ď' => 0.544,
+            'đ' => 0.500,
+            '°' => 0.400,
+            '¨' => 0.333,
+            '÷' => 0.675,
+            '$' => 0.500,
+            '˙' => 0.333,
+            'ı' => 0.278,
+            'e' => 0.444,
+            'é' => 0.444,
+            'ě' => 0.444,
+            'ê' => 0.444,
+            'ë' => 0.444,
+            'ė' => 0.444,
+            'è' => 0.444,
+            '8' => 0.500,
+            '…' => 0.889,
+            'ē' => 0.444,
+            '—' => 0.889,
+            '–' => 0.500,
+            'ę' => 0.444,
+            '=' => 0.675,
+            'ð' => 0.500,
+            '!' => 0.333,
+            '¡' => 0.389,
+            'f' => 0.278,
+            'ﬁ' => 0.500,
+            '5' => 0.500,
+            'ﬂ' => 0.500,
+            'ƒ' => 0.500,
+            '4' => 0.500,
+            '⁄' => 0.167,
+            'g' => 0.500,
+            'ğ' => 0.500,
+            'ģ' => 0.500,
+            'ß' => 0.500,
+            '`' => 0.333,
+            '>' => 0.675,
+            '≥' => 0.549,
+            '«' => 0.500,
+            '»' => 0.500,
+            '‹' => 0.333,
+            '›' => 0.333,
+            'h' => 0.500,
+            '˝' => 0.333,
+            '-' => 0.333,
+            'i' => 0.278,
+            'í' => 0.278,
+            'î' => 0.278,
+            'ï' => 0.278,
+            'ì' => 0.278,
+            'ī' => 0.278,
+            'į' => 0.278,
+            'j' => 0.278,
+            'k' => 0.444,
+            'ķ' => 0.444,
+            'l' => 0.278,
+            'ĺ' => 0.278,
+            'ľ' => 0.300,
+            'ļ' => 0.278,
+            '<' => 0.675,
+            '≤' => 0.549,
+            '¬' => 0.675,
+            '◊' => 0.471,
+            'ł' => 0.278,
+            'm' => 0.722,
+            '¯' => 0.333,
+            '−' => 0.675,
+            'µ' => 0.500,
+            '×' => 0.675,
+            'n' => 0.500,
+            'ń' => 0.500,
+            'ň' => 0.500,
+            'ņ' => 0.500,
+            '9' => 0.500,
+            '≠' => 0.549,
+            'ñ' => 0.500,
+            '#' => 0.500,
+            'o' => 0.500,
+            'ó' => 0.500,
+            'ô' => 0.500,
+            'ö' => 0.500,
+            'œ' => 0.667,
+            '˛' => 0.333,
+            'ò' => 0.500,
+            'ő' => 0.500,
+            'ō' => 0.500,
+            '1' => 0.500,
+            '½' => 0.750,
+            '¼' => 0.750,
+            '¹' => 0.300,
+            'ª' => 0.276,
+            'º' => 0.310,
+            'ø' => 0.500,
+            'õ' => 0.500,
+            'p' => 0.500,
+            '¶' => 0.523,
+            '(' => 0.333,
+            ')' => 0.333,
+            '∂' => 0.476,
+            '%' => 0.833,
+            '.' => 0.250,
+            '·' => 0.250,
+            '‰' => 1.000,
+            '+' => 0.675,
+            '±' => 0.675,
+            'q' => 0.500,
+            '?' => 0.500,
+            '¿' => 0.500,
+            '"' => 0.420,
+            '„' => 0.556,
+            '“' => 0.556,
+            '”' => 0.556,
+            '‘' => 0.333,
+            '’' => 0.333,
+            '‚' => 0.333,
+            '\'' => 0.214,
+            'r' => 0.389,
+            'ŕ' => 0.389,
+            '√' => 0.453,
+            'ř' => 0.389,
+            'ŗ' => 0.389,
+            '®' => 0.760,
+            '˚' => 0.333,
+            's' => 0.389,
+            'ś' => 0.389,
+            'š' => 0.389,
+            'ş' => 0.389,
+            'ș' => 0.389,
+            '§' => 0.500,
+            ';' => 0.333,
+            '7' => 0.500,
+            '6' => 0.500,
+            '/' => 0.278,
+            ' ' => 0.250,
+            '£' => 0.500,
+            '∑' => 0.600,
+            't' => 0.278,
+            'ť' => 0.300,
+            'ţ' => 0.278,
+            'þ' => 0.500,
+            '3' => 0.500,
+            '¾' => 0.750,
+            '³' => 0.300,
+            '˜' => 0.333,
+            '™' => 0.980,
+            '2' => 0.500,
+            '²' => 0.300,
+            'u' => 0.500,
+            'ú' => 0.500,
+            'û' => 0.500,
+            'ü' => 0.500,
+            'ù' => 0.500,
+            'ű' => 0.500,
+            'ū' => 0.500,
+            '_' => 0.500,
+            'ų' => 0.500,
+            'ů' => 0.500,
+            'v' => 0.444,
+            'w' => 0.667,
+            'x' => 0.444,
+            'y' => 0.444,
+            'ý' => 0.444,
+            'ÿ' => 0.444,
+            '¥' => 0.500,
+            'z' => 0.389,
+            'ź' => 0.389,
+            'ž' => 0.389,
+            'ż' => 0.389,
+            '0' => 0.500,
+            _ => 0.0,
+        },
 
-        let mut map = HashMap::new();
-        map.insert(Font::TimesRoman, TimesRoman_widths);
-        map.insert(Font::HelveticaOblique, HelveticaOblique_widths);
-        map.insert(Font::HelveticaBold, HelveticaBold_widths);
-        map.insert(Font::HelveticaBoldOblique, HelveticaBoldOblique_widths);
-        map.insert(Font::ZapfDingbats, ZapfDingbats_widths);
-        map.insert(Font::Courier, Courier_widths);
-        map.insert(Font::CourierOblique, CourierOblique_widths);
-        map.insert(Font::CourierBold, CourierBold_widths);
-        map.insert(Font::CourierBoldOblique, CourierBoldOblique_widths);
-        map.insert(Font::TimesBoldItalic, TimesBoldItalic_widths);
-        map.insert(Font::Helvetica, Helvetica_widths);
-        map.insert(Font::Symbol, Symbol_widths);
-        map.insert(Font::TimesItalic, TimesItalic_widths);
-        map.insert(Font::TimesBold, TimesBold_widths);
-        map
-    };
+    }
 }
 
-/// Supported fonts
-#[derive(Hash, PartialEq, Eq, Debug)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Font {
-    TimesRoman,
-    HelveticaOblique,
-    HelveticaBold,
-    HelveticaBoldOblique,
     ZapfDingbats,
-    Courier,
-    CourierOblique,
     CourierBold,
-    CourierBoldOblique,
-    TimesBoldItalic,
-    Helvetica,
-    Symbol,
-    TimesItalic,
+    HelveticaBold,
     TimesBold,
+    CourierOblique,
+    TimesBoldItalic,
+    TimesRoman,
+    Helvetica,
+    CourierBoldOblique,
+    HelveticaBoldOblique,
+    Courier,
+    Symbol,
+    HelveticaOblique,
+    TimesItalic,
 }

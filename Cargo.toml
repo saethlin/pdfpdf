@@ -1,20 +1,21 @@
 [package]
 name = "pdfpdf"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Benjamin Kimock <kimockb@gmail.com>"]
 license = "MIT/Apache-2.0"
 
 description = """
 A Pretty Darn Fast library for creating PDF files.
-Currently, only simple vector graphics and simple text are supported."""
+Currently, only simple vector graphics and simple text are supported.
+"""
 repository = "https://github.com/saethlin/pdfpdf"
 documentation = "https://docs.rs/pdfpdf"
 readme = "README.md"
+build = "build.rs"
 
 keywords = ["pdf", "PDF"]
 categories = ["visualization"]
 
 [dependencies]
-deflate = "0.7"
-lazy_static = "0.2"
-num = "0.1"
+deflate = "0.7.17"
+
