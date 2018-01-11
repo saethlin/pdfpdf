@@ -18,4 +18,3 @@ categories = ["visualization"]
 
 [dependencies]
 deflate = "0.7.17"
-

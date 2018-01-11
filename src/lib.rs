@@ -1,5 +1,5 @@
 //! A Pretty Darn Fast library for creating PDF files.
-//! Currently, only simple vector graphics and simple text are supported.  
+//! Currently, only simple vector graphics and simple text are supported.
 //!
 
 //! # Example

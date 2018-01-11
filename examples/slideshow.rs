@@ -64,15 +64,11 @@ fn main() {
         Color::gray(255),
     ).add_title_slide("Lessons from LATHER")
         .add_text_slide("The Activity Problem\nOR\nRemove the spots")
-        .add_text_slide(
-            "1. Find/make a good model\n2. Run it. A lot.\n3. Listen at group meetings",
-        )
+        .add_text_slide("1. Find/make a good model\n2. Run it. A lot.\n3. Listen at group meetings")
         .add_text_slide("Easy to use\nWe're going to write a lot of scripts")
         .add_text_slide("SOAP: 2.4 s\nLATHER: 0.006 s")
         .add_text_slide("All I Really Need to Know I Learned in\nKindergarten")
-        .add_text_slide(
-            "All I Really Need to Know I Learned in\nMathematical Physics",
-        )
+        .add_text_slide("All I Really Need to Know I Learned in\nMathematical Physics")
         .write_to("lessons_from_lather.pdf")
         .expect("Couldn't save slideshow");
 }

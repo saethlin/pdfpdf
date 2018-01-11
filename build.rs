@@ -2,6 +2,7 @@ use std::char;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::Path;
+use std::collections::HashMap;
 
 fn main() {
     // We want a mapping from char to usize width
@@ -28,17 +29,14 @@ fn main() {
     }
 
     let mut font_names = Vec::new();
-    let mut name_to_width = Vec::new();
+    let mut name_to_width = HashMap::new();
     let mut output = BufWriter::new(File::create(output_path).unwrap());
     write!(output, "#![allow(non_snake_case)]\n").unwrap();
-    write!(output, "#![allow(unused_mut)]\n").unwrap();
     write!(output, "#![allow(missing_docs)]\n").unwrap();
 
-    write!(output, "use std::collections::HashMap;\n\n").unwrap();
-    write!(output, "lazy_static!{{\n").unwrap();
     write!(
         output,
-        "    pub static ref GLYPH_WIDTHS: HashMap<Font, HashMap<char, f64>> = {{\n"
+        "pub fn glyph_width(font: &Font, c: char) -> f64 {{\n    match font {{\n"
     ).unwrap();
 
     for entry in std::fs::read_dir(Path::new("data/Core14_AFMs"))
@@ -57,7 +55,7 @@ fn main() {
             let fields: Vec<&str> = line.split(' ').collect();
             let width: f64 = fields[4].parse().unwrap();
             let name = fields[7];
-            name_to_width.push((name.to_owned(), width / 1000.0));
+            name_to_width.insert(name.to_owned(), width / 1000.0);
         }
 
         let font_name = entry
@@ -71,59 +69,31 @@ fn main() {
             .to_owned();
         font_names.push(font_name.clone());
 
-        write!(
-            output,
-            "        let mut {}_widths: HashMap<char, f64> = HashMap::new();\n",
-            font_name
-        ).unwrap();
+        write!(output, "        &Font::{} => match c {{\n", font_name).unwrap();
 
         for &(chr, ref name) in &char_to_name {
-            if let Some(&(_, width)) = name_to_width.iter().find(|&&(ref n, _)| *n == *name) {
+            if let Some(&width) = name_to_width.get(name) {
                 if chr == '\'' || chr == '\\' {
-                    write!(
-                        output,
-                        "        {}_widths.insert('\\{}', {:.2});\n",
-                        font_name,
-                        chr,
-                        width
-                    ).unwrap();
+                    write!(output, "            '\\{}' => {:.2},\n", chr, width).unwrap();
                 } else {
-                    write!(
-                        output,
-                        "        {}_widths.insert('{}', {:.2});\n",
-                        font_name,
-                        chr,
-                        width
-                    ).unwrap();
+                    write!(output, "            '{}' => {:.2},\n", chr, width).unwrap();
                 }
             }
         }
-        write!(output, "\n").unwrap();
+        write!(output, "            _ => 0.0,\n").unwrap();
+        write!(output, "        }}\n").unwrap();
         name_to_width.clear();
     }
-
-    // Write the hashmap from font enum to widths
-    write!(output, "        let mut map = HashMap::new();\n").unwrap();
-    for name in &font_names {
-        write!(
-            output,
-            "        map.insert(Font::{}, {}_widths);\n",
-            name,
-            name
-        ).unwrap();
-    }
-    write!(output, "        map\n").unwrap();
-    write!(output, "    }};\n").unwrap();
+    write!(output, "    }}\n").unwrap();
 
     // Close the lazy_static invocation
     write!(output, "}}\n\n").unwrap();
 
     // Write the font enum
-    write!(output, "#[derive(Hash, PartialEq, Eq)]\n").unwrap();
+    write!(output, "#[derive(Clone, Debug, Eq, Hash, PartialEq)]\n").unwrap();
     write!(output, "pub enum Font {{\n").unwrap();
     for name in &font_names {
         write!(output, "    {},\n", name).unwrap();
     }
     write!(output, "}}\n").unwrap();
 }
-
