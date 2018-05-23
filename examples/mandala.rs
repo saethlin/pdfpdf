@@ -22,7 +22,7 @@ fn main() {
 
     for _ in 0..n {
         document
-            .draw_line(vec![(0.0, 33.5), (0.0, 250.0)].into_iter())
+            .draw_line(vec![0.0, 0.0].iter().zip(vec![33.5, 250.0].iter()))
             .draw_circle(0.0, r, r * 1.25 * angle)
             .draw_circle(0.0, d + rr, rr)
             .transform(Matrix::rotate(angle));
