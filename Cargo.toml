@@ -17,4 +17,5 @@ keywords = ["pdf", "PDF"]
 categories = ["visualization"]
 
 [dependencies]
-deflate = "0.7.17"
+deflate = "0.7"
+png = "0.12"

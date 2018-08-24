@@ -11,18 +11,18 @@ struct Slideshow {
 }
 
 impl Slideshow {
-    pub fn new(
-        width: f64,
-        height: f64,
+    pub fn new<N1: Into<f64>, N2: Into<f64>>(
+        width: N1,
+        height: N2,
         font: Font,
         background_color: Color,
         text_color: Color,
     ) -> Self {
         let mut this = Slideshow {
-            width: width,
-            height: height,
-            background_color: background_color,
-            text_color: text_color,
+            width: width.into(),
+            height: height.into(),
+            background_color,
+            text_color,
             pdf: Pdf::new_uncompressed(),
         };
         this.pdf.font(font, 60);
@@ -57,8 +57,8 @@ impl Slideshow {
 
 fn main() {
     Slideshow::new(
-        1024.0,
-        769.0,
+        1280,
+        1024,
         Font::Helvetica,
         Color::gray(0),
         Color::gray(255),

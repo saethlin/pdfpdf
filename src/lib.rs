@@ -32,9 +32,10 @@ extern crate deflate;
 use std::fs::File;
 use std::io;
 
-mod graphicsstate;
 mod fonts;
+mod graphicsstate;
 mod text;
+
 pub use fonts::Font;
 pub use graphicsstate::{Color, Matrix};
 pub use text::Alignment;
@@ -97,6 +98,20 @@ impl Pdf {
         this
     }
 
+    /// Add an RGB image
+    #[inline]
+    pub fn add_image<N1, N2>(&mut self, width: N1, height: N2, bytes: Vec<u8>) -> &mut Self
+        where u64: From<N1>, u64: From<N2>
+    {
+        let (width, height) = (u64::from(width), u64::from(height));
+        debug_assert!(width * height * 3 == bytes.len() as u64);
+        debug_assert!(bytes.len() % 3 == 0);
+
+        
+        
+        self
+    }
+
     /// Move then pen, starting a new path
     #[inline]
     fn move_to(&mut self, x: f64, y: f64) -> &mut Self {
@@ -133,8 +148,8 @@ impl Pdf {
     /// Set the current line width
     #[inline]
     pub fn set_line_width<N>(&mut self, width: N) -> &mut Self
-    where
-        f64: From<N>,
+        where
+            f64: From<N>,
     {
         self.page_buffer
             .extend(format!("{:.2} w\n", f64::from(width)).bytes());
@@ -177,10 +192,10 @@ impl Pdf {
     /// based on http://spencermortensen.com/articles/bezier-circle/
     #[inline]
     pub fn draw_circle<N1, N2, N3>(&mut self, x: N1, y: N2, radius: N3) -> &mut Self
-    where
-        f64: From<N1>,
-        f64: From<N2>,
-        f64: From<N3>,
+        where
+            f64: From<N1>,
+            f64: From<N2>,
+            f64: From<N3>,
     {
         let x = f64::from(x);
         let y = f64::from(y);
@@ -199,25 +214,26 @@ impl Pdf {
         self.curve_to((left, bottomp), (leftp, bottom), (x, bottom));
         self.curve_to((rightp, bottom), (right, bottomp), (right, y));
         self.curve_to((right, topp), (rightp, top), (x, top));
-        self.page_buffer.extend_from_slice(b"S\n");
+        self.page_buffer.extend(b"S\n");
         self
     }
 
     /// Draw a line between all these points in the order they appear
     #[inline]
-    pub fn draw_line<I, N>(&mut self, mut points: I) -> &mut Self
-    where
-        I: Iterator<Item = (N, N)>,
-        f64: From<N>,
+    pub fn draw_line<'a, I, N: 'a>(&mut self, mut points: I) -> &mut Self
+        where
+            I: Iterator<Item=(&'a N, &'a N)>,
+            N: Into<f64>,
+            N: Copy,
     {
         // Can't just loop because we have to move_to the first point, then we can line_to the rest
-        if let Some((x, y)) = points.next() {
-            self.move_to(f64::from(x), f64::from(y));
-            for (x, y) in points {
-                self.line_to(f64::from(x), f64::from(y));
+        if let Some((&x, &y)) = points.next() {
+            self.move_to(x.into(), y.into());
+            for (&x, &y) in points {
+                self.line_to(x.into(), y.into());
             }
         }
-        self.page_buffer.extend_from_slice(b"S\n");
+        self.page_buffer.extend(b"S\n");
         self
     }
 
@@ -230,11 +246,11 @@ impl Pdf {
         width: N3,
         height: N4,
     ) -> &mut Self
-    where
-        f64: From<N1>,
-        f64: From<N2>,
-        f64: From<N3>,
-        f64: From<N4>,
+        where
+            f64: From<N1>,
+            f64: From<N2>,
+            f64: From<N3>,
+            f64: From<N4>,
     {
         self.page_buffer.extend(
             format!(
@@ -246,15 +262,15 @@ impl Pdf {
             ).bytes(),
         );
         // Fill path using Nonzero Winding Number Rule
-        self.page_buffer.extend_from_slice(b"f\n");
+        self.page_buffer.extend(b"f\n");
         self
     }
 
     #[inline]
     /// Set the font for all subsequent drawing calls
     pub fn font<N>(&mut self, font: Font, size: N) -> &mut Self
-    where
-        f64: std::convert::From<N>,
+        where
+            f64: std::convert::From<N>,
     {
         match self.fonts.iter().position(|f| *f == font) {
             Some(index) => {
@@ -272,9 +288,9 @@ impl Pdf {
     /// Draw text at a given location with the current settings
     #[inline]
     pub fn draw_text<N1, N2>(&mut self, x: N1, y: N2, alignment: Alignment, text: &str) -> &mut Self
-    where
-        f64: std::convert::From<N1>,
-        f64: std::convert::From<N2>,
+        where
+            f64: std::convert::From<N1>,
+            f64: std::convert::From<N2>,
     {
         let x = f64::from(x);
         let y = f64::from(y);
@@ -333,13 +349,12 @@ impl Pdf {
         self
     }
 
-    // TODO: test with multi-page documents
     /// Move to a new page in the PDF document
     #[inline]
     pub fn add_page<N1, N2>(&mut self, width: N1, height: N2) -> &mut Self
-    where
-        f64: From<N1>,
-        f64: From<N2>,
+        where
+            N1: Into<f64>,
+            N2: Into<f64>,
     {
         // Compress and write out the previous page if it exists
         if !self.page_buffer.is_empty() {
@@ -348,8 +363,8 @@ impl Pdf {
 
         self.page_buffer
             .extend("/DeviceRGB cs /DeviceRGB CS\n1 j 1 J\n".bytes());
-        self.width = f64::from(width);
-        self.height = f64::from(height);
+        self.width = width.into();
+        self.height = height.into();
         self
     }
 
@@ -375,12 +390,12 @@ impl Pdf {
                 ).bytes(),
             );
             self.buffer.extend(compressed.iter());
-            self.buffer.extend("endstream\nendobj\n".bytes())
+            self.buffer.extend(b"\nendstream\nendobj\n")
         } else {
             self.buffer
                 .extend(format!("<</Length {}>>\nstream\n", self.page_buffer.len()).bytes());
             self.buffer.extend(self.page_buffer.iter());
-            self.buffer.extend("endstream\nendobj\n".bytes());
+            self.buffer.extend(b"\nendstream\nendobj\n");
         }
         self.page_buffer.clear();
 
@@ -393,25 +408,27 @@ impl Pdf {
         });
         self.buffer
             .extend(format!("{} 0 obj\n", page_object_id).bytes());
-        self.buffer.extend_from_slice(b"<</Type /Page\n");
-        self.buffer.extend_from_slice(b"/Parent 2 0 R\n");
+        self.buffer.extend(b"<</Type /Page\n");
+        self.buffer.extend(b" /Parent 2 0 R\n");
 
+        self.buffer.extend(b" /Resources <<\n");
         for (f, font) in self.fonts.iter().enumerate() {
             self.buffer.extend(
                 format!(
-                    "/Resources << /Font << /F{} << /Type /Font /Subtype /Type1 /BaseFont \
-                     /{:?} /Encoding /WinAnsiEncoding>> >> >>\n",
+                    "  /Font <<\n   /F{} <<\n    /Type /Font\n    /Subtype /Type1\n    /BaseFont \
+                     /{:?}\n    /Encoding /WinAnsiEncoding\n   >>\n  >>\n",
                     f, font
                 ).bytes(),
             );
         }
+        self.buffer.extend(b" >>\n");
 
         self.buffer
-            .extend(format!("/MediaBox [0 0 {} {}]\n", self.width, self.height).bytes());
+            .extend(format!(" /MediaBox [0 0 {} {}]\n", self.width, self.height).bytes());
         self.buffer
-            .extend(format!("/Contents {} 0 R >>\n", stream_object_id).bytes());
+            .extend(format!(" /Contents {} 0 R\n", stream_object_id).bytes());
 
-        self.buffer.extend("endobj\n".bytes());
+        self.buffer.extend(b">>\nendobj\n");
         self.fonts.truncate(1);
     }
 
@@ -425,20 +442,20 @@ impl Pdf {
 
         // Write out the page tree object
         self.objects[1].offset = self.buffer.len();
-        self.buffer.extend_from_slice(b"2 0 obj\n");
-        self.buffer.extend_from_slice(b"<</Type /Pages\n");
+        self.buffer.extend(b"2 0 obj\n");
+        self.buffer.extend(b"<</Type /Pages\n");
         self.buffer.extend(
             format!(
                 "/Count {}\n",
                 self.objects.iter().filter(|o| o.is_page).count()
             ).bytes(),
         );
-        self.buffer.extend_from_slice(b"/Kids [");
+        self.buffer.extend(b"/Kids [");
         for obj in self.objects.iter().filter(|obj| obj.is_page) {
             self.buffer.extend(format!("{} 0 R ", obj.id).bytes());
         }
         self.buffer.pop();
-        self.buffer.extend_from_slice(b"]>>\nendobj\n");
+        self.buffer.extend(b"]>>\nendobj\n");
 
         // Write out the catalog dictionary object
         self.objects[0].offset = self.buffer.len();
@@ -447,10 +464,10 @@ impl Pdf {
 
         // Write the cross-reference table
         let startxref = self.buffer.len();
-        self.buffer.extend_from_slice(b"xref\n");
+        self.buffer.extend(b"xref\n");
         self.buffer
             .extend(format!("0 {}\n", self.objects.len() + 1).bytes());
-        self.buffer.extend_from_slice(b"0000000000 65535 f \n");
+        self.buffer.extend(b"0000000000 65535 f \n");
         self.objects.sort_by(|a, b| a.id.cmp(&b.id));
 
         for obj in &self.objects {
@@ -459,17 +476,17 @@ impl Pdf {
         }
 
         // Write the document trailer
-        self.buffer.extend_from_slice(b"trailer\n");
+        self.buffer.extend(b"trailer\n");
         self.buffer
             .extend(format!("<</Size {}\n", self.objects.len()).bytes());
-        self.buffer.extend_from_slice(b"/Root 1 0 R>>\n");
+        self.buffer.extend(b"/Root 1 0 R>>\n");
 
         // Write the offset to the xref table
         self.buffer
             .extend(format!("startxref\n{}\n", startxref).bytes());
 
         // Write the PDF EOF
-        self.buffer.extend_from_slice(b"%%EOF");
+        self.buffer.extend(b"%%EOF");
 
         File::create(filename)?.write_all(self.buffer.as_slice())
     }

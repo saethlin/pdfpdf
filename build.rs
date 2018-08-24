@@ -1,8 +1,9 @@
 use std::char;
-use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::path::Path;
 use std::collections::HashMap;
+use std::fmt::Write;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::path::Path;
 
 fn main() {
     // We want a mapping from char to usize width
@@ -30,7 +31,7 @@ fn main() {
 
     let mut font_names = Vec::new();
     let mut name_to_width = HashMap::new();
-    let mut output = BufWriter::new(File::create(output_path).unwrap());
+    let mut output = String::new();
     write!(output, "#![allow(non_snake_case)]\n").unwrap();
     write!(output, "#![allow(missing_docs)]\n").unwrap();
 
@@ -96,4 +97,16 @@ fn main() {
         write!(output, "    {},\n", name).unwrap();
     }
     write!(output, "}}\n").unwrap();
+
+    // Write to output file only if we need to
+    let mut current_contents = String::new();
+    if let Ok(mut f) = File::open(output_path) {
+        use std::io::Read;
+        f.read_to_string(&mut current_contents).unwrap();
+    }
+    if current_contents != output {
+        use std::io::Write;
+        let mut output_file = File::create(output_path).unwrap();
+        write!(output_file, "{}", output).unwrap();
+    }
 }

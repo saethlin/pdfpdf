@@ -1,12 +1,12 @@
 extern crate pdfpdf;
-use pdfpdf::{Font, Pdf};
 use pdfpdf::Alignment::*;
+use pdfpdf::{Font, Pdf};
 
 fn main() {
     Pdf::new()
         .add_page(400, 400)
-        .draw_line(vec![(0, 200), (400, 200)].into_iter())
-        .draw_line(vec![(200, 0), (200, 400)].into_iter())
+        .draw_line([0, 400].iter().zip([200, 200].iter()))
+        .draw_line([200, 200].iter().zip([0, 400].iter()))
         .draw_text(0.0, 400, TopLeft, "Top\nLeft")
         .draw_text(400, 400, TopRight, "Top\nRight")
         .draw_text(200, 400, TopCenter, "Top\nCenter")
@@ -19,8 +19,8 @@ fn main() {
         .draw_text(0, 100, BottomLeft, "âàäçéèêëîïôùûü")
         // New page with the same, but now in TimesRoman
         .add_page(400, 400)
-        .draw_line(vec![(0, 200), (400, 200)].into_iter())
-        .draw_line(vec![(200, 0), (200, 400)].into_iter())
+        .draw_line([0, 400].iter().zip([200, 200].iter()))
+        .draw_line([200, 200].iter().zip([0, 400].iter()))
         .font(Font::Courier, 12)
         .draw_text(0, 400, TopLeft, "Top\nLeft")
         .draw_text(400, 400, TopRight, "Top\nRight")
