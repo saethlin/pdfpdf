@@ -3,7 +3,8 @@ use pdfpdf::{Color, Pdf};
 
 fn main() {
     let x: Vec<f64> = (0..4096).map(|n| n as f64 / 4096. * 600.).collect();
-    let y: Vec<f64> = x.iter()
+    let y: Vec<f64> = x
+        .iter()
         .map(|x| (-(x - 300.0).powi(2) / 1200.0).exp() * 600.0)
         .collect();
 

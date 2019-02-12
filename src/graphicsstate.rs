@@ -1,6 +1,6 @@
 //! Types for representing details in the graphics state.
 
-use std::f32::consts::PI;
+use std::f64::consts::PI;
 use std::fmt::{self, Display};
 use std::ops::Mul;
 
@@ -31,7 +31,7 @@ pub enum CapStyle {
 }
 
 /// Any color (or grayscale) value that this library can make PDF represent.
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 #[allow(missing_docs)]
 pub struct Color {
     pub red: u8,
@@ -98,48 +98,72 @@ impl Color {
 ///     .write_to("foo.pdf").unwrap();
 /// ```
 pub struct Matrix {
-    v: [f32; 6],
+    v: [f64; 6],
 }
 
 impl Matrix {
     /// Construct a matrix for translation
     #[inline]
-    pub fn translate(dx: f32, dy: f32) -> Self {
+    pub fn translate<N>(dx: N, dy: N) -> Self
+    where
+        N: Into<f64>,
+    {
         Matrix {
-            v: [1., 0., 0., 1., dx, dy],
+            v: [1., 0., 0., 1., dx.into(), dy.into()],
         }
     }
+
     /// Construct a matrix for rotating by `a` radians.
     #[inline]
-    pub fn rotate(a: f32) -> Self {
+    pub fn rotate<N>(a: N) -> Self
+    where
+        N: Into<f64>,
+    {
+        let a = a.into();
         Matrix {
             v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.],
         }
     }
+
     /// Construct a matrix for rotating by `a` degrees.
     #[inline]
-    pub fn rotate_deg(a: f32) -> Self {
-        Self::rotate(a * PI / 180.)
+    pub fn rotate_deg<N>(a: N) -> Self
+    where
+        N: Into<f64>,
+    {
+        Self::rotate(a.into() * PI / 180.)
     }
+
     /// Construct a matrix for scaling by factor `sx` in x-direction
     /// and by `sy` in y-direction.
     #[inline]
-    pub fn scale(sx: f32, sy: f32) -> Self {
+    pub fn scale<N>(sx: N, sy: N) -> Self
+    where
+        N: Into<f64>,
+    {
         Matrix {
-            v: [sx, 0., 0., sy, 0., 0.],
+            v: [sx.into(), 0., 0., sy.into(), 0., 0.],
         }
     }
+
     /// Construct a matrix for scaling by the same factor, `s` in both
     /// directions.
     #[inline]
-    pub fn uniform_scale(s: f32) -> Self {
-        Self::scale(s, s)
+    pub fn uniform_scale<N>(s: N) -> Self
+    where
+        N: Into<f64> + Clone,
+    {
+        Self::scale(s.clone().into(), s.into())
     }
+
     /// Construct a matrix for skewing.
     #[inline]
-    pub fn skew(a: f32, b: f32) -> Self {
+    pub fn skew<N>(a: N, b: N) -> Self
+    where
+        N: Into<f64>,
+    {
         Matrix {
-            v: [1., a.tan(), b.tan(), 1., 0., 0.],
+            v: [1., a.into().tan(), b.into().tan(), 1., 0., 0.],
         }
     }
 }
@@ -175,28 +199,31 @@ impl Mul for Matrix {
 fn test_matrix_mul_a() {
     assert_unit(&(Matrix::rotate_deg(45.) * Matrix::rotate_deg(-45.)));
 }
+
 #[test]
 fn test_matrix_mul_b() {
     assert_unit(&(Matrix::uniform_scale(2.) * Matrix::uniform_scale(0.5)));
 }
+
 #[test]
 fn test_matrix_mul_c() {
     assert_unit(&Matrix::rotate(2. * PI));
 }
+
 #[test]
 fn test_matrix_mul_d() {
     assert_unit(&(Matrix::rotate(PI) * Matrix::uniform_scale(-1.)));
 }
 
-#[allow(dead_code)]
+#[cfg(test)]
 fn assert_unit(m: &Matrix) {
     assert_eq!(None, diff(&[1., 0., 0., 1., 0., 0.], &m.v));
 }
 
-#[allow(dead_code)]
-fn diff(a: &[f32; 6], b: &[f32; 6]) -> Option<String> {
-    let large_a = a.iter().fold(0f32, |x, &y| x.max(y));
-    let large_b = b.iter().fold(0f32, |x, &y| x.max(y));
+#[cfg(test)]
+fn diff(a: &[f64; 6], b: &[f64; 6]) -> Option<String> {
+    let large_a = a.iter().fold(0f64, |x, &y| x.max(y));
+    let large_b = b.iter().fold(0f64, |x, &y| x.max(y));
     let epsilon = 1e-6 * large_a.max(large_b);
     for i in 0..6 {
         if (a[i] - b[i]).abs() > epsilon {

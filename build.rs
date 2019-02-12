@@ -38,7 +38,8 @@ fn main() {
     write!(
         output,
         "pub fn glyph_width(font: &Font, c: char) -> f64 {{\n    match font {{\n"
-    ).unwrap();
+    )
+    .unwrap();
 
     for entry in std::fs::read_dir(Path::new("data/Core14_AFMs"))
         .unwrap()
@@ -86,8 +87,6 @@ fn main() {
         name_to_width.clear();
     }
     write!(output, "    }}\n").unwrap();
-
-    // Close the lazy_static invocation
     write!(output, "}}\n\n").unwrap();
 
     // Write the font enum
