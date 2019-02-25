@@ -133,7 +133,7 @@ impl Pdf {
     #[inline]
     pub fn move_to(&mut self, x: f64, y: f64) -> &mut Self {
         self.page_buffer
-            .extend(format!("{:.2} {:.2} m\n", x, y).bytes());
+            .extend_from_slice(format!("{:.2} {:.2} m\n", x, y).as_bytes());
         self
     }
 
@@ -141,7 +141,7 @@ impl Pdf {
     #[inline]
     pub fn line_to(&mut self, x: f64, y: f64) -> &mut Self {
         self.page_buffer
-            .extend(format!("{:.2} {:.2} l\n", x, y).bytes());
+            .extend_from_slice(format!("{:.2} {:.2} l\n", x, y).as_bytes());
         self
     }
 
@@ -242,14 +242,14 @@ impl Pdf {
     #[inline]
     pub fn draw_line<'a, I, N: 'a>(&mut self, mut points: I) -> &mut Self
     where
-        I: Iterator<Item = &'a (N, N)>,
+        I: Iterator<Item = (N, N)>,
         N: Into<f64>,
         N: Copy,
     {
         // Can't just loop because we have to move_to the first point, then we can line_to the rest
-        if let Some(&(x, y)) = points.next() {
+        if let Some((x, y)) = points.next() {
             self.move_to(x.into(), y.into());
-            for &(x, y) in points {
+            for (x, y) in points {
                 self.line_to(x.into(), y.into());
             }
         }
@@ -342,6 +342,16 @@ impl Pdf {
         self
     }
 
+    /// Convienence method to figure out the width of a string
+    /// May be required for some users to position text properly
+    pub fn width_of(&self, text: &str) -> f64 {
+        text.chars()
+            .filter(|c| *c != '\n')
+            .map(|c| fonts::glyph_width(&self.fonts[self.current_font_index].clone(), c))
+            .sum::<f64>()
+            * self.font_size
+    }
+
     /// Draw text at a given location with the current settings
     #[inline]
     pub fn draw_text<N1, N2>(&mut self, x: N1, y: N2, alignment: Alignment, text: &str) -> &mut Self
@@ -418,6 +428,7 @@ impl Pdf {
         // Compress and write out the previous page if it exists
         if !self.page_buffer.is_empty() {
             self.flush_page();
+            self.page_buffer.clear();
         }
 
         self.page_buffer
@@ -460,7 +471,6 @@ impl Pdf {
             self.buffer.extend(self.page_buffer.iter());
             self.buffer.extend(b"\nendstream\nendobj\n");
         }
-        self.page_buffer.clear();
 
         // Write out the page object
         let page_object_id = self.objects.iter().map(|o| o.id).max().unwrap() + 1;
