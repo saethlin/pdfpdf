@@ -1,18 +1,19 @@
+#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
 //! A Pretty Darn Fast library for creating PDF files.
-//! Currently, only simple vector graphics and simple text are supported.
+//! Currently only supports basic images, simple vector graphics, and text with builtin fonts (but not UTF-8).
 //!
 
 //! # Example
 //!
 //! ```
-//! use pdfpdf::{Color, Pdf};
+//! use pdfpdf::{Color, Pdf, Point, Size, Alignment};
 //!
 //! Pdf::new()
-//!     .add_page(180.0, 240.0)
+//!     .add_page(Size { x: 180.0, y: 240.0 })
 //!     .set_color(Color::rgb(0, 0, 248))
-//!     .draw_circle(90.0, 120.0, 50.0)
+//!     .draw_circle(Point{ x: 90.0, y: 120.0 }, 50.0)
 //!     .write_to("example.pdf")
-//!     .expect("Failed to write to file");
+//!     .unwrap();
 //! ```
 //!
 //! To use this library you need to add it as a dependency in your
@@ -20,12 +21,11 @@
 //!
 //! ```toml
 //! [dependencies]
-//! pdfpdf = "0.2"
+//! pdfpdf = "0.3"
 //! ```
 //!
-//! More working examples can be found in [here]
-//! (https://github.com/saethlin/pdfpdf/tree/master/examples).
-#![deny(missing_docs)]
+//! More working examples can be found in [here](https://github.com/saethlin/pdfpdf/tree/master/examples).
+#![warn(missing_docs)]
 
 use std::fs::File;
 use std::io;
@@ -34,17 +34,50 @@ mod fonts;
 mod graphicsstate;
 mod image;
 mod text;
+#[macro_use]
+mod util;
 
 pub use fonts::Font;
 pub use graphicsstate::{Color, Matrix};
 pub use image::Image;
 pub use text::Alignment;
 
+use util::Formattable;
+pub use util::{Point, Size};
+
+/// Available compression levels for a PDF document's internal streams
+/// This is configurable on a per-page basis
+#[derive(Clone, Copy, Debug)]
+pub enum Compression {
+    /// Fast is a good default, the compression is surprisingly good
+    Fast,
+    /// Normal is deflate's default
+    Normal,
+    /// Best deflate compression available, sacrifices a lot of runtime for not much size
+    Best,
+    /// Uncompressed PDF streams are both easier to debug and much faster to write.
+    /// Some uncompressed PDFs may be slower due to the amount of disk reads required.
+    Off,
+}
+
+impl Compression {
+    fn to_deflate(self) -> Option<deflate::Compression> {
+        match self {
+            Compression::Fast => Some(deflate::Compression::Fast),
+            Compression::Normal => Some(deflate::Compression::Default),
+            Compression::Best => Some(deflate::Compression::Best),
+            Compression::Off => None,
+        }
+    }
+}
+
 /// Represents a PDF internal object
 struct PdfObject {
-    offset: usize,
+    contents: Vec<u8>,
     id: usize,
     is_page: bool,
+    is_xobject: bool,
+    offset: Option<usize>,
 }
 
 /// The top-level struct that represents a (partially) in-memory PDF file
@@ -57,28 +90,36 @@ pub struct Pdf {
     fonts: Vec<fonts::Font>,
     font_size: f64,
     current_font_index: usize,
-    compress: bool,
+    compression: Compression,
+}
+
+impl Default for Pdf {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Pdf {
     /// Create a new blank PDF document
     #[inline]
     pub fn new() -> Self {
-        let mut buffer = Vec::new();
-        buffer.extend(b"%PDF-1.7\n%\xB5\xED\xAE\xFB\n");
-        Pdf {
-            buffer: buffer,
+        Self {
+            buffer: b"%PDF-1.7\n%\xB5\xED\xAE\xFB\n".to_vec(),
             page_buffer: Vec::new(),
             objects: vec![
                 PdfObject {
-                    offset: 0,
+                    contents: Vec::new(),
                     id: 1,
                     is_page: false,
+                    is_xobject: false,
+                    offset: None,
                 },
                 PdfObject {
-                    offset: 0,
+                    contents: Vec::new(),
                     id: 2,
                     is_page: false,
+                    is_xobject: false,
+                    offset: None,
                 },
             ],
             width: 400.0,
@@ -86,29 +127,42 @@ impl Pdf {
             fonts: vec![Font::Helvetica],
             font_size: 12.0,
             current_font_index: 0,
-            compress: true,
+            compression: Compression::Fast,
         }
     }
 
-    /// Create a new blank PDF document without compression
+    fn add_object(&mut self, data: Vec<u8>, is_page: bool, is_xobject: bool) -> usize {
+        let id = self.objects.iter().map(|o| o.id).max().unwrap_or(3) + 1;
+        self.objects.push(PdfObject {
+            contents: data,
+            id,
+            is_page,
+            is_xobject,
+            offset: None,
+        });
+        id
+    }
+
+    /// Sets the compression level for this document
+    /// Calls to this method do not affect data produced by operations before the last .add_page
     #[inline]
-    pub fn new_uncompressed() -> Self {
-        let mut this = Pdf::new();
-        this.compress = false;
-        this
+    pub fn compression(&mut self, compression: Compression) -> &mut Self {
+        self.compression = compression;
+        self
     }
 
     /// Add an RGB image
     #[inline]
-    pub fn add_image<N1, N2>(&mut self, image: Image, x: N1, y: N2) -> &mut Self
+    pub fn add_image_at<X, Y>(&mut self, image: Image, location: Point<X, Y>) -> &mut Self
     where
-        f64: From<N1>,
-        f64: From<N2>,
+        X: Into<f64>,
+        Y: Into<f64>,
     {
         use deflate::{deflate_bytes_zlib_conf, Compression};
         use std::io::Write;
 
-        let (x, y) = (f64::from(x), f64::from(y));
+        let location = location.into_f64();
+
         let compressed = deflate_bytes_zlib_conf(image.buf, Compression::Best);
 
         let _ = write!(
@@ -121,7 +175,7 @@ impl Pdf {
              /BPC 8\n\
              /F [/Fl]\n\
              ID\n",
-            image.width, image.height, x, y, image.width, image.height
+            image.width, image.height, location.x, location.y, image.width, image.height
         );
         self.page_buffer.extend(compressed);
         self.page_buffer.extend(b"\nEI Q\n");
@@ -131,17 +185,25 @@ impl Pdf {
 
     /// Move the pen, starting a new path
     #[inline]
-    pub fn move_to(&mut self, x: f64, y: f64) -> &mut Self {
-        self.page_buffer
-            .extend_from_slice(format!("{:.2} {:.2} m\n", x, y).as_bytes());
+    pub fn move_to<X, Y>(&mut self, p: Point<X, Y>) -> &mut Self
+    where
+        Y: Into<f64>,
+        X: Into<f64>,
+    {
+        let p = p.into_f64();
+        ryu!(self.page_buffer, p.x, p.y, "m");
         self
     }
 
     /// Draw a line from the current location
     #[inline]
-    pub fn line_to(&mut self, x: f64, y: f64) -> &mut Self {
-        self.page_buffer
-            .extend_from_slice(format!("{:.2} {:.2} l\n", x, y).as_bytes());
+    pub fn line_to<X, Y>(&mut self, p: Point<X, Y>) -> &mut Self
+    where
+        Y: Into<f64>,
+        X: Into<f64>,
+    {
+        let p = p.into_f64();
+        ryu!(self.page_buffer, p.x, p.y, "l");
         self
     }
 
@@ -153,13 +215,7 @@ impl Pdf {
         (x2, y2): (f64, f64),
         (x3, y3): (f64, f64),
     ) -> &mut Self {
-        self.page_buffer.extend(
-            format!(
-                "{:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c\n",
-                x1, y1, x2, y2, x3, y3
-            )
-            .bytes(),
-        );
+        ryu!(&mut self.page_buffer, x1, y1, x2, y2, x3, y3, "c");
         self
     }
 
@@ -167,36 +223,30 @@ impl Pdf {
     #[inline]
     pub fn set_line_width<N>(&mut self, width: N) -> &mut Self
     where
-        f64: From<N>,
+        N: Into<f64>,
     {
-        self.page_buffer
-            .extend(format!("{:.2} w\n", f64::from(width)).bytes());
+        ryu!(self.page_buffer, width.into(), "w");
         self
     }
 
     /// Set the color for all subsequent drawing operations
     #[inline]
     pub fn set_color(&mut self, color: Color) -> &mut Self {
-        let norm = |color| color as f64 / 255.0;
-        self.page_buffer.extend(
-            format!(
-                "{:.2} {:.2} {:.2} SC\n",
-                norm(color.red),
-                norm(color.green),
-                norm(color.blue),
-            )
-            .bytes(),
+        let norm = |color| f64::from(color) / 255.0;
+        ryu!(
+            self.page_buffer,
+            norm(color.red),
+            norm(color.green),
+            norm(color.blue),
+            "SC"
         );
-        self.page_buffer.extend(
-            format!(
-                "{:.2} {:.2} {:.2} rg\n",
-                norm(color.red),
-                norm(color.green),
-                norm(color.blue),
-            )
-            .bytes(),
+        ryu!(
+            self.page_buffer,
+            norm(color.red),
+            norm(color.green),
+            norm(color.blue),
+            "rg"
         );
-
         self
     }
 
@@ -211,46 +261,124 @@ impl Pdf {
     /// Draw a circle with the current drawing configuration,
     /// based on http://spencermortensen.com/articles/bezier-circle/
     #[inline]
-    pub fn draw_circle<N1, N2, N3>(&mut self, x: N1, y: N2, radius: N3) -> &mut Self
+    pub fn draw_circle<X, Y, N>(&mut self, center: Point<X, Y>, radius: N) -> &mut Self
     where
-        f64: From<N1>,
-        f64: From<N2>,
-        f64: From<N3>,
+        Y: Into<f64>,
+        X: Into<f64>,
+        N: Into<f64>,
     {
-        let x = f64::from(x);
-        let y = f64::from(y);
-        let radius = f64::from(radius);
+        let center = center.into_f64();
+        let radius = radius.into();
+        let x = center.x;
+        let y = center.y;
         let top = y - radius;
         let bottom = y + radius;
         let left = x - radius;
         let right = x + radius;
-        let c = 0.551915024494;
+        let c = 0.551_915_024_494;
         let leftp = x - (radius * c);
         let rightp = x + (radius * c);
         let topp = y - (radius * c);
         let bottomp = y + (radius * c);
-        self.move_to(x, top);
+        self.move_to(Point { x, y: top });
         self.curve_to((leftp, top), (left, topp), (left, y));
         self.curve_to((left, bottomp), (leftp, bottom), (x, bottom));
         self.curve_to((rightp, bottom), (right, bottomp), (right, y));
         self.curve_to((right, topp), (rightp, top), (x, top));
-        self.page_buffer.extend(b"S\n");
+        self.page_buffer.extend(b"S\n"); // close and stroke
+        self
+    }
+
+    /// Draw a circle with the current drawing configuration,
+    /// based on http://spencermortensen.com/articles/bezier-circle/
+    #[inline]
+    pub fn draw_circle_filled<X, Y, N>(&mut self, center: Point<X, Y>, radius: N) -> &mut Self
+    where
+        Y: Into<f64>,
+        X: Into<f64>,
+        N: Into<f64>,
+    {
+        let center = center.into_f64();
+        let x = center.x;
+        let y = center.y;
+        let radius = radius.into();
+        let top = y - radius;
+        let bottom = y + radius;
+        let left = x - radius;
+        let right = x + radius;
+        let c = 0.551_915_024_494;
+        let leftp = x - (radius * c);
+        let rightp = x + (radius * c);
+        let topp = y - (radius * c);
+        let bottomp = y + (radius * c);
+        self.move_to(Point { x, y: top });
+        self.curve_to((leftp, top), (left, topp), (left, y));
+        self.curve_to((left, bottomp), (leftp, bottom), (x, bottom));
+        self.curve_to((rightp, bottom), (right, bottomp), (right, y));
+        self.curve_to((right, topp), (rightp, top), (x, top));
+        self.page_buffer.extend(b"f\n"); // implicitly close and fill
+        self
+    }
+
+    // TODO: This should actually be something like a
+    // let id = pdf.draw_xobject
+    /// Draw multiple dots using an XObject to save space
+    #[inline]
+    pub fn draw_dots(&mut self, x: &[f64], y: &[f64]) -> &mut Self {
+        let c = 0.551_915_024_494;
+        let mut dot = Vec::new();
+        ryu!(dot, 0., -1., "m");
+        ryu!(dot, -c, -1., -1., -c, -1., 0., "c");
+        ryu!(dot, -1., c, -c, 1., 0., 1., "c");
+        ryu!(dot, c, 1., 1., c, 1., 0., "c");
+        ryu!(dot, 1., -c, c, -1., 0., -1., "c", "f");
+        let mut dot_obj = format!(
+            "<< /Type /XObject /Subtype /Form /BBox [ -2 -2 2 2 ] /Length {} >>\nstream\n",
+            dot.len()
+        )
+        .into_bytes();
+        dot_obj.extend_from_slice(&dot);
+        dot_obj.extend_from_slice(b"endstream\n");
+
+        let id = self.add_object(dot_obj, false, false);
+
+        self.add_object(format!("<< /M0 {} 0 R >>\n", id).into_bytes(), false, true);
+
+        self.page_buffer.extend(b"q\n");
+        let mut previous = Point { x: 0.0, y: 0.0 };
+        for (x, y) in x.iter().zip(y) {
+            ryu!(
+                self.page_buffer,
+                1.,
+                0.,
+                0.,
+                1.,
+                x - previous.x,
+                y - previous.y,
+                "cm /M0 Do"
+            );
+            previous.x = *x;
+            previous.y = *y;
+        }
+        self.page_buffer.extend(b"Q\n");
+
         self
     }
 
     /// Draw a line between all these points in the order they appear
     #[inline]
-    pub fn draw_line<'a, I, N: 'a>(&mut self, mut points: I) -> &mut Self
+    pub fn draw_line<I1, I2>(&mut self, x_iter: I1, y_iter: I2) -> &mut Self
     where
-        I: Iterator<Item = (N, N)>,
-        N: Into<f64>,
-        N: Copy,
+        I1: IntoIterator<Item = f64>,
+        I2: IntoIterator<Item = f64>,
     {
+        let mut x_iter = x_iter.into_iter();
+        let mut y_iter = y_iter.into_iter();
         // Can't just loop because we have to move_to the first point, then we can line_to the rest
-        if let Some((x, y)) = points.next() {
-            self.move_to(x.into(), y.into());
-            for (x, y) in points {
-                self.line_to(x.into(), y.into());
+        if let (Some(x), Some(y)) = (x_iter.next(), y_iter.next()) {
+            self.move_to(Point { x, y });
+            for (x, y) in x_iter.zip(y_iter) {
+                self.line_to(Point { x, y });
             }
         }
         self.page_buffer.extend(b"S\n");
@@ -264,70 +392,63 @@ impl Pdf {
         self
     }
 
-    /// Draw a rectangle that extends from x1, y1 to x2, y2
-    #[inline]
-    pub fn draw_rectangle_filled<N1, N2, N3, N4>(
-        &mut self,
-        x: N1,
-        y: N2,
-        width: N3,
-        height: N4,
-    ) -> &mut Self
-    where
-        f64: From<N1>,
-        f64: From<N2>,
-        f64: From<N3>,
-        f64: From<N4>,
-    {
-        self.page_buffer.extend(
-            format!(
-                "{:.2} {:.2} {:.2} {:.2} re\n",
-                f64::from(x),
-                f64::from(y),
-                f64::from(width),
-                f64::from(height)
-            )
-            .bytes(),
-        );
-        // Fill path using Nonzero Winding Number Rule
-        self.page_buffer.extend(b"f\n");
-        self
-    }
-    /// Draw a rectangle that extends from x1, y1 to x2, y2
+    /// Draw a rectangle in the current color with bottom-left corner at with bottom-lef
+    /// corner at `corner` and dimensions `size`.
 
     #[inline]
-    pub fn draw_rectangle<N1, N2, N3, N4>(
+    pub fn draw_rectangle_filled<X, Y, W, H>(
         &mut self,
-        x: N1,
-        y: N2,
-        width: N3,
-        height: N4,
+        corner: Point<X, Y>,
+        size: Size<W, H>,
     ) -> &mut Self
     where
-        f64: From<N1>,
-        f64: From<N2>,
-        f64: From<N3>,
-        f64: From<N4>,
+        X: Into<f64>,
+        Y: Into<f64>,
+        W: Into<f64>,
+        H: Into<f64>,
     {
-        self.page_buffer.extend(
-            format!(
-                "{:.2} {:.2} {:.2} {:.2} re\n",
-                f64::from(x),
-                f64::from(y),
-                f64::from(width),
-                f64::from(height)
-            )
-            .bytes(),
+        let corner = corner.into_f64();
+        let size = size.into_f64();
+        ryu!(
+            self.page_buffer,
+            corner.x,
+            corner.y,
+            size.width,
+            size.height,
+            "re f" // Fill path using Nonzero Winding Number Rule
         );
-        self.page_buffer.extend(b"S\n");
         self
     }
 
+    /// Draw a shaded rectangle in the current color with bottom-left corner at with bottom-left
+    /// corner at `corner` and dimensions `size`.
     #[inline]
+    pub fn draw_rectangle<X, Y, W, H>(&mut self, corner: Point<X, Y>, size: Size<W, H>) -> &mut Self
+    where
+        X: Into<f64>,
+        Y: Into<f64>,
+        W: Into<f64>,
+        H: Into<f64>,
+    {
+        let corner = corner.into_f64();
+        let size = size.into_f64();
+
+        ryu!(
+            self.page_buffer,
+            corner.x,
+            corner.y,
+            size.width,
+            size.height,
+            "re S" // Fill path using Nonzero Winding Number Rule
+        );
+        self
+    }
+
     /// Set the font for all subsequent drawing calls
+    #[inline]
     pub fn font<N>(&mut self, font: Font, size: N) -> &mut Self
     where
-        f64: std::convert::From<N>,
+        N: Into<f64>,
     {
         match self.fonts.iter().position(|f| *f == font) {
             Some(index) => {
@@ -338,71 +459,68 @@ impl Pdf {
                 self.current_font_index = self.fonts.len() - 1;
             }
         }
-        self.font_size = std::convert::From::from(size);
+        self.font_size = size.into();
         self
     }
 
     /// Convienence method to figure out the width of a string
     /// May be required for some users to position text properly
     pub fn width_of(&self, text: &str) -> f64 {
+        let current_font = &self.fonts[self.current_font_index];
         text.chars()
             .filter(|c| *c != '\n')
-            .map(|c| fonts::glyph_width(&self.fonts[self.current_font_index].clone(), c))
+            .map(|c| fonts::glyph_width(current_font, c))
             .sum::<f64>()
             * self.font_size
     }
 
     /// Draw text at a given location with the current settings
     #[inline]
-    pub fn draw_text<N1, N2>(&mut self, x: N1, y: N2, alignment: Alignment, text: &str) -> &mut Self
+    pub fn draw_text<X, Y>(
+        &mut self,
+        position: Point<X, Y>,
+        alignment: Alignment,
+        text: &str,
+    ) -> &mut Self
     where
-        f64: std::convert::From<N1>,
-        f64: std::convert::From<N2>,
+        X: Into<f64>,
+        Y: Into<f64>,
     {
-        let x = f64::from(x);
-        let y = f64::from(y);
-        let current_font = self.fonts[self.current_font_index].clone();
+        let x = position.x.into();
+        let y = position.y.into();
         let height = self.font_size;
 
         self.page_buffer
             .extend(format!("BT\n/F{} {} Tf\n", self.current_font_index, self.font_size).bytes());
 
-        let num_lines = text.split('\n').count();
+        let num_lines = text.split('\n').count() as f64;
         for (l, line) in text.split('\n').enumerate() {
-            let line_width = line
-                .chars()
-                .filter(|c| *c != '\n')
-                .map(|c| fonts::glyph_width(&current_font, c))
-                .sum::<f64>()
-                * self.font_size;
+            let line_width = self.width_of(line);
+            let l = l as f64;
 
             let (line_x, line_y) = match alignment {
-                Alignment::TopLeft => (x, y - height * (l as f64 + 1.0)),
-                Alignment::TopRight => (x - line_width, y - height * (l as f64 + 1.0)),
-                Alignment::TopCenter => (x - line_width / 2.0, y - height * (l as f64 + 1.0)),
+                Alignment::TopLeft => (x, y - height * (l + 1.0)),
+                Alignment::TopRight => (x - line_width, y - height * (l + 1.0)),
+                Alignment::TopCenter => (x - line_width / 2.0, y - height * (l + 1.0)),
                 Alignment::CenterLeft => (
                     x,
-                    (y - height / 3.0)
-                        - (l as f64 - (num_lines as f64 - 1.0) / 2.0) * height * 1.25,
+                    (y - height / 3.0) - (l - (num_lines - 1.0) / 2.0) * height * 1.25,
                 ),
                 Alignment::CenterRight => (
                     x - line_width,
-                    (y - height / 3.0)
-                        - (l as f64 - (num_lines as f64 - 1.0) / 2.0) * height * 1.25,
+                    (y - height / 3.0) - (l - (num_lines - 1.0) / 2.0) * height * 1.25,
                 ),
                 Alignment::CenterCenter => (
                     x - line_width / 2.0,
-                    (y - height / 3.0)
-                        - (l as f64 - (num_lines as f64 - 1.0) / 2.0) * height * 1.25,
+                    (y - height / 3.0) - (l - (num_lines - 1.0) / 2.0) * height * 1.25,
                 ),
-                Alignment::BottomLeft => (x, y + (num_lines - l - 1) as f64 * 1.25 * height),
-                Alignment::BottomRight => (
-                    x - line_width,
-                    y + (num_lines - l - 1) as f64 * 1.25 * height,
-                ),
+                Alignment::BottomLeft => (x, y + (num_lines - l - 1.0) * 1.25 * height),
+                Alignment::BottomRight => {
+                    (x - line_width, y + (num_lines - l - 1.0) * 1.25 * height)
+                }
                 Alignment::BottomCenter => (
                     x - line_width / 2.0,
-                    y + (num_lines - l - 1) as f64 * 1.25 * height,
+                    y + (num_lines - l - 1.0) * 1.25 * height,
                 ),
             };
 
@@ -420,73 +538,62 @@ impl Pdf {
 
     /// Move to a new page in the PDF document
     #[inline]
-    pub fn add_page<N1, N2>(&mut self, width: N1, height: N2) -> &mut Self
+    pub fn add_page<W, H>(&mut self, size: Size<W, H>) -> &mut Self
     where
-        N1: Into<f64>,
-        N2: Into<f64>,
+        W: Into<f64>,
+        H: Into<f64>,
     {
         // Compress and write out the previous page if it exists
         if !self.page_buffer.is_empty() {
-            self.flush_page();
+            self.end_page();
             self.page_buffer.clear();
         }
 
         self.page_buffer
             .extend("/DeviceRGB cs /DeviceRGB CS\n1 j 1 J\n".bytes());
-        self.width = width.into();
-        self.height = height.into();
+        self.width = size.width.into();
+        self.height = size.height.into();
         self
     }
 
     /// Dump a page out to disk
-    fn flush_page(&mut self) {
+    fn end_page(&mut self) {
         // Write out any images associated with this page
         // TODO: are images global or associated with a page?
 
-        // Write out the data stream for this page
-        let stream_object_id = self.objects.iter().map(|o| o.id).max().unwrap() + 1;
-        self.objects.push(PdfObject {
-            offset: self.buffer.len(),
-            id: stream_object_id,
-            is_page: false,
-        });
-
-        self.buffer
-            .extend(format!("{} 0 obj\n", stream_object_id).bytes());
-        if self.compress {
-            let (compressed, rounds) = compress(self.page_buffer.clone());
-            self.buffer.extend(
-                format!(
-                    "<</Length {} /Filter [{}]>>\nstream\n",
-                    compressed.len(),
-                    "/FlateDecode ".repeat(rounds)
-                )
-                .bytes(),
-            );
-            self.buffer.extend(compressed.iter());
-            self.buffer.extend(b"\nendstream\nendobj\n")
+        let page_stream = if let Some(level) = self.compression.to_deflate() {
+            let compressed = deflate::deflate_bytes_zlib_conf(&self.page_buffer, level);
+            let mut page = format!(
+                "<< /Length {} /Filter [/FlateDecode] >>\nstream\n",
+                compressed.len()
+            )
+            .into_bytes();
+            page.extend_from_slice(&compressed);
+            page.extend(b"endstream\n");
+            page
         } else {
-            self.buffer
-                .extend(format!("<</Length {}>>\nstream\n", self.page_buffer.len()).bytes());
-            self.buffer.extend(self.page_buffer.iter());
-            self.buffer.extend(b"\nendstream\nendobj\n");
+            let mut page = Vec::new();
+            page.extend(format!("<< /Length {} >>\nstream\n", self.page_buffer.len()).bytes());
+            page.extend(&self.page_buffer);
+            page.extend(b"endstream\n");
+            page
+        };
+
+        // Create the stream object for this page
+        let stream_object_id = self.add_object(page_stream, false, false);
+
+        // Create the page object, which describes settings for the whole page
+        let mut page_object = b"<< /Type /Page\n \
+            /Parent 2 0 R\n \
+            /Resources <<\n"
+            .to_vec();
+
+        for obj in self.objects.iter().filter(|o| o.is_xobject) {
+            page_object.extend(format!("/XObject {} 0 R ", obj.id).bytes());
         }
 
-        // Write out the page object
-        let page_object_id = self.objects.iter().map(|o| o.id).max().unwrap() + 1;
-        self.objects.push(PdfObject {
-            offset: self.buffer.len(),
-            id: page_object_id,
-            is_page: true,
-        });
-        self.buffer
-            .extend(format!("{} 0 obj\n", page_object_id).bytes());
-        self.buffer.extend(b"<</Type /Page\n");
-        self.buffer.extend(b" /Parent 2 0 R\n");
-
-        self.buffer.extend(b" /Resources <<\n");
         for (f, font) in self.fonts.iter().enumerate() {
-            self.buffer.extend(
+            page_object.extend(
                 format!(
                     "  /Font <<\n   /F{} <<\n    /Type /Font\n    /Subtype /Type1\n    /BaseFont \
                      /{:?}\n    /Encoding /WinAnsiEncoding\n   >>\n  >>\n",
@@ -495,14 +602,18 @@ impl Pdf {
                 .bytes(),
             );
         }
-        self.buffer.extend(b" >>\n");
+        page_object.extend_from_slice(
+            format!(
+                " >>\n \
+                 /MediaBox [0 0 {} {}]\n \
+                 /Contents {} 0 R\n\
+                 >>\n",
+                self.width, self.height, stream_object_id
+            )
+            .as_bytes(),
+        );
+        self.add_object(page_object, true, false);
 
-        self.buffer
-            .extend(format!(" /MediaBox [0 0 {} {}]\n", self.width, self.height).bytes());
-        self.buffer
-            .extend(format!(" /Contents {} 0 R\n", stream_object_id).bytes());
-
-        self.buffer.extend(b">>\nendobj\n");
         self.fonts.truncate(1);
     }
 
@@ -511,13 +622,21 @@ impl Pdf {
         use std::io::Write;
 
         if !self.page_buffer.is_empty() {
-            self.flush_page();
+            self.end_page();
+        }
+
+        // Write out each object
+        for obj in self.objects.iter_mut().skip(2) {
+            obj.offset = Some(self.buffer.len());
+            self.buffer.extend(format!("{} 0 obj\n", obj.id).as_bytes());
+            self.buffer.extend_from_slice(&obj.contents);
+            self.buffer.extend_from_slice(b"endobj\n");
         }
 
         // Write out the page tree object
-        self.objects[1].offset = self.buffer.len();
+        self.objects[1].offset = Some(self.buffer.len());
         self.buffer.extend(b"2 0 obj\n");
-        self.buffer.extend(b"<</Type /Pages\n");
+        self.buffer.extend(b"<< /Type /Pages\n");
         self.buffer.extend(
             format!(
                 "/Count {}\n",
@@ -530,12 +649,12 @@ impl Pdf {
             self.buffer.extend(format!("{} 0 R ", obj.id).bytes());
         }
         self.buffer.pop();
-        self.buffer.extend(b"]>>\nendobj\n");
+        self.buffer.extend(b"] >>\nendobj\n");
 
         // Write out the catalog dictionary object
-        self.objects[0].offset = self.buffer.len();
+        self.objects[0].offset = Some(self.buffer.len());
         self.buffer
-            .extend_from_slice(b"1 0 obj\n<</Type /Catalog\n/Pages 2 0 R>>\nendobj\n");
+            .extend_from_slice(b"1 0 obj\n<< /Type /Catalog\n/Pages 2 0 R >>\nendobj\n");
 
         // Write the cross-reference table
         let startxref = self.buffer.len() + 1; // NOTE: apparently there's some 1-based indexing??
@@ -547,14 +666,14 @@ impl Pdf {
 
         for obj in &self.objects {
             self.buffer
-                .extend(format!("{:010} 00000 f \n", obj.offset).bytes());
+                .extend(format!("{:010} 00000 f \n", obj.offset.unwrap()).bytes());
         }
 
         // Write the document trailer
         self.buffer.extend(b"trailer\n");
         self.buffer
-            .extend(format!("<</Size {}\n", self.objects.len()).bytes());
-        self.buffer.extend(b"/Root 1 0 R>>\n");
+            .extend(format!("<< /Size {}\n", self.objects.len()).bytes());
+        self.buffer.extend(b"/Root 1 0 R >>\n");
 
         // Write the offset to the xref table
         self.buffer
@@ -565,20 +684,4 @@ impl Pdf {
 
         File::create(filename)?.write_all(self.buffer.as_slice())
     }
-}
-
-fn compress(input: Vec<u8>) -> (Vec<u8>, usize) {
-    use deflate::{deflate_bytes_zlib_conf, Compression};
-    let mut compressed = input;
-    let mut rounds = 0;
-    loop {
-        let another = deflate_bytes_zlib_conf(compressed.as_slice(), Compression::Best);
-        if another.len() < compressed.len() {
-            compressed = another;
-            rounds += 1;
-        } else {
-            break;
-        }
-    }
-    (compressed, rounds)
 }

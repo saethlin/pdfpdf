@@ -31,7 +31,7 @@ pub enum CapStyle {
 }
 
 /// Any color (or grayscale) value that this library can make PDF represent.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[allow(missing_docs)]
 pub struct Color {
     pub red: u8,
@@ -40,25 +40,6 @@ pub struct Color {
 }
 
 impl Color {
-    /// Return a color from a RGB colorspace.
-
-    /// # Example
-    /// ````
-    /// # use pdfpdf::Color;
-    /// let white = Color::rgb(255, 255, 255);
-    /// let black = Color::rgb(0, 0, 0);
-    /// let red = Color::rgb(255, 0, 0);
-    /// let yellow = Color::rgb(255, 255, 0);
-    /// ````
-    #[inline]
-    pub fn rgb(red: u8, green: u8, blue: u8) -> Self {
-        Color {
-            red: red,
-            green: green,
-            blue: blue,
-        }
-    }
-
     /// Return a grayscale color value.
 
     /// # Example
@@ -69,7 +50,7 @@ impl Color {
     /// ````
     #[inline]
     pub fn gray(gray: u8) -> Self {
-        Color {
+        Self {
             red: gray,
             green: gray,
             blue: gray,
@@ -97,6 +78,7 @@ impl Color {
 ///     .transform(Matrix::rotate_deg(45.0))
 ///     .write_to("foo.pdf").unwrap();
 /// ```
+#[derive(Clone, Copy, Debug)]
 pub struct Matrix {
     v: [f64; 6],
 }
@@ -108,7 +90,7 @@ impl Matrix {
     where
         N: Into<f64>,
     {
-        Matrix {
+        Self {
             v: [1., 0., 0., 1., dx.into(), dy.into()],
         }
     }
@@ -120,7 +102,7 @@ impl Matrix {
         N: Into<f64>,
     {
         let a = a.into();
-        Matrix {
+        Self {
             v: [a.cos(), a.sin(), -a.sin(), a.cos(), 0., 0.],
         }
     }
@@ -141,7 +123,7 @@ impl Matrix {
     where
         N: Into<f64>,
     {
-        Matrix {
+        Self {
             v: [sx.into(), 0., 0., sy.into(), 0., 0.],
         }
     }
@@ -162,7 +144,7 @@ impl Matrix {
     where
         N: Into<f64>,
     {
-        Matrix {
+        Self {
             v: [1., a.into().tan(), b.into().tan(), 1., 0., 0.],
         }
     }
@@ -182,7 +164,7 @@ impl Mul for Matrix {
     fn mul(self, b: Self) -> Self {
         let a = self.v;
         let b = b.v;
-        Matrix {
+        Self {
             v: [
                 a[0] * b[0] + a[1] * b[2],
                 a[0] * b[1] + a[1] * b[3],
@@ -222,8 +204,8 @@ fn assert_unit(m: &Matrix) {
 
 #[cfg(test)]
 fn diff(a: &[f64; 6], b: &[f64; 6]) -> Option<String> {
-    let large_a = a.iter().fold(0f64, |x, &y| x.max(y));
-    let large_b = b.iter().fold(0f64, |x, &y| x.max(y));
+    let large_a = a.iter().fold(0_f64, |x, &y| x.max(y));
+    let large_b = b.iter().fold(0_f64, |x, &y| x.max(y));
     let epsilon = 1e-6 * large_a.max(large_b);
     for i in 0..6 {
         if (a[i] - b[i]).abs() > epsilon {

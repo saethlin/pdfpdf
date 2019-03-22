@@ -20,4 +20,10 @@ categories = ["visualization"]
 [dependencies]
 deflate = "0.7"
 png = "0.14"
+ryu = "0.2"
 
+[dev-dependencies]
+rand = "0.6"
+
+[profile.release]
+debug = true

@@ -1,7 +1,4 @@
-extern crate pdfpdf;
-extern crate png;
-
-use pdfpdf::{Image, Pdf};
+use pdfpdf::{Image, Pdf, Point, Size};
 use std::fs::File;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -16,9 +13,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     let image = Image::new(&image_rgb, info.width, info.height);
 
-    Pdf::new_uncompressed()
-        .add_page(info.width + 100, info.height + 100)
-        .add_image(image, 50, 50)
+    Pdf::new()
+        .add_page(Size {
+            width: info.width + 100,
+            height: info.height + 100,
+        })
+        .add_image_at(image, Point { x: 50., y: 50. })
         //.set_color(Color::rgb(0, 0, 248))
         //.draw_circle(0, 0, 1)
         .write_to("image_test.pdf")?;

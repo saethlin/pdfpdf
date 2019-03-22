@@ -1,6 +1,5 @@
-// Rewrite a simple slideshow in Rust using pdfpdf
-extern crate pdfpdf;
-use pdfpdf::{Alignment, Color, Font, Pdf};
+//! Rewrite a simple slideshow in Rust using pdfpdf
+use pdfpdf::{Alignment, Color, Font, Pdf, Point, Size};
 
 fn main() {
     Slideshow::new(1280, 1024, Color::gray(0), Color::gray(255))
@@ -35,21 +34,36 @@ impl Slideshow {
             height: height.into(),
             background_color,
             text_color,
-            pdf: Pdf::new_uncompressed(),
+            pdf: {
+                let mut pdf = Pdf::new();
+                pdf.compression(pdfpdf::Compression::Off);
+                pdf
+            },
         }
     }
 
     pub fn add_title_slide(&mut self, text: &str) -> &mut Self {
         // init the new slide
         self.pdf
-            .add_page(self.width, self.height)
+            .add_page(Size {
+                width: self.width,
+                height: self.height,
+            })
             .set_color(self.background_color)
-            .draw_rectangle_filled(0.0, 0.0, self.width, self.height)
+            .draw_rectangle_filled(
+                Point { x: 0, y: 0 },
+                Size {
+                    width: self.width,
+                    height: self.height,
+                },
+            )
             .font(Font::Helvetica, 100)
             .set_color(self.text_color)
             .draw_text(
-                self.width / 2.0,
-                self.height / 2.0,
+                Point {
+                    x: self.width / 2.0,
+                    y: self.height / 2.0,
+                },
                 Alignment::CenterCenter,
                 text,
             );
@@ -59,14 +73,25 @@ impl Slideshow {
     pub fn add_text_slide(&mut self, text: &str) -> &mut Self {
         // init the new slide
         self.pdf
-            .add_page(self.width, self.height)
+            .add_page(Size {
+                width: self.width,
+                height: self.height,
+            })
             .set_color(self.background_color)
-            .draw_rectangle_filled(0.0, 0.0, self.width, self.height)
+            .draw_rectangle_filled(
+                Point { x: 0, y: 0 },
+                Size {
+                    width: self.width,
+                    height: self.height,
+                },
+            )
             .font(Font::Helvetica, 60)
             .set_color(self.text_color)
             .draw_text(
-                self.width / 2.0,
-                self.height / 2.0,
+                Point {
+                    x: self.width / 2.0,
+                    y: self.height / 2.0,
+                },
                 Alignment::CenterCenter,
                 text,
             );
