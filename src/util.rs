@@ -29,10 +29,11 @@ impl Formattable for f64 {
     #[allow(clippy::float_cmp)]
     fn ryu_format(mut self, out: &mut Vec<u8>, ryubuf: &mut ryu::Buffer) {
         if self < 0.0 {
-            self = self.abs();
+            self *= -1.0;
             out.push(b'-');
         }
         // These are the majority of calls for intensive matplotlib-style code
+        // because we spend a lot of time printing transofmation matrices
         if self == 1.0 {
             out.push(b'1');
             return;
@@ -42,22 +43,23 @@ impl Formattable for f64 {
         }
         // Use ryu for numbers in the range where it doesn't use scientific notation
         if 1e-5 < self && self < 1e16 {
-            let mut decimal_seen = false;
-            let mut digits = 0;
-            out.extend(
-                ryubuf
-                    .format(self)
-                    .bytes()
-                    .skip_while(|c| *c == 0)
-                    .take_while(|c| {
-                        if *c == b'.' {
-                            decimal_seen = true;
-                        }
-                        digits += 1;
-                        !decimal_seen || digits <= 13
-                    }),
-            );
-        //out.extend_from_slice(ryubuf.format(self as f32).as_bytes());
+            let digits = &ryubuf.format(self).as_bytes();
+            let dot_index = digits.iter().position(|b| *b == b'.').unwrap_or(0);
+            // Try to trim if the number contains a lot of decimal precision
+            if dot_index < 14 {
+                // TODO: This truncation should be a smart rounding of some sort
+                let digits = &digits[..(digits.len().min(dot_index + 11))];
+                // We can try to trim away some of the zeroes on the right
+                let num_nonzero = digits
+                    .iter()
+                    .rev()
+                    .skip_while(|b| **b == b'0')
+                    .skip_while(|b| **b == b'.')
+                    .count();
+                out.extend_from_slice(&digits[..num_nonzero]);
+            } else {
+                out.extend_from_slice(digits);
+            }
         } else {
             out.extend_from_slice(format!("{}", self).as_bytes());
         }

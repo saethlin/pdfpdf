@@ -281,7 +281,16 @@ impl Pdf {
     /// Consecutive applications of this function are cumulative
     #[inline]
     pub fn transform(&mut self, m: Matrix) -> &mut Self {
-        self.page_buffer.extend(format!("{} cm\n", m).bytes());
+        ryu!(
+            self.page_buffer,
+            m.v[0],
+            m.v[1],
+            m.v[2],
+            m.v[3],
+            m.v[4],
+            m.v[5],
+            "cm"
+        );
         self
     }
 
@@ -551,8 +560,8 @@ impl Pdf {
                 ),
             };
 
-            self.page_buffer
-                .extend(format!("1 0 0 1 {} {} Tm (", line_x, line_y).bytes());
+            ryu!(self.page_buffer, 1., 0., 0., 1., line_x, line_y);
+            self.page_buffer.extend_from_slice(b"Tm (");
             for c in line.chars() {
                 let data = format!("\\{:o}", c as u32);
                 self.page_buffer.extend(data.bytes());

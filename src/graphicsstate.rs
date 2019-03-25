@@ -80,7 +80,7 @@ impl Color {
 /// ```
 #[derive(Clone, Copy, Debug)]
 pub struct Matrix {
-    v: [f64; 6],
+    pub(crate) v: [f64; 6],
 }
 
 impl Matrix {
