@@ -5,7 +5,7 @@
 
 //! # Example
 //!
-//! ```
+//! ```rust
 //! use pdfpdf::{Color, Pdf, Point, Size, Alignment};
 //!
 //! Pdf::new()
@@ -148,6 +148,33 @@ impl Pdf {
     #[inline]
     pub fn compression(&mut self, compression: Compression) -> &mut Self {
         self.compression = compression;
+        self
+    }
+
+    /// Set the PDF clipping box for the current page
+    #[inline]
+    pub fn set_clipping_box<X, Y, W, H>(
+        &mut self,
+        location: Point<X, Y>,
+        size: Size<W, H>,
+    ) -> &mut Self
+    where
+        X: Into<f64>,
+        Y: Into<f64>,
+        W: Into<f64>,
+        H: Into<f64>,
+    {
+        let corner = location.into_f64();
+        let size = size.into_f64();
+
+        ryu!(
+            self.page_buffer,
+            corner.x,
+            corner.y,
+            size.width,
+            size.height,
+            "re W n" // W uses nonzero winding rule
+        );
         self
     }
 
