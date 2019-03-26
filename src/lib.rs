@@ -91,6 +91,7 @@ pub struct Pdf {
     font_size: f64,
     current_font_index: usize,
     compression: Compression,
+    precision: u8,
 }
 
 impl Default for Pdf {
@@ -128,6 +129,7 @@ impl Pdf {
             font_size: 12.0,
             current_font_index: 0,
             compression: Compression::Fast,
+            precision: 10,
         }
     }
 
@@ -141,6 +143,16 @@ impl Pdf {
             offset: None,
         });
         id
+    }
+
+    /// Sets the required precision for all values written after this call
+    /// If this is set to a small value, repeated transformations may result in substantial
+    /// numerical error, but if used carefully this can massively reduce the size of drawing-heavy
+    /// documents.
+    #[inline]
+    pub fn precision(&mut self, precision: u8) -> &mut Self {
+        self.precision = precision;
+        self
     }
 
     /// Sets the compression level for this document
@@ -169,6 +181,7 @@ impl Pdf {
 
         ryu!(
             self.page_buffer,
+            self.precision,
             corner.x,
             corner.y,
             size.width,
@@ -218,7 +231,7 @@ impl Pdf {
         X: Into<f64>,
     {
         let p = p.into_f64();
-        ryu!(self.page_buffer, p.x, p.y, "m");
+        ryu!(self.page_buffer, self.precision, p.x, p.y, "m");
         self
     }
 
@@ -230,7 +243,7 @@ impl Pdf {
         X: Into<f64>,
     {
         let p = p.into_f64();
-        ryu!(self.page_buffer, p.x, p.y, "l");
+        ryu!(self.page_buffer, self.precision, p.x, p.y, "l");
         self
     }
 
@@ -242,7 +255,17 @@ impl Pdf {
         (x2, y2): (f64, f64),
         (x3, y3): (f64, f64),
     ) -> &mut Self {
-        ryu!(&mut self.page_buffer, x1, y1, x2, y2, x3, y3, "c");
+        ryu!(
+            self.page_buffer,
+            self.precision,
+            x1,
+            y1,
+            x2,
+            y2,
+            x3,
+            y3,
+            "c"
+        );
         self
     }
 
@@ -252,7 +275,7 @@ impl Pdf {
     where
         N: Into<f64>,
     {
-        ryu!(self.page_buffer, width.into(), "w");
+        ryu!(self.page_buffer, self.precision, width.into(), "w");
         self
     }
 
@@ -262,6 +285,7 @@ impl Pdf {
         let norm = |color| f64::from(color) / 255.0;
         ryu!(
             self.page_buffer,
+            self.precision,
             norm(color.red),
             norm(color.green),
             norm(color.blue),
@@ -269,6 +293,7 @@ impl Pdf {
         );
         ryu!(
             self.page_buffer,
+            self.precision,
             norm(color.red),
             norm(color.green),
             norm(color.blue),
@@ -283,6 +308,7 @@ impl Pdf {
     pub fn transform(&mut self, m: Matrix) -> &mut Self {
         ryu!(
             self.page_buffer,
+            self.precision,
             m.v[0],
             m.v[1],
             m.v[2],
@@ -363,11 +389,11 @@ impl Pdf {
     pub fn draw_dots(&mut self, x: &[f64], y: &[f64]) -> &mut Self {
         let c = 0.551_915_024_494;
         let mut dot = Vec::new();
-        ryu!(dot, 0., -1., "m");
-        ryu!(dot, -c, -1., -1., -c, -1., 0., "c");
-        ryu!(dot, -1., c, -c, 1., 0., 1., "c");
-        ryu!(dot, c, 1., 1., c, 1., 0., "c");
-        ryu!(dot, 1., -c, c, -1., 0., -1., "c", "f");
+        ryu!(dot, self.precision, 0., -1., "m");
+        ryu!(dot, self.precision, -c, -1., -1., -c, -1., 0., "c");
+        ryu!(dot, self.precision, -1., c, -c, 1., 0., 1., "c");
+        ryu!(dot, self.precision, c, 1., 1., c, 1., 0., "c");
+        ryu!(dot, self.precision, 1., -c, c, -1., 0., -1., "c", "f");
         let mut dot_obj = format!(
             "<< /Type /XObject /Subtype /Form /BBox [ -2 -2 2 2 ] /Length {} >>\nstream\n",
             dot.len()
@@ -380,21 +406,19 @@ impl Pdf {
 
         self.add_object(format!("<< /M0 {} 0 R >>\n", id).into_bytes(), false, true);
 
-        self.page_buffer.extend(b"q\n");
-        let mut previous = Point { x: 0.0, y: 0.0 };
         for (x, y) in x.iter().zip(y) {
             ryu!(
                 self.page_buffer,
+                self.precision,
+                "q",
                 1.,
                 0.,
                 0.,
                 1.,
-                x - previous.x,
-                y - previous.y,
-                "cm /M0 Do"
+                x,
+                y,
+                "cm /M0 Do Q"
             );
-            previous.x = *x;
-            previous.y = *y;
         }
         self.page_buffer.extend(b"Q\n");
 
@@ -447,6 +471,7 @@ impl Pdf {
         let size = size.into_f64();
         ryu!(
             self.page_buffer,
+            self.precision,
             corner.x,
             corner.y,
             size.width,
@@ -471,6 +496,7 @@ impl Pdf {
 
         ryu!(
             self.page_buffer,
+            self.precision,
             corner.x,
             corner.y,
             size.width,
@@ -560,7 +586,16 @@ impl Pdf {
                 ),
             };
 
-            ryu!(self.page_buffer, 1., 0., 0., 1., line_x, line_y);
+            ryu!(
+                self.page_buffer,
+                self.precision,
+                1.,
+                0.,
+                0.,
+                1.,
+                line_x,
+                line_y
+            );
             self.page_buffer.extend_from_slice(b"Tm (");
             for c in line.chars() {
                 let data = format!("\\{:o}", c as u32);

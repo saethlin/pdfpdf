@@ -1,33 +1,34 @@
 // tt muncher
 macro_rules! ryu {
-    ($buffer:expr, $($tail:tt)*) => {
+    ($buffer:expr, $precision:expr, $($tail:tt)*) => {
         {
             let mut __ryu_buffer = ryu::Buffer::new();
-            ryu_intern!($buffer, &mut __ryu_buffer, $($tail)*);
+            ryu_intern!($buffer, $precision, &mut __ryu_buffer, $($tail)*);
         }
     };
 }
 
 macro_rules! ryu_intern {
-    ($out:expr, $ryubuf:expr, $item:expr) => {
-        $item.ryu_format(&mut $out, $ryubuf);
+    ($out:expr, $precision:expr, $ryubuf:expr, $item:expr) => {
+        $item.ryu_format(&mut $out, $precision, $ryubuf);
         $out.push(b'\n');
     };
-    ($out:expr, $ryubuf:expr, $item:expr, $($tail:tt)*) => {
-        $item.ryu_format(&mut $out, $ryubuf);
+    ($out:expr, $precision:expr, $ryubuf:expr, $item:expr, $($tail:tt)*) => {
+        $item.ryu_format(&mut $out, $precision, $ryubuf);
         $out.push(b' ');
-        ryu_intern!($out, $ryubuf, $($tail)*);
+        ryu_intern!($out, $precision, $ryubuf, $($tail)*);
     };
 }
 
 pub trait Formattable {
-    fn ryu_format(self, out: &mut Vec<u8>, ryubuf: &mut ryu::Buffer);
+    fn ryu_format(self, out: &mut Vec<u8>, precision: u8, ryubuf: &mut ryu::Buffer);
 }
 
 impl Formattable for f64 {
     #[inline]
     #[allow(clippy::float_cmp)]
-    fn ryu_format(mut self, out: &mut Vec<u8>, ryubuf: &mut ryu::Buffer) {
+    fn ryu_format(mut self, out: &mut Vec<u8>, precision: u8, ryubuf: &mut ryu::Buffer) {
+        let precision = precision as usize;
         if self < 0.0 {
             self *= -1.0;
             out.push(b'-');
@@ -44,11 +45,12 @@ impl Formattable for f64 {
         // Use ryu for numbers in the range where it doesn't use scientific notation
         if 1e-5 < self && self < 1e16 {
             let digits = &ryubuf.format(self).as_bytes();
-            let dot_index = digits.iter().position(|b| *b == b'.').unwrap_or(0);
+            let dot_index = digits.iter().position(|b| *b == b'.');
             // Try to trim if the number contains a lot of decimal precision
-            if dot_index < 14 {
+            if let Some(dot_index) = dot_index {
                 // TODO: This truncation should be a smart rounding of some sort
-                let digits = &digits[..(digits.len().min(dot_index + 11))];
+                // the +1 is to advance past the dot
+                let digits = &digits[..(digits.len().min(dot_index + 1 + precision))];
                 // We can try to trim away some of the zeroes on the right
                 let num_nonzero = digits
                     .iter()
@@ -68,7 +70,7 @@ impl Formattable for f64 {
 
 impl Formattable for &str {
     #[inline]
-    fn ryu_format(self, out: &mut Vec<u8>, _: &mut ryu::Buffer) {
+    fn ryu_format(self, out: &mut Vec<u8>, _: u8, _: &mut ryu::Buffer) {
         out.extend_from_slice(self.as_bytes())
     }
 }

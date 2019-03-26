@@ -11,11 +11,11 @@ fn main() {
     let dist = rand::distributions::Normal::new(200.0, 30.0);
 
     Pdf::new()
+        .precision(2)
         .add_page(Size {
             width: 400,
             height: 400,
         })
-        .transform(pdfpdf::Matrix::scale(2, 2) * pdfpdf::Matrix::translate(-200, -200))
         .draw_dots(
             &(0..100_000)
                 .map(|_| dist.sample(&mut rng))
