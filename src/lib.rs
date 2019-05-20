@@ -689,7 +689,7 @@ impl Pdf {
     }
 
     /// Write the in-memory PDF representation to disk
-    pub fn write_to(&mut self, filename: &str) -> io::Result<()> {
+    pub fn write_to<F>(&mut self, filename: F) -> io::Result<()> where F: AsRef<std::path::Path> {
         use std::io::Write;
 
         if !self.page_buffer.is_empty() {
